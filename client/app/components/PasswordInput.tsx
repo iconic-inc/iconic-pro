@@ -1,5 +1,11 @@
 // hooks
-import { useState, useEffect } from 'react';
+import {
+  useState,
+  useEffect,
+  DetailedHTMLProps,
+  InputHTMLAttributes,
+  ReactNode,
+} from 'react';
 
 // utils
 import PropTypes from 'prop-types';
@@ -13,12 +19,13 @@ const PasswordInput = ({
 }: {
   id: string;
   name?: string;
-  label?: string;
+  label?: ReactNode;
   isInvalid?: boolean;
   placeholder: string;
-  value: string;
-  onChange: (e: any) => void;
-}) => {
+} & DetailedHTMLProps<
+  InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = (e: any) => {
@@ -38,7 +45,7 @@ const PasswordInput = ({
       <div className='relative'>
         <input
           className={`block w-full border border-gray-300 rounded-md mt-1 py-2 px-3 focus:outline-none 
-            focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition`}
+            focus:ring-2 focus:ring-red-500 focus:border-red-500 transition`}
           id={id}
           name={name || id}
           type={isPasswordVisible ? 'text' : 'password'}

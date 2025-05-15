@@ -2,12 +2,14 @@ import { Authenticator } from 'remix-auth';
 import { Strategy } from 'remix-auth/strategy';
 import { FormStrategy } from 'remix-auth-form';
 
-import { sessionStorage } from '~/services/session.server';
 import { fetcher } from '.';
 import { ISessionUser } from '~/interfaces/auth.interface';
-import { parseJwt } from '~/utils';
-import { redirect } from '@remix-run/react';
-import { createSecretCookie } from './cookie.server';
+import {
+  deleteAuthCookie,
+  parseAuthCookie,
+  serializeAuthCookie,
+} from './cookie.server';
+import { isExpired } from '~/utils';
 
 // Create an instance of the authenticator, pass a generic with what
 // strategies will return and will store in the session
@@ -55,7 +57,7 @@ authenticator.use(
 
       return user;
     } catch (error: any) {
-      console.log('authenticate error: ', error.data);
+      console.log('authenticate error: ', error);
       throw error;
     }
   }),
@@ -64,29 +66,39 @@ authenticator.use(
   'user-pass',
 );
 
-const isAuthenticated = async (request: Request) => {
-  const session = await sessionStorage.getSession(
-    request.headers.get('Cookie'),
-  );
-  const accessToken = session.get('_accessToken');
-  const user = session.get('_user');
-  const refreshToken = session.get('_refreshToken');
-  // const authCookie = await createSecretCookie('_auth').parse(request.headers.get('Cookie'));
-  // const accessToken = authCookie.get('_accessToken');
-  // const refreshToken = authCookie.get('_refreshToken');
-  // const user = authCookie.get('_user');
+const isAuthenticated = async (
+  request: Request,
+): Promise<ISessionUser | null> => {
+  const { tokens, user } = (await parseAuthCookie(request)) || {};
 
-  if (!accessToken || !user) {
+  if (!tokens?.accessToken || !user) {
+    // return { session: null };
     return null;
   }
 
-  return {
-    user,
-    tokens: {
-      accessToken,
-      refreshToken,
-    },
-  } as ISessionUser;
+  // if (!isExpired(tokens.accessToken)) {
+  //   return { session: { user, tokens } };
+  // }
+
+  // Access token expired → try refresh
+  // if (!isExpired(tokens.refreshToken)) {
+  //   try {
+  //     const refreshed = await authenticator.authenticate(
+  //       'refresh-token',
+  //       request,
+  //     );
+  //     const newCookie = await serializeAuthCookie(refreshed);
+  //     return {
+  //       session: { user: refreshed.user, tokens: refreshed.tokens },
+  //       headers: { 'Set-Cookie': newCookie },
+  //     };
+  //   } catch (error) {
+  //     console.error('Token refresh failed:', error);
+  //   }
+  // }
+  // Both tokens invalid or refresh failed
+  // return { session: null, headers: { 'Set-Cookie': await deleteAuthCookie() } };
+  return { user, tokens };
 };
 
 const login = async (username: string, password: string, browserId: string) => {
@@ -106,17 +118,13 @@ const logout = async (request: ISessionUser) => {
 };
 
 const refreshTokenHandler = async (request: Request) => {
-  const session = await sessionStorage.getSession(
-    request.headers.get('Cookie'),
-  );
-  const refreshToken = session.get('_refreshToken');
-  const user = session.get('_user');
+  const { tokens, user } = await parseAuthCookie(request);
 
   const res = await fetcher('/auth/refresh-token', {
     method: 'POST',
     headers: {
-      'x-refresh-token': refreshToken || '',
-      'x-client-id': user.id || '',
+      'x-refresh-token': tokens?.refreshToken || '',
+      'x-client-id': user?.id || '',
     },
   });
 

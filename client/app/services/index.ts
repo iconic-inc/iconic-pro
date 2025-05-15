@@ -88,10 +88,7 @@ const fetcher = async (
       body: options?.body,
       response: data,
     });
-    throw new Response(data.errors.message || response.statusText, {
-      status: data.errors.status || response.status,
-      statusText: response.statusText,
-    });
+    throw new Error(data.errors.message || response.statusText);
   }
   return data.metadata;
 };

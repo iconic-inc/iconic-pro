@@ -31,3 +31,20 @@ export interface IAppSettingsAttrs {
   headScripts?: string;
   bodyScripts?: string;
 }
+
+export interface IPaginationOptions {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface IResponseList<T> {
+  data: T[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

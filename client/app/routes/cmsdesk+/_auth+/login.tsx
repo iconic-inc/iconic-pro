@@ -5,8 +5,11 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { toast } from 'react-toastify';
 
 import { authenticator, isAuthenticated } from '~/services/auth.server';
-import { sessionStorage } from '~/services/session.server';
 import { isExpired } from '~/utils';
+import {
+  deleteAuthCookie,
+  serializeAuthCookie,
+} from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const auth = await isAuthenticated(request);
@@ -20,16 +23,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     // Check if the access token is expired
     if (isExpired(tokens.accessToken)) {
       console.log('access token expired');
-      const session = await sessionStorage.getSession(
-        request.headers.get('Cookie'),
-      );
 
       // If the refresh token is also expired, destroy the session and redirect to login
       if (isExpired(tokens.refreshToken)) {
         console.log('refresh token expired');
         return new Response(null, {
           headers: {
-            'Set-Cookie': await sessionStorage.destroySession(session),
+            'Set-Cookie': await deleteAuthCookie(),
           },
           status: 302,
           statusText: 'Redirecting to login',
@@ -42,12 +42,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         request,
       );
 
-      session.set('_refreshToken', tokenRefresh.tokens.refreshToken);
-      session.set('_accessToken', tokenRefresh.tokens.accessToken);
-      session.set('_user', tokenRefresh.user);
       throw redirect(redirectUrl, {
         headers: {
-          'Set-Cookie': await sessionStorage.commitSession(session),
+          'Set-Cookie': await serializeAuthCookie(tokenRefresh),
         },
       });
     }
@@ -69,16 +66,9 @@ export async function action({ request }: ActionFunctionArgs) {
       request,
     );
 
-    const session = await sessionStorage.getSession(
-      request.headers.get('Cookie'),
-    );
-    session.set('_refreshToken', tokens.refreshToken);
-    session.set('_accessToken', tokens.accessToken);
-    session.set('_user', user);
-
     throw redirect(redicrectUrl, {
       headers: {
-        'Set-Cookie': await sessionStorage.commitSession(session),
+        'Set-Cookie': await serializeAuthCookie({ user, tokens }),
       },
     });
   } catch (err: any) {

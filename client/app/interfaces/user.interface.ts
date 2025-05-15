@@ -18,3 +18,19 @@ export interface IUser {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IUserAttrs {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName?: string;
+  slug?: string;
+  address: string;
+  birthdate?: string;
+  msisdn: string;
+  sex: string;
+  status: string;
+  avatar?: string;
+  role: string;
+  password: string;
+}

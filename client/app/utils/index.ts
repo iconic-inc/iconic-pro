@@ -148,6 +148,15 @@ const calculateAge = (dateOfBirth: Date): number => {
   return age;
 };
 
+// Helper type for decreasing the depth counter
+function getValueByPath<T>(obj: T, path: string) {
+  if (typeof obj !== 'object' || obj === null) {
+    return undefined;
+  }
+  // @ts-ignore
+  return path.split('.').reduce((o, k) => (o || {})[k], obj);
+}
+
 export {
   toAgeString,
   toCurrencyString,
@@ -165,4 +174,5 @@ export {
   formatDate,
   formatCurrency,
   calculateAge,
+  getValueByPath,
 };

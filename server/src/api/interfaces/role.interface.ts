@@ -1,11 +1,10 @@
-
 import { HydratedDocument, Model, Types } from 'mongoose';
 
 export interface IRawRole {
   id: string;
   name: string;
   slug: string;
-  status: "active" | "inactive";
+  status: 'active' | 'inactive';
   description: string;
   grants: {
     resourceId: Types.ObjectId;
@@ -18,7 +17,7 @@ export interface IRawRole {
 export interface IRoleAttrs {
   name: string;
   slug: string;
-  status: "active" | "inactive";
+  status: 'active' | 'inactive';
   description: string;
   grants: {
     resourceId: Types.ObjectId;
@@ -29,7 +28,7 @@ export interface IRoleAttrs {
 export interface IRoleInput {
   name: string;
   slug: string;
-  status: "active" | "inactive";
+  status: 'active' | 'inactive';
   description: string;
   grants: {
     resourceId: Types.ObjectId;
@@ -38,7 +37,7 @@ export interface IRoleInput {
 }
 
 export interface IGrantInput {
-  resourceId: Types.ObjectId;
+  resourceId: string;
   actions: string[];
 }
 
@@ -48,8 +47,8 @@ export interface IRoleModel extends Model<IRole> {
   build(attrs: IRoleAttrs): Promise<IRole>;
 }
 export interface IUpdateGrantInput {
-  grantId: string;  // ID của grant cần update
-  actions: string[];  // Actions mới
+  grantId: string; // ID của grant cần update
+  actions: string[]; // Actions mới
 }
 export interface IRoleResponseData {
   id: string;
@@ -66,4 +65,4 @@ export interface IRoleResponseData {
     };
     actions: string[];
   }[];
-} 
+}

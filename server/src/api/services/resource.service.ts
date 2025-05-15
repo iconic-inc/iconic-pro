@@ -1,11 +1,15 @@
-import { NotFoundError } from "../core/errors";
-import { ResourceModel } from "../models/resource.model";
-import { IResourceInput } from "../interfaces/resource.interface";
+import { NotFoundError } from '../core/errors';
+import { ResourceModel } from '../models/resource.model';
+import { IResourceInput } from '../interfaces/resource.interface';
+import { getReturnData, getReturnList } from '@utils/index';
 
 const getResources = async (query: any = {}) => {
   try {
-    const resources = await ResourceModel.find(query).sort({ createdAt: -1 });
-    return resources;
+    const resources = await ResourceModel.find(
+      query,
+      'name slug description'
+    ).sort({ createdAt: -1 });
+    return getReturnList(resources);
   } catch (error) {
     throw error;
   }
@@ -17,7 +21,7 @@ const createResource = async (resourceData: IResourceInput) => {
     const newResource = new ResourceModel(resourceData);
     // Lưu vào database
     const savedResource = await newResource.save();
-    return savedResource;
+    return getReturnData(savedResource);
   } catch (error) {
     throw error;
   }
@@ -26,8 +30,8 @@ const createResource = async (resourceData: IResourceInput) => {
 const getResourceById = async (resourceId: string) => {
   try {
     const resource = await ResourceModel.findById(resourceId);
-    if (!resource) throw new NotFoundError("Resource not found");
-    return resource;
+    if (!resource) throw new NotFoundError('Resource not found');
+    return getReturnData(resource);
   } catch (error) {
     throw error;
   }
@@ -43,8 +47,8 @@ const updateResource = async (
       resourceData,
       { new: true }
     );
-    if (!resource) throw new NotFoundError("Resource not found");
-    return resource;
+    if (!resource) throw new NotFoundError('Resource not found');
+    return getReturnData(resource);
   } catch (error) {
     throw error;
   }
@@ -53,8 +57,8 @@ const updateResource = async (
 const deleteResource = async (resourceId: string) => {
   try {
     const resource = await ResourceModel.findByIdAndDelete(resourceId);
-    if (!resource) throw new NotFoundError("Resource not found");
-    return resource;
+    if (!resource) throw new NotFoundError('Resource not found');
+    return getReturnData(resource);
   } catch (error) {
     throw error;
   }

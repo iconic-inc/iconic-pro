@@ -1,7 +1,7 @@
 import { Schema, Types, model, models } from 'mongoose';
 import { ISpa, ISpaModel } from '../interfaces/spa.interface';
 import { formatAttributeName } from '../utils';
-import { IMAGE, SPA, USER } from '../constants';
+import { IMAGE, SPA, SPA_OWNER, USER } from '../constants';
 
 /**
  * Sub-documents
@@ -47,7 +47,7 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     },
     sp_owner: {
       type: Schema.Types.ObjectId,
-      ref: USER.DOCUMENT_NAME,
+      ref: SPA_OWNER.DOCUMENT_NAME,
       required: true,
     },
     sp_description: {
@@ -64,7 +64,12 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     sp_phone: String,
     sp_email: String,
     sp_website: String,
-    sp_socialLinks: { type: Map, of: String }, // facebook, tiktok …
+    sp_socialLinks: {
+      facebook: String, // facebook.com/…
+      instagram: String, // instagram.com/…
+      tiktok: String, // tiktok.com/…
+      youtube: String, // youtube.com/…
+    }, // facebook, tiktok …
     sp_address: {
       type: {
         type: String,
@@ -89,6 +94,10 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     },
 
     /* MEDIA */
+    sp_avatar: {
+      type: Types.ObjectId,
+      ref: IMAGE.DOCUMENT_NAME,
+    },
     sp_coverImage: {
       type: Types.ObjectId,
       ref: IMAGE.DOCUMENT_NAME,
@@ -115,7 +124,7 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     /* MODERATION */
     sp_status: {
       type: String,
-      enum: ['draft', 'pending', 'approved', 'rejected'],
+      enum: ['draft', 'pending', 'approved', 'rejected', 'deleted'],
       default: 'draft',
       index: true,
     },
