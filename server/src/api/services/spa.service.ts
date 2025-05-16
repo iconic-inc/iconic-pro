@@ -3,7 +3,7 @@
    Business‑logic for Spa management (Admin & Owner)
 */
 
-import mongoose, { ClientSession, Types } from 'mongoose';
+import mongoose, { ClientSession, isValidObjectId, Types } from 'mongoose';
 import { SpaModel } from '../models/spa.model';
 import { SpaOwnerModel } from '../models/spaOwner.model';
 import { ForbiddenError, NotFoundError } from '../core/errors';
@@ -125,6 +125,7 @@ export class SpaService {
 
   /** GET /admin/spas/:id */
   static async getSpaById(spaId: string) {
+    if (!isValidObjectId(spaId)) throw new NotFoundError('Spa not found');
     const spa = await SpaModel.findById(spaId).populate({
       path: 'sp_owner',
       select: 'spo_user',

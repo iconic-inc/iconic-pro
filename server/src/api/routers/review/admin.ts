@@ -33,6 +33,13 @@ adminReviewRouter.patch(
   ReviewController.rejectReview
 );
 
+// bulk hard-delete
+adminReviewRouter.delete(
+  '/bulk/hard',
+  hasPermission('spa', 'deleteAny'),
+  ReviewController.bulkHardDeleteReviews // hard-delete
+);
+
 adminReviewRouter.delete(
   '/:reviewId',
   hasPermission('review', 'deleteAny'),

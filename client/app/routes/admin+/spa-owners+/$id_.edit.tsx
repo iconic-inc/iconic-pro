@@ -6,7 +6,7 @@ import {
   getSpaOwnerById4Admin,
   updateSpaOwner4Admin,
 } from '~/services/spaOwner.server';
-import SpaOwnerEditForm from './_components/SpaOwnerEditForm';
+import SpaOwnerEditForm from './components/SpaOwnerEditForm';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
 import DashContentHeader from '~/components/DashContentHeader';
 

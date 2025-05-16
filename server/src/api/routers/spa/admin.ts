@@ -13,6 +13,13 @@ adminSpaRouter.use(authenticationV2);
 /* ─────────── CRUD ANY (resource = "spa") ─────────── */
 
 adminSpaRouter.get(
+  '/:spaId',
+  validateObjectId('spaId'), // validate request params
+  hasPermission('spa', 'readAny'),
+  SpaController.getSpaById
+);
+
+adminSpaRouter.get(
   '/',
   hasPermission('spa', 'readAny'),
   SpaController.listSpas // pagination + filters
@@ -23,13 +30,6 @@ adminSpaRouter.post(
   hasPermission('spa', 'createAny'),
   validateSchema(spaCreateSchema), // validate request body
   SpaController.createSpa // create new spa
-);
-
-adminSpaRouter.get(
-  '/:spaId',
-  validateObjectId('spaId'), // validate request params
-  hasPermission('spa', 'readAny'),
-  SpaController.getSpaById
 );
 
 adminSpaRouter.put(

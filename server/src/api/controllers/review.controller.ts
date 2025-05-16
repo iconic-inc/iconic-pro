@@ -46,6 +46,18 @@ export class ReviewController {
     });
   }
 
+  static async bulkHardDeleteReviews(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'Reviews deleted successfully',
+      metadata: await ReviewService.bulkHardDeleteReviews(req.body.reviewIds),
+    });
+  }
+
   /* ─────────────── SPA‑OWNER HANDLERS ─────────────── */
 
   static async listMySpaReviews(

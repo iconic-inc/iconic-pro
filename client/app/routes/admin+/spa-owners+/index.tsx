@@ -9,11 +9,11 @@ import {
   listSpaOwners4Admin,
 } from '~/services/spaOwner.server';
 import DashContentHeader from '~/components/DashContentHeader';
-import SpaOwnerList from './_components/SpaOwnerList';
+import SpaOwnerList from './components/SpaOwnerList';
 import { ISpaOwnerDetails } from '~/interfaces/spaOwner.interface';
-import SpaOwnerToolbar from './_components/SpaOwnerToolbar';
-import SpaOwnerBulkActionBar from './_components/SpaOwnerBulkActionBar';
-import SpaOwnerConfirmModal from './_components/SpaOwnerConfirmModal';
+import SpaOwnerToolbar from './components/SpaOwnerToolbar';
+import SpaOwnerBulkActionBar from './components/SpaOwnerBulkActionBar';
+import SpaOwnerConfirmModal from './components/SpaOwnerConfirmModal';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
@@ -46,7 +46,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       sortOrder,
     };
 
-    // Fetch customers data with case services
+    // Fetch spaOwners data with case services
     const spaOwnersPromise = listSpaOwners4Admin(
       { ...query, status: 'active' },
       options,
@@ -84,21 +84,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     switch (request.method) {
       case 'DELETE':
-        const customerIdsString = formData.get('customerIds') as string;
-        if (!customerIdsString) {
-          return { success: false, error: 'Missing customer IDs' };
+        const spaOwnerIdsString = formData.get('spaOwnerIds') as string;
+        if (!spaOwnerIdsString) {
+          return { success: false, error: 'Missing spaOwner IDs' };
         }
 
-        const customerIds = JSON.parse(customerIdsString);
-        if (!Array.isArray(customerIds) || customerIds.length === 0) {
-          return { success: false, error: 'Invalid customer IDs' };
+        const spaOwnerIds = JSON.parse(spaOwnerIdsString);
+        if (!Array.isArray(spaOwnerIds) || spaOwnerIds.length === 0) {
+          return { success: false, error: 'Invalid spaOwner IDs' };
         }
         // Call the bulk delete function
-        await bulkDeleteSpaOwners4Admin(customerIds, auth);
+        await bulkDeleteSpaOwners4Admin(spaOwnerIds, auth);
 
         return {
           success: true,
-          message: `Đã xóa ${customerIds.length} chủ spa thành công`,
+          message: `Đã xóa ${spaOwnerIds.length} chủ spa thành công`,
         };
 
       default:

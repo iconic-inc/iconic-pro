@@ -43,7 +43,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       sortOrder,
     };
 
-    // Fetch customers data with case services
+    // Fetch spas data with case services
     const spasPromise = listSpas4Admin(
       { ...query, status: 'approved' },
       options,
@@ -81,21 +81,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     switch (request.method) {
       case 'DELETE':
-        const customerIdsString = formData.get('customerIds') as string;
-        if (!customerIdsString) {
-          return { success: false, error: 'Missing customer IDs' };
+        const spaIdsString = formData.get('spaIds') as string;
+        if (!spaIdsString) {
+          return { success: false, error: 'Missing spa IDs' };
         }
 
-        const customerIds = JSON.parse(customerIdsString);
-        if (!Array.isArray(customerIds) || customerIds.length === 0) {
-          return { success: false, error: 'Invalid customer IDs' };
+        const spaIds = JSON.parse(spaIdsString);
+        if (!Array.isArray(spaIds) || spaIds.length === 0) {
+          return { success: false, error: 'Invalid spa IDs' };
         }
         // Call the bulk delete function
-        await bulkDeleteSpas4Admin(customerIds, auth);
+        await bulkDeleteSpas4Admin(spaIds, auth);
 
         return {
           success: true,
-          message: `Đã xóa ${customerIds.length} chủ spa thành công`,
+          message: `Đã xóa ${spaIds.length} chủ spa thành công`,
         };
 
       default:

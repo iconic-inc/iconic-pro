@@ -5,7 +5,7 @@ import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 import { isAuthenticated } from '~/services/auth.server';
 
 import {
-  bulkDeleteReviews4Admin,
+  bulkHardDeleteReviews4Admin,
   listReviews4Admin,
 } from '~/services/review.server';
 import DashContentHeader from '~/components/DashContentHeader';
@@ -94,7 +94,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           return { success: false, error: 'Invalid customer IDs' };
         }
         // Call the bulk delete function
-        await bulkDeleteReviews4Admin(customerIds, auth);
+        await bulkHardDeleteReviews4Admin(customerIds, auth);
 
         return {
           success: true,

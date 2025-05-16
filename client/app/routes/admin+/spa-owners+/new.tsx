@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createSpaOwner4Admin } from '~/services/spaOwner.server';
-import SpaOwnerCreateForm from './_components/SpaOwnerCreateForm';
+import SpaOwnerCreateForm from './components/SpaOwnerCreateForm';
 import DashContentHeader from '~/components/DashContentHeader';
 
 type ActionData = {

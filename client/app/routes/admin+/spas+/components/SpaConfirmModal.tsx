@@ -10,7 +10,7 @@ export default function SpaConfirmModal({
 }: {
   setShowDeleteModal: (show: boolean) => void;
   selectedSpas: ISpa[];
-  setSelectedSpas: (customers: ISpa[]) => void;
+  setSelectedSpas: (spas: ISpa[]) => void;
 }) {
   const bulkDeleteFetcher = useFetcher();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -37,9 +37,9 @@ export default function SpaConfirmModal({
 
   const handleDelete = () => {
     setIsDeleting(true);
-    const customerIds = selectedSpas.map((customer) => customer.id);
+    const spaIds = selectedSpas.map((spa) => spa.id);
     bulkDeleteFetcher.submit(
-      { customerIds: JSON.stringify(customerIds) },
+      { spaIds: JSON.stringify(spaIds) },
       { method: 'DELETE' },
     );
   };

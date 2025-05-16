@@ -149,6 +149,74 @@ spaSchema.statics.build = (attrs: ISpa) => {
   return SpaModel.create(formatAttributeName(attrs, SPA.PREFIX));
 };
 
+/* VIRTUALS */
+spaSchema.statics.updateAggregateRating = async function (
+  this: ISpaModel,
+  spaId: string
+) {
+  const spa = await this.findById(spaId);
+  if (!spa) return;
+
+  const [result] = await this.aggregate([
+    {
+      $match: { _id: new Types.ObjectId(spaId) },
+    },
+    {
+      $lookup: {
+        from: 'reviews',
+        let: { spaId: '$_id' },
+        pipeline: [
+          {
+            // keep only reviews that belong to this spa **and** are approved
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$rv_spa', '$$spaId'] },
+                  { $eq: ['$rv_status', 'approved'] },
+                ],
+              },
+            },
+          },
+          { $project: { rv_rating: 1 } }, // keep only the fields we need
+        ],
+        as: 'reviews',
+      },
+    },
+    {
+      $unwind: { path: '$reviews', preserveNullAndEmptyArrays: true },
+    },
+    {
+      $group: {
+        _id: '$_id',
+        sp_averageRating: { $avg: '$reviews.rv_rating' },
+        sp_reviewCount: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        sp_averageRating: { $round: ['$sp_averageRating', 1] },
+        sp_reviewCount: 1,
+      },
+    },
+  ]);
+
+  if (result.sp_averageRating && result.sp_reviewCount) {
+    await this.findByIdAndUpdate(spaId, {
+      sp_averageRating: result.sp_averageRating,
+      sp_reviewCount: result.sp_reviewCount,
+      sp_lastReviewAt: new Date(),
+    });
+  } else {
+    await this.findByIdAndUpdate(spaId, {
+      sp_averageRating: 0,
+      sp_reviewCount: 0,
+      sp_lastReviewAt: new Date(),
+    });
+  }
+  return spa;
+};
+
 export const SpaModel =
   // models[SPA.DOCUMENT_NAME] ||
   model<ISpa, ISpaModel>(SPA.DOCUMENT_NAME, spaSchema);

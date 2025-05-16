@@ -119,5 +119,5 @@ export interface ISpaModel extends Model<ISpa> {
   /** Helper to create document with prefixed / formatted keys */
   build(attrs: ISpaAttrs): Promise<ISpa>;
   /** Re-calculate and persist average rating / review count */
-  updateAggregateRating?(spaId: Types.ObjectId): Promise<void>;
+  updateAggregateRating(spaId: Types.ObjectId): Promise<void>;
 }

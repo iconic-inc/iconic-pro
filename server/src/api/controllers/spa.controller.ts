@@ -7,6 +7,7 @@ export class SpaController {
   /* ──────────────── ADMIN ENDPOINTS ──────────────── */
 
   static async listSpas(req: Request, res: Response, next: NextFunction) {
+    console.log('helloooo mother fucker');
     return OK({
       res,
       message: 'List of spas',

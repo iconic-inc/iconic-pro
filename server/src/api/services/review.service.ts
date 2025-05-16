@@ -62,15 +62,43 @@ export class ReviewService {
     );
     if (!updated) throw new NotFoundError('Review not found');
     // update aggregate rating
-    await (SpaModel as any).updateAggregateRating(updated.rv_spa);
+    await SpaModel.updateAggregateRating(updated.rv_spa);
+
     return getReturnData(updated);
   }
 
   static async deleteReview(reviewId: string) {
     const del = await ReviewModel.findByIdAndDelete(reviewId);
     if (!del) throw new NotFoundError('Review not found');
-    await (SpaModel as any).updateAggregateRating(del.rv_spa);
+    await SpaModel.updateAggregateRating(del.rv_spa);
+
     return getReturnData({ id: reviewId });
+  }
+
+  static async bulkHardDeleteReviews(reviewIds: string[]) {
+    if (!reviewIds || !reviewIds.length) {
+      throw new BadRequestError('No review IDs provided');
+    }
+    const ids = reviewIds.map((id) => {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new BadRequestError(`Invalid review ID: ${id}`);
+      }
+      return new Types.ObjectId(id);
+    });
+    const deletedReviews = await ReviewModel.deleteMany({
+      _id: { $in: ids },
+    });
+    if (deletedReviews.deletedCount === 0) {
+      throw new NotFoundError('No reviews found for deletion');
+    }
+    // Update aggregate rating for each spa
+    for (const id of ids) {
+      const review = await ReviewModel.findById(id);
+      if (review) {
+        await SpaModel.updateAggregateRating(review.rv_spa);
+      }
+    }
+    return getReturnData({ deletedCount: deletedReviews.deletedCount });
   }
 
   /* ──────────────────────────────────────────────────────────

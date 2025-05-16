@@ -1,16 +1,16 @@
 import { useFetcher } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { ISpa } from '~/interfaces/spa.interface';
+import { IReview } from '~/interfaces/review.interface';
 
-export default function SpaConfirmModal({
+export default function ReviewConfirmModal({
   setShowDeleteModal,
-  selectedSpas,
-  setSelectedSpas,
+  selectedReviews,
+  setSelectedReviews,
 }: {
   setShowDeleteModal: (show: boolean) => void;
-  selectedSpas: ISpa[];
-  setSelectedSpas: (customers: ISpa[]) => void;
+  selectedReviews: IReview[];
+  setSelectedReviews: (reviews: IReview[]) => void;
 }) {
   const bulkDeleteFetcher = useFetcher();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -24,12 +24,12 @@ export default function SpaConfirmModal({
         error?: string;
       };
       if (response.success) {
-        toast.success(`Đã xóa ${selectedSpas.length} spa thành công!`);
-        setSelectedSpas([]);
+        toast.success(`Đã xóa ${selectedReviews.length} review thành công!`);
+        setSelectedReviews([]);
         // Refresh dữ liệu
         window.location.reload();
       } else {
-        toast.error(response.error || 'Có lỗi xảy ra khi xóa spa.');
+        toast.error(response.error || 'Có lỗi xảy ra khi xóa review.');
       }
       setIsDeleting(false);
     }
@@ -37,9 +37,9 @@ export default function SpaConfirmModal({
 
   const handleDelete = () => {
     setIsDeleting(true);
-    const customerIds = selectedSpas.map((customer) => customer.id);
+    const reviewIds = selectedReviews.map((review) => review.id);
     bulkDeleteFetcher.submit(
-      { customerIds: JSON.stringify(customerIds) },
+      { reviewIds: JSON.stringify(reviewIds) },
       { method: 'DELETE' },
     );
   };
@@ -52,9 +52,9 @@ export default function SpaConfirmModal({
       >
         <h3 className='text-lg font-bold mb-4'>Xác nhận xóa</h3>
         <p className='mb-6'>
-          {selectedSpas.length > 1
-            ? `Bạn có chắc chắn muốn xóa ${selectedSpas.length} spa?`
-            : `Bạn có chắc chắn muốn xóa spa này?`}
+          {selectedReviews.length > 1
+            ? `Bạn có chắc chắn muốn xóa ${selectedReviews.length} review?`
+            : `Bạn có chắc chắn muốn xóa review này?`}
           Thao tác này không thể khôi phục.
         </p>
 

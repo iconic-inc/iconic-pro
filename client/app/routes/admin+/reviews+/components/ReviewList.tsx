@@ -1,37 +1,39 @@
 import { Link, useSearchParams } from '@remix-run/react';
-import { ISpa } from '~/interfaces/spa.interface';
+import { IReview } from '~/interfaces/review.interface';
 import Defer from '~/components/Defer';
-import SpaPagination from './ReviewPagination';
+import ReviewPagination from './ReviewPagination';
 import { IResponseList } from '~/interfaces/app.interface';
 
-export default function SpaList({
-  spasPromise,
-  selectedSpas,
-  setSelectedSpas,
+export default function ReviewList({
+  reviewsPromise,
+  selectedReviews,
+  setSelectedReviews,
   visibleColumns,
 }: {
-  spasPromise: Promise<IResponseList<ISpa>>;
-  selectedSpas: ISpa[];
-  setSelectedSpas: (spas: ISpa[]) => void;
+  reviewsPromise: Promise<IResponseList<IReview>>;
+  selectedReviews: IReview[];
+  setSelectedReviews: (reviews: IReview[]) => void;
   visibleColumns: Record<string, boolean>;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-  const handleSelectAll = (cases: ISpa[]) => {
-    if (selectedSpas.length === cases.length) {
-      setSelectedSpas([]);
+  const handleSelectAll = (cases: IReview[]) => {
+    if (selectedReviews.length === cases.length) {
+      setSelectedReviews([]);
     } else {
-      setSelectedSpas(cases);
+      setSelectedReviews(cases);
     }
   };
 
-  const handleSpaSelect = (spa: ISpa) => {
-    if (selectedSpas.some((item) => item.id === spa.id)) {
-      setSelectedSpas(selectedSpas.filter((spa) => spa.id !== spa.id));
+  const handleReviewSelect = (review: IReview) => {
+    if (selectedReviews.some((item) => item.id === review.id)) {
+      setSelectedReviews(
+        selectedReviews.filter((review) => review.id !== review.id),
+      );
     } else {
-      setSelectedSpas([...selectedSpas, spa]);
+      setSelectedReviews([...selectedReviews, review]);
     }
   };
 
@@ -45,62 +47,30 @@ export default function SpaList({
     setSearchParams(searchParams);
   };
 
-  // Define table columns for the SpaList component
+  // Define table columns for the ReviewList component
   const columns = [
     {
       key: 'name',
-      title: 'Tên spa',
+      title: 'Tên review',
       sortField: 'sp_name',
       visible: visibleColumns.name,
-      render: (spa: ISpa) => (
+      render: (review: IReview) => (
         <Link
-          to={`/admin/spas/${spa.id}`}
+          to={`/admin/reviews/${review.id}`}
           className='block w-full h-full hover:text-red-500'
         >
-          {spa.sp_name}
+          {review.rv_author}
         </Link>
-      ),
-    },
-    {
-      key: 'owner',
-      title: 'Chủ sở hữu',
-      sortField: 'sp_owner',
-      visible: visibleColumns.owner,
-      render: (spa: ISpa) => (
-        <div className='flex items-center'>
-          {spa.sp_owner?.spo_user.usr_firstName}{' '}
-          {spa.sp_owner?.spo_user.usr_lastName}
-        </div>
-      ),
-    },
-    {
-      key: 'phone',
-      title: 'Điện thoại',
-      sortField: 'sp_phone',
-      visible: visibleColumns.phone,
-      render: (spa: ISpa) => (
-        <div className='flex items-center'>{spa.sp_phone}</div>
-      ),
-    },
-    {
-      key: 'address',
-      title: 'Địa chỉ',
-      sortField: 'sp_address',
-      visible: visibleColumns.address,
-      render: (spa: ISpa) => (
-        <div className='flex items-center'>
-          {spa.sp_address.formattedAddress}
-        </div>
       ),
     },
   ];
 
   return (
-    <Defer resolve={spasPromise}>
+    <Defer resolve={reviewsPromise}>
       {(response) => {
-        const { data: spas, pagination } = response;
+        const { data: reviews, pagination } = response;
 
-        if (!spas || spas.length === 0) {
+        if (!reviews || reviews.length === 0) {
           // Empty State
           return (
             <div className='py-12 flex flex-col items-center justify-center'>
@@ -110,17 +80,18 @@ export default function SpaList({
                 </span>
               </div>
               <h3 className='text-xl font-medium text-gray-800 mb-2'>
-                Chưa có spa nào
+                Chưa có review nào
               </h3>
               <p className='text-gray-500 mb-6 text-center max-w-md'>
-                Thêm spa đầu tiên của bạn để bắt đầu quản lý thông tin của họ.
+                Thêm review đầu tiên của bạn để bắt đầu quản lý thông tin của
+                họ.
               </p>
               <Link
-                to='/admin/spas/new'
+                to='/admin/reviews/new'
                 className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition shadow-sm flex items-center gap-2'
               >
                 <span className='material-symbols-outlined text-sm'>add</span>
-                Thêm spa
+                Thêm review
               </Link>
             </div>
           );
@@ -137,9 +108,10 @@ export default function SpaList({
                       <input
                         type='checkbox'
                         checked={
-                          selectedSpas.length === spas.length && spas.length > 0
+                          selectedReviews.length === reviews.length &&
+                          reviews.length > 0
                         }
-                        onChange={() => handleSelectAll(spas)}
+                        onChange={() => handleSelectAll(reviews)}
                         className='rounded text-blue-500'
                       />
                     </th>
@@ -173,15 +145,15 @@ export default function SpaList({
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200'>
-                  {spas.map((spa) => (
-                    <tr key={spa.id} className='hover:bg-gray-50'>
-                      <td className='px-4 py-4 whitespace-nowrap'>
+                  {reviews.map((review) => (
+                    <tr key={review.id} className='hover:bg-gray-50'>
+                      <td className='px-4 py-4 whitereviewce-nowrap'>
                         <input
                           type='checkbox'
-                          checked={selectedSpas.some(
-                            (item) => item.id === spa.id,
+                          checked={selectedReviews.some(
+                            (item) => item.id === review.id,
                           )}
-                          onChange={() => handleSpaSelect(spa)}
+                          onChange={() => handleReviewSelect(review)}
                           className='rounded text-blue-500'
                         />
                       </td>
@@ -190,7 +162,7 @@ export default function SpaList({
                         .filter((column) => column.visible)
                         .map((column) => (
                           <td key={column.key as string} className='px-4 py-4'>
-                            {column.render(spa)}
+                            {column.render(review)}
                           </td>
                         ))}
                     </tr>
@@ -199,7 +171,7 @@ export default function SpaList({
               </table>
             </div>
 
-            <SpaPagination pagination={pagination} />
+            <ReviewPagination pagination={pagination} />
           </>
         );
       }}
