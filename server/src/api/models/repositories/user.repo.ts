@@ -16,11 +16,15 @@ const findUserByEmail = async (email: string) => {
 
 const findUserById = async (id: string) => {
   if (isValidObjectId(id)) {
-    return await UserModel.findById(id).populate('usr_role', 'name slug');
+    return await UserModel.findOne({
+      _id: id,
+      usr_status: 'active',
+    }).populate('usr_role', 'name slug');
   }
 
   return await UserModel.findOne({
     $or: [{ usr_email: id }, { usr_username: id }],
+    usr_status: 'active',
   }).populate('usr_role', 'name slug');
 };
 

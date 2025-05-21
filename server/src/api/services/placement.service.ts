@@ -15,7 +15,7 @@ import { IPlacement } from '../interfaces/placement.interface';
 export class PlacementService {
   /* ──────────────── ADMIN METHODS ──────────────── */
 
-  /** GET /admin/placements */
+  /** GET /placements */
   static async listPlacements(query: {
     page?: number;
     limit?: number;
@@ -43,7 +43,7 @@ export class PlacementService {
     };
   }
 
-  /** GET /admin/placements/:id */
+  /** GET /placements/:id */
   static async getPlacementById(id: string) {
     const plc = await PlacementModel.findById(id).populate(
       'plc_owner',
@@ -53,7 +53,7 @@ export class PlacementService {
     return getReturnData(plc);
   }
 
-  /** PATCH /admin/placements/:id/pay|unpay */
+  /** PATCH /placements/:id/pay|unpay */
   static async updatePaymentStatus(id: string, paid: boolean) {
     const plc = await PlacementModel.findByIdAndUpdate(
       id,
@@ -64,7 +64,7 @@ export class PlacementService {
     return getReturnData(plc);
   }
 
-  /** DELETE /admin/placements/:id */
+  /** DELETE /placements/:id */
   static async deletePlacement(id: string) {
     const removed = await PlacementModel.findByIdAndDelete(id);
     if (!removed) throw new NotFoundError('Placement not found');
@@ -85,7 +85,7 @@ export class PlacementService {
     return { owner, plc };
   }
 
-  /** GET /owner/placements */
+  /** GET /spa-owners/me/placements */
   static async listOwnerPlacements(
     ownerUserId: string,
     query: any
@@ -109,13 +109,13 @@ export class PlacementService {
     };
   }
 
-  /** GET /owner/placements/:id */
+  /** GET /spa-owners/me/placements/:id */
   static async getOwnerPlacementById(ownerUserId: string, id: string) {
     const { plc } = await this.assertOwnership(ownerUserId, id);
     return getReturnData(plc);
   }
 
-  /** POST /owner/placements/:id/pay  → returns payment URL */
+  /** POST /spa-owners/me/placements/:id/pay  → returns payment URL */
   static async initiatePayment(ownerUserId: string, id: string) {
     const { plc } = await this.assertOwnership(ownerUserId, id);
     if (plc.plc_paid)

@@ -1,4 +1,4 @@
-/* 1 ▸ ADMIN ROUTES – src/routes/admin/job-post.route.ts
+/* 1 ▸ ADMIN ROUTES – src/routes/job-post.route.ts
    ---------------------------------------------------- */
 import { Router } from 'express';
 import { JobPostController } from '../../controllers/jobPost.controller';
@@ -33,6 +33,18 @@ adminJobPostRouter.put(
   '/:jobPostId',
   hasPermission('jobPost', 'updateAny'),
   JobPostController.updateJobPost
+);
+
+adminJobPostRouter.delete(
+  '/bulk',
+  hasPermission('jobPost', 'deleteAny'),
+  JobPostController.bulkDeleteJobPosts
+);
+
+adminJobPostRouter.delete(
+  '/bulk/hard',
+  hasPermission('jobPost', 'deleteAny'),
+  JobPostController.bulkHardDeleteJobPosts
 );
 
 adminJobPostRouter.delete(

@@ -124,7 +124,7 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     /* MODERATION */
     sp_status: {
       type: String,
-      enum: ['draft', 'pending', 'approved', 'rejected', 'deleted'],
+      enum: Object.values(SPA.STATUS),
       default: 'draft',
       index: true,
     },

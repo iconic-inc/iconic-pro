@@ -17,13 +17,15 @@ import {
   formatAttributeName,
   getReturnData,
   getReturnList,
+  isEmptyObj,
+  removeNestedNullish,
 } from '@utils/index';
 import slugify from 'slugify';
 import { RoleModel } from '@models/role.model';
 import bcrypt from 'bcrypt';
 import { IUserAttrs } from '../interfaces/user.interface';
 import { IResponseList } from '../interfaces/response.interface';
-import { USER } from '../constants';
+import { SPA_OWNER, USER } from '../constants';
 
 export class SpaOwnerService {
   /* ▸ 1. LIST ▸────────────────────────────────────────────── */
@@ -67,14 +69,6 @@ export class SpaOwnerService {
         $unwind: '$spo_user',
       },
       {
-        $lookup: {
-          from: 'spas',
-          localField: 'spo_spas',
-          foreignField: '_id',
-          as: 'spo_spas',
-        },
-      },
-      {
         $sort: {
           [sortBy || 'spo_user.usr_firstName']: sortOrder === 'asc' ? 1 : -1,
         },
@@ -95,9 +89,6 @@ export class SpaOwnerService {
             usr_msisdn: '$spo_user.usr_msisdn',
             usr_address: '$spo_user.usr_address',
             usr_birthdate: '$spo_user.usr_birthdate',
-          },
-          spo_spas: {
-            sp_name: '$spo_spas.sp_name',
           },
           spo_plan: 1,
           spo_planExpireAt: 1,
@@ -133,13 +124,6 @@ export class SpaOwnerService {
     const existingUser = await UserModel.findOne({ usr_email: payload.email });
     if (existingUser) {
       throw new BadRequestError('User already exists');
-    }
-    /* 3. Check if provided spaIds are valid */
-    if (payload.spas?.length > 0) {
-      const spaIds = await SpaModel.find({ _id: { $in: payload.spas } }, '_id');
-      if (spaIds.length !== payload.spas.length) {
-        throw new BadRequestError('Invalid spaIds sent');
-      }
     }
 
     /* 4. Get spa owner role */
@@ -181,7 +165,6 @@ export class SpaOwnerService {
         [
           {
             spo_user: user._id,
-            spo_spas: payload.spas || [],
             spo_plan: payload.plan ?? 'free',
             spo_planExpireAt: payload.planExpireAt,
           },
@@ -195,7 +178,6 @@ export class SpaOwnerService {
           select: 'usr_email usr_firstName',
           options: { session },
         },
-        { path: 'spo_spas', select: 'sp_name', options: { session } },
       ]);
       await session.commitTransaction();
 
@@ -213,64 +195,226 @@ export class SpaOwnerService {
     if (!isValidObjectId(ownerId)) {
       throw new BadRequestError('Spa owner not found');
     }
-    const owner = await SpaOwnerModel.findById(ownerId)
-      .populate('spo_user', [
-        'usr_email',
-        'usr_firstName',
-        'usr_lastName',
-        'usr_msisdn',
-        'usr_address',
-        'usr_birthdate',
-        'usr_username',
-        'usr_sex',
-      ])
-      .populate('spo_spas', [
-        'sp_name',
-        'sp_slug',
-        'sp_status',
-        'sp_averageRating',
-        'sp_reviewCount',
-      ]);
+    const owner = await SpaOwnerModel.findById(ownerId).populate('spo_user', [
+      'usr_email',
+      'usr_firstName',
+      'usr_lastName',
+      'usr_msisdn',
+      'usr_address',
+      'usr_birthdate',
+      'usr_username',
+      'usr_sex',
+    ]);
+
     if (!owner) throw new BadRequestError('Spa owner not found');
     return getReturnData(owner);
   }
 
   /* ▸ 4. UPDATE PROFILE ▸──────────────────────────────────── */
-  static async updateSpaOwner(ownerId: string, body: Partial<ISpaOwner>) {
-    const updated = await SpaOwnerModel.findByIdAndUpdate(ownerId, body, {
-      new: true,
-      runValidators: true,
-    })
-      .populate('spo_user', 'usr_email usr_firstName usr_lastName usr_status')
-      .populate('spo_spas', 'sp_name sp_status');
-    if (!updated) throw new NotFoundError('Spa owner not found');
-    return getReturnData(updated);
+  static async updateSpaOwner(
+    ownerId: string,
+    body: ISpaOwnerAttrs & IUserAttrs
+  ) {
+    let session;
+    try {
+      // Tìm owner và lấy userId
+      const owner = await SpaOwnerModel.findById(ownerId);
+
+      if (!owner) {
+        throw new NotFoundError('Chủ spa không tồn tại');
+      }
+
+      // Kiểm tra trùng lặp email nếu có cập nhật email
+      if (body.email) {
+        const existingUser = await UserModel.findOne({
+          _id: { $ne: owner.spo_user },
+          usr_email: body.email,
+        });
+
+        if (existingUser) {
+          throw new BadRequestError('Email đã tồn tại trong hệ thống');
+        }
+      }
+
+      // Bắt đầu transaction
+      session = await mongoose.startSession();
+      session.startTransaction();
+
+      const ownerUpdateData = removeNestedNullish<ISpaOwnerAttrs & IUserAttrs>(
+        getReturnData(body, {
+          fields: ['level', 'plan', 'planExpireAt', 'status'],
+        })
+      );
+
+      // Cập nhật owner nếu có dữ liệu cần cập nhật
+      if (!isEmptyObj(ownerUpdateData)) {
+        const updatedOwner = await SpaOwnerModel.findByIdAndUpdate(
+          ownerId,
+          { $set: formatAttributeName(ownerUpdateData, SPA_OWNER.PREFIX) },
+          { new: true, session }
+        );
+
+        if (!updatedOwner) {
+          throw new NotFoundError('Nhân viên không tồn tại');
+        }
+      }
+
+      const userUpdateData = removeNestedNullish<IUserAttrs>(
+        getReturnData(body, {
+          fields: [
+            'firstName',
+            'lastName',
+            'email',
+            'msisdn',
+            'avatar',
+            'address',
+            'username',
+            'birthdate',
+            'sex',
+            'status',
+            'role',
+          ],
+        })
+      );
+
+      if (body.password) {
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassword = await bcrypt.hash(body.password, salt);
+
+        userUpdateData.password = hashPassword;
+        // @ts-ignore
+        userUpdateData.salt = salt;
+      }
+
+      if (!isEmptyObj(userUpdateData)) {
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          owner.spo_user,
+          {
+            $set: {
+              ...formatAttributeName(userUpdateData, USER.PREFIX),
+              ...(body.email && {
+                usr_slug: body.email.split('@')[0],
+              }),
+            },
+          },
+          { new: true, session }
+        );
+
+        if (!updatedUser) {
+          throw new NotFoundError('User not found');
+        }
+      }
+
+      // Commit transaction
+      await session.commitTransaction();
+      session = null;
+
+      // Lấy dữ liệu mới nhất sau khi cập nhật
+      const finalOwner = await SpaOwnerModel.findById(ownerId).populate({
+        path: 'spo_user',
+        select: '-__v -usr_password -usr_salt',
+      });
+
+      if (!finalOwner) {
+        throw new NotFoundError('Chủ spa không tồn tại');
+      }
+
+      return getReturnData(finalOwner, { without: ['spo_user'] });
+    } catch (error) {
+      if (session) {
+        try {
+          await session.abortTransaction();
+        } catch (abortError) {
+          console.error('Error aborting transaction:', abortError);
+        }
+      }
+      throw error;
+    } finally {
+      if (session) {
+        try {
+          await session.endSession();
+        } catch (endError) {
+          console.error('Error ending session:', endError);
+        }
+      }
+    }
   }
 
   /* ▸ 5. DELETE (soft) ▸───────────────────────────────────── */
   static async deleteSpaOwner(ownerId: string) {
-    const deleted = await SpaOwnerModel.findByIdAndUpdate(
-      ownerId,
-      { spo_status: 'suspended' },
-      { new: true }
-    );
-    if (!deleted) throw new NotFoundError('Spa owner not found');
-    return getReturnData(deleted);
+    let session;
+    try {
+      // Tìm spaOwner để lấy userId
+      const spaOwner = await SpaOwnerModel.findById(ownerId);
+
+      if (!spaOwner) {
+        throw new NotFoundError('SpaOwner not found');
+      }
+
+      // Bắt đầu transaction
+      session = await mongoose.startSession();
+      session.startTransaction();
+
+      // Xóa spaOwner
+      const deleteSpaOwnerResult = await SpaOwnerModel.deleteOne(
+        { _id: ownerId },
+        { session }
+      );
+
+      if (deleteSpaOwnerResult.deletedCount === 0) {
+        throw new Error('Failed to delete spaOwner');
+      }
+
+      // Xóa user tương ứng
+      const deleteUserResult = await UserModel.deleteOne(
+        { _id: spaOwner.spo_user },
+        { session }
+      );
+
+      if (deleteUserResult.deletedCount === 0) {
+        throw new Error('Failed to delete user');
+      }
+
+      // Commit transaction
+      await session.commitTransaction();
+
+      return {
+        success: true,
+        message:
+          'SpaOwner and associated user data have been deleted successfully',
+      };
+    } catch (error) {
+      // Rollback transaction nếu có lỗi
+      if (session) {
+        try {
+          await session.abortTransaction();
+        } catch (abortError) {
+          console.error('Error aborting transaction:', abortError);
+        }
+      }
+      throw error;
+    } finally {
+      // Đảm bảo session luôn được kết thúc
+      if (session) {
+        try {
+          await session.endSession();
+        } catch (endError) {
+          console.error('Error ending session:', endError);
+        }
+      }
+    }
   }
 
   /* ▸ 6. ASSIGN / UNASSIGN SPAS ▸──────────────────────────── */
   static async assignSpasToOwner(ownerId: string, spaIds: string[]) {
-    const spas = await SpaModel.find({ _id: { $in: spaIds } }, '_id');
-    if (spas.length !== spaIds.length)
-      throw new BadRequestError('Invalid spaIds sent');
-
-    const spaOwner = await SpaOwnerModel.findByIdAndUpdate(
-      ownerId,
-      { spo_spas: spas.map((s) => s._id) },
-      { new: true }
+    const spas = await SpaModel.updateMany(
+      { _id: { $in: spaIds } },
+      {
+        $set: { sp_owner: ownerId },
+      }
     );
-    if (!spaOwner) throw new NotFoundError('Spa owner not found');
-    return getReturnData(spaOwner);
+
+    return getReturnData(spas);
   }
 
   /* ▸ 7. UPDATE STATUS ▸──────────────────────────────────── */
@@ -312,11 +456,42 @@ export class SpaOwnerService {
     if (!Array.isArray(ownerIds) || ownerIds.length === 0)
       throw new BadRequestError('Invalid data sent!');
 
-    await SpaOwnerModel.updateMany(
-      { _id: { $in: ownerIds } },
-      { spo_status: 'suspended' } // soft-delete
-    );
-    return getReturnData({ deleted: ownerIds.length });
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const owners = await SpaOwnerModel.find({
+        _id: { $in: ownerIds },
+      });
+      if (owners.length === 0) {
+        throw new NotFoundError('Spa owner not found');
+      }
+      const userIds = owners.map((owner) => owner.spo_user);
+
+      const updatedOwner = await SpaOwnerModel.updateMany(
+        { _id: { $in: ownerIds } },
+        { spo_status: 'suspended' },
+        { session }
+      );
+      const updatedUser = await UserModel.updateMany(
+        { _id: { $in: userIds } },
+        { usr_status: USER.STATUS.INACTIVE },
+        { session }
+      );
+      if (!updatedOwner || !updatedUser) {
+        throw new NotFoundError('Spa owner not found');
+      }
+      if (updatedOwner.modifiedCount !== updatedUser.modifiedCount) {
+        throw new BadRequestError('Failed to update all owners');
+      }
+
+      await session.commitTransaction();
+      return getReturnData({ deleted: updatedOwner.modifiedCount });
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
   }
 
   /* ▸ 11. HARD DELETE MULTIPLE SPA OWNERS ▸──────────────────────────── */
@@ -324,13 +499,52 @@ export class SpaOwnerService {
     if (!Array.isArray(ownerIds) || ownerIds.length === 0)
       throw new BadRequestError('Invalid data sent!');
 
-    const { deletedCount } = await SpaOwnerModel.deleteMany({
-      _id: { $in: ownerIds },
-      spo_status: 'suspended', // ensure only suspended owners are deleted
-    });
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const owners = await SpaOwnerModel.find({
+        _id: { $in: ownerIds },
+      });
+      if (owners.length === 0) {
+        throw new NotFoundError('Spa owner not found');
+      }
+      const userIds = owners.map((owner) => owner.spo_user);
 
-    // Optional: also remove linked Users or cascade logic here.
+      const deletedOwner = await SpaOwnerModel.deleteMany(
+        { _id: { $in: ownerIds } },
+        { session }
+      );
+      const deletedUser = await UserModel.deleteMany(
+        { _id: { $in: userIds } },
+        { session }
+      );
+      if (!deletedOwner || !deletedUser) {
+        throw new NotFoundError('Spa owner not found');
+      }
+      if (deletedOwner.deletedCount !== deletedUser.deletedCount) {
+        throw new BadRequestError('Failed to delete spa owners');
+      }
 
-    return getReturnData({ deleted: deletedCount });
+      await session.commitTransaction();
+      return getReturnData({ deleted: deletedOwner.deletedCount });
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
+  /* ▸ 12. GET OWNER BY USER ID ▸──────────────────────────── */
+  static async getOwnerByUserId(userId: string) {
+    if (!isValidObjectId(userId)) {
+      throw new BadRequestError('Invalid user ID');
+    }
+    const owner = await SpaOwnerModel.findOne({ spo_user: userId }).populate(
+      'spo_user',
+      'usr_email usr_firstName usr_lastName'
+    );
+    if (!owner) throw new NotFoundError('Spa owner not found');
+    return getReturnData(owner);
   }
 }

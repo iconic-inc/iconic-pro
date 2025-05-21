@@ -172,15 +172,20 @@ const MENU = [
     icon: 'diversity_1',
     link: '/admin/spa-owners',
   },
+  // {
+  //   label: 'Spa',
+  //   icon: 'spa',
+  //   link: '/admin/spas',
+  // },
+  // {
+  //   label: 'Review',
+  //   icon: 'stars_2',
+  //   link: '/admin/reviews',
+  // },
   {
-    label: 'Spa',
-    icon: 'spa',
-    link: '/admin/spas',
-  },
-  {
-    label: 'Review',
-    icon: 'stars_2',
-    link: '/admin/reviews',
+    label: 'Ứng viên',
+    icon: 'person_search',
+    link: '/admin/candidates',
   },
   {
     label: 'Tin tuyển dụng',

@@ -9,16 +9,13 @@ export * from './booking.constant';
 export * from './category.constant';
 export * from './image.constant';
 export * from './branch.constant';
-export * from './attendance.constant';
 export * from './resource.constant';
 export * from './role.constant';
 export * from './jobPost.constant';
 export * from './candidate.constant';
 export * from './placement.constant';
 export * from './jobApplication.constant';
-export * from './customer.constant';
 export * from './spa-owner.constant';
-export * from './caseService.constant';
 
 export const KEYTOKEN = {
   DOCUMENT_NAME: 'KeyToken',

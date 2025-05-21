@@ -1,9 +1,9 @@
-import { ZodObject } from 'zod';
+import { ZodObject, ZodEffects } from 'zod';
 import { BadRequestError } from '../core/errors';
 import { isValidObjectId } from 'mongoose';
 import { removeNestedNullish } from '@utils/index';
 
-export const validateSchema = (schema: ZodObject<any>) => {
+export const validateSchema = (schema: ZodObject<any> | ZodEffects<any>) => {
   return (req: any, res: any, next: any) => {
     const { error } = schema.safeParse(removeNestedNullish(req.body));
     if (error) {

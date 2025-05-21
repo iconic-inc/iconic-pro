@@ -1,7 +1,7 @@
 /* src/models/candidate-profile.model.ts */
 import { Schema, Types, model } from 'mongoose';
 import { CANDIDATE, USER } from '../constants';
-import { ICandidate, ICandidateModel } from '../interfaces/candidate.constant';
+import { ICandidate, ICandidateModel } from '../interfaces/candidate.interface';
 import { formatAttributeName } from '../utils';
 
 const candidateSchema = new Schema<ICandidate, ICandidateModel>(
@@ -16,7 +16,11 @@ const candidateSchema = new Schema<ICandidate, ICandidateModel>(
     can_experience: { type: String }, // markdown / rich‑text
     can_skills: [String],
     can_cvFile: String, // URL file pdf
-    can_status: { type: String, enum: ['active', 'hidden'], default: 'active' },
+    can_status: {
+      type: String,
+      enum: Object.values(CANDIDATE.STATUS),
+      default: CANDIDATE.STATUS.ACTIVE,
+    },
   },
   { timestamps: true, collection: CANDIDATE.COLLECTION_NAME }
 );

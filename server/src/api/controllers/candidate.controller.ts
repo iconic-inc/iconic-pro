@@ -116,4 +116,28 @@ export class CandidateController {
       metadata: await CandidateService.deleteMyProfile(req.user.userId),
     });
   }
+
+  static async bulkDeleteCandidates(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'Bulk delete candidates',
+      metadata: await CandidateService.bulkDeleteCandidates(req.body),
+    });
+  }
+
+  static async bulkHardDeleteCandidates(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'Bulk hard delete candidates',
+      metadata: await CandidateService.bulkHardDeleteCandidates(req.body),
+    });
+  }
 }

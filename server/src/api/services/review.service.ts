@@ -11,6 +11,7 @@ import { BadRequestError, NotFoundError, ForbiddenError } from '../core/errors';
 import { getReturnData, getReturnList } from '../utils';
 import { IResponseList } from '../interfaces/response.interface';
 import { IReview } from '../interfaces/review.interface';
+import { SpaService } from './spa.service';
 
 /* ─────────────────────────────────────────────────────────────
    ADMIN FUNCTIONS
@@ -110,7 +111,6 @@ export class ReviewService {
 
     const owner = await SpaOwnerModel.findOne({
       spo_user: ownerUserId,
-      spo_spas: review.rv_spa,
     });
     if (!owner) throw new ForbiddenError('Not your spa');
     return review;
@@ -123,19 +123,21 @@ export class ReviewService {
     ownerUserId: string,
     query: any
   ): Promise<IResponseList<IReview>> {
-    const owner = await SpaOwnerModel.findOne(
-      { spo_user: ownerUserId },
-      'spo_spas'
-    );
+    const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
     if (!owner) throw new NotFoundError('Owner profile not found');
+    const spas = await SpaService.listMySpas(ownerUserId, {
+      status: 'approved',
+    });
 
-    const docs = await ReviewModel.find({ rv_spa: { $in: owner.spo_spas } })
+    const docs = await ReviewModel.find({
+      rv_spa: { $in: spas.data.map((spa) => spa._id) },
+    })
       .populate('rv_spa', 'sp_name')
       .populate('rv_author', 'usr_email')
       .skip(((query.page || 1) - 1) * (query.limit || 20))
       .limit(query.limit || 20);
     const total = await ReviewModel.countDocuments({
-      rv_spa: { $in: owner.spo_spas },
+      rv_spa: { $in: spas.data.map((spa) => spa._id) },
     });
 
     return {
@@ -191,7 +193,7 @@ export class ReviewService {
   static async createReview(userId: string, spaId: string, body: any) {
     // ensure spa exists & approved
     const spa = await SpaModel.findOne({ _id: spaId, sp_status: 'approved' });
-    if (!spa) throw new NotFoundError('Spa not found or not approved');
+    if (!spa) throw new NotFoundError('Spa not found');
 
     // one review per user per spa
     const exists = await ReviewModel.findOne({

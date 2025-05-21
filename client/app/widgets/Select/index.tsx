@@ -10,7 +10,7 @@ export default function Select({
   SelectHTMLAttributes<HTMLSelectElement>,
   HTMLSelectElement
 > & {
-  label: string;
+  label: React.ReactNode;
 }) {
   return (
     <section

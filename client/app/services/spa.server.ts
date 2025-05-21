@@ -72,9 +72,12 @@ const listMySpas4Owner = async (
     }
   });
 
-  const response = await fetcher(`/owner/spas?${searchParams.toString()}`, {
-    request,
-  });
+  const response = await fetcher(
+    `/spa-owners/me/spas?${searchParams.toString()}`,
+    {
+      request,
+    },
+  );
 
   return response as IResponseList<ISpa>;
 };
@@ -82,7 +85,7 @@ const listMySpas4Owner = async (
 // Create a spa as an owner
 const createSpa4Owner = async (spaData: ISpaAttrs, request: ISessionUser) => {
   try {
-    const response = await fetcher('/owner/spas', {
+    const response = await fetcher('/spa-owners/me/spas', {
       method: 'POST',
       body: JSON.stringify(spaData),
       request,
@@ -97,7 +100,7 @@ const createSpa4Owner = async (spaData: ISpaAttrs, request: ISessionUser) => {
 
 // Get spa by ID (owner access)
 const getSpaById4Owner = async (spaId: string, request: ISessionUser) => {
-  const response = await fetcher(`/owner/spas/${spaId}`, { request });
+  const response = await fetcher(`/spa-owners/me/spas/${spaId}`, { request });
   return response as ISpa;
 };
 
@@ -108,7 +111,7 @@ const updateSpa4Owner = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/owner/spas/${spaId}`, {
+    const response = await fetcher(`/spa-owners/me/spas/${spaId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       request,
@@ -124,7 +127,7 @@ const updateSpa4Owner = async (
 // Delete spa (owner access)
 const deleteSpa4Owner = async (spaId: string, request: ISessionUser) => {
   try {
-    const response = await fetcher(`/owner/spas/${spaId}`, {
+    const response = await fetcher(`/spa-owners/me/spas/${spaId}`, {
       method: 'DELETE',
       request,
     });
@@ -152,7 +155,7 @@ const listSpas4Admin = async (
   searchParams.set('page', String(page));
   searchParams.set('limit', String(limit));
 
-  const response = await fetcher(`/admin/spas?${searchParams.toString()}`, {
+  const response = await fetcher(`/spas?${searchParams.toString()}`, {
     request,
   });
 
@@ -162,7 +165,7 @@ const listSpas4Admin = async (
 // Create new spa (admin)
 const createSpa4Admin = async (spaData: ISpaAttrs, request: ISessionUser) => {
   try {
-    const response = await fetcher('/admin/spas', {
+    const response = await fetcher('/spas', {
       method: 'POST',
       body: JSON.stringify(spaData),
       request,
@@ -177,7 +180,7 @@ const createSpa4Admin = async (spaData: ISpaAttrs, request: ISessionUser) => {
 
 // Get spa by ID (admin)
 const getSpaById4Admin = async (spaId: string, request: ISessionUser) => {
-  const response = await fetcher(`/admin/spas/${spaId}`, { request });
+  const response = await fetcher(`/spas/${spaId}`, { request });
   return response as ISpaDetails;
 };
 
@@ -188,7 +191,7 @@ const updateSpa4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spas/${spaId}`, {
+    const response = await fetcher(`/spas/${spaId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       request,
@@ -204,7 +207,7 @@ const updateSpa4Admin = async (
 // Delete spa (admin)
 const deleteSpa4Admin = async (spaId: string, request: ISessionUser) => {
   try {
-    const response = await fetcher(`/admin/spas/${spaId}`, {
+    const response = await fetcher(`/spas/${spaId}`, {
       method: 'DELETE',
       request,
     });
@@ -222,7 +225,7 @@ const bulkDeleteSpas4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher('/admin/spas/bulk', {
+    const response = await fetcher('/spas/bulk', {
       method: 'DELETE',
       body: JSON.stringify({ spaIds }),
       request,
@@ -240,7 +243,7 @@ const bulkHardDeleteSpas4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher('/admin/spas/bulk/hard', {
+    const response = await fetcher('/spas/bulk/hard', {
       method: 'DELETE',
       body: JSON.stringify({ spaIds }),
       request,
@@ -259,7 +262,7 @@ const updateSpaStatus4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spas/${spaId}/status`, {
+    const response = await fetcher(`/spas/${spaId}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
       request,
@@ -279,7 +282,7 @@ const toggleFeatured4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spas/${spaId}/feature`, {
+    const response = await fetcher(`/spas/${spaId}/feature`, {
       method: 'PATCH',
       body: JSON.stringify({ featured }),
       request,

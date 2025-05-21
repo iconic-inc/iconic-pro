@@ -1,8 +1,8 @@
-/* src/routes/admin/spa‑owner.route.ts */
+/* src/routes/spa‑owner.route.ts */
 import { Router } from 'express';
 import { SpaOwnerController } from '@controllers/spaOwner.controller';
 import { authenticationV2 } from '@middlewares/authentication';
-import { hasPermission } from '@middlewares/authorization';
+import { hasPermission, restrictToRoles } from '@middlewares/authorization';
 
 const spaOwnerRouter = Router();
 
@@ -10,9 +10,45 @@ const spaOwnerRouter = Router();
 spaOwnerRouter.use(authenticationV2);
 
 /* ──────────────────────────────────────────────────────────────
+   OWNER CRUD – resource = "spaOwner"
+   RBAC action naming: updateOwn, readOwn
+   ────────────────────────────────────────────────────────────── */
+spaOwnerRouter.use(
+  '/me/spas',
+  restrictToRoles('admin', 'spa-owner'),
+  require('../spa/owner')
+);
+spaOwnerRouter.use(
+  '/me/job-posts',
+  restrictToRoles('admin', 'spa-owner'),
+  require('../jobPost/owner')
+);
+spaOwnerRouter.use(
+  '/me/job-applications',
+  restrictToRoles('admin', 'spa-owner'),
+  require('../jobApplication/owner')
+);
+// spaOwnerRouter.get(
+//   '/me',
+//   hasPermission('spaOwner', 'readOwn'),
+//   SpaOwnerController.getMyProfile
+// );
+// spaOwnerRouter.put(
+//   '/me',
+//   hasPermission('spaOwner', 'updateOwn'),
+//   SpaOwnerController.updateMyProfile
+// );
+
+/* ──────────────────────────────────────────────────────────────
    ADMIN CRUD – resource = "spaOwner"
    RBAC action naming: createAny, readAny, updateAny, deleteAny
    ────────────────────────────────────────────────────────────── */
+spaOwnerRouter.get(
+  '/:ownerId',
+  hasPermission('spaOwner', 'readAny'),
+  SpaOwnerController.getSpaOwnerById
+);
+
 spaOwnerRouter.get(
   '/',
   hasPermission('spaOwner', 'readAny'),
@@ -23,12 +59,6 @@ spaOwnerRouter.post(
   '/',
   hasPermission('spaOwner', 'createAny'),
   SpaOwnerController.createSpaOwner // invite / onboard flow
-);
-
-spaOwnerRouter.get(
-  '/:ownerId',
-  hasPermission('spaOwner', 'readAny'),
-  SpaOwnerController.getSpaOwnerById
 );
 
 spaOwnerRouter.put(

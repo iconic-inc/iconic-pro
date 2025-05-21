@@ -68,7 +68,6 @@ export default function SpaOwnerEditForm({
   };
 
   const { spo_user: user } = spaOwner;
-  console.log(spaOwner);
   return (
     <fetcher.Form method='PUT'>
       <div className='mx-auto bg-white rounded-lg shadow-sm overflow-hidden'>
@@ -173,6 +172,7 @@ export default function SpaOwnerEditForm({
                   id='address'
                   name='address'
                   type='text'
+                  defaultValue={user.usr_address}
                   placeholder='Nhập địa chỉ đầy đủ'
                 />
               </div>
@@ -203,7 +203,6 @@ export default function SpaOwnerEditForm({
                 id='password'
                 name='password'
                 placeholder='Nhập mật khẩu (để trống nếu không thay đổi)'
-                required
               />
             </div>
           </div>

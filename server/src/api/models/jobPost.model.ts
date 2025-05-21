@@ -17,7 +17,6 @@ const jobPostSchema = new Schema<IJobPost, IJobPostModel>(
     jpo_spa: {
       type: Schema.Types.ObjectId,
       ref: SPA.DOCUMENT_NAME,
-      required: true,
     },
     jpo_owner: {
       type: Schema.Types.ObjectId,
@@ -28,13 +27,13 @@ const jobPostSchema = new Schema<IJobPost, IJobPostModel>(
     /* META */
     jpo_type: {
       type: String,
-      enum: ['full-time', 'part-time', 'intern'],
-      default: 'full-time',
+      enum: Object.values(JOB_POST.TYPE),
+      default: JOB_POST.TYPE.FULL_TIME,
     },
     jpo_status: {
       type: String,
-      enum: ['draft', 'active', 'closed'],
-      default: 'active',
+      enum: Object.values(JOB_POST.STATUS),
+      default: JOB_POST.STATUS.ACTIVE,
       index: true,
     },
     jpo_deadline: Date,

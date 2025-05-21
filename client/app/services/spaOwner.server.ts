@@ -20,16 +20,15 @@ const listSpaOwners4Admin = async (
   searchParams.set('page', String(page));
   searchParams.set('limit', String(limit));
 
-  const response = await fetcher(
-    `/admin/spa-owners?${searchParams.toString()}`,
-    { request },
-  );
+  const response = await fetcher(`/spa-owners?${searchParams.toString()}`, {
+    request,
+  });
   return response as IResponseList<ISpaOwnerDetails>;
 };
 
 // Get spa owner by ID
 const getSpaOwnerById4Admin = async (id: string, request: ISessionUser) => {
-  const response = await fetcher(`/admin/spa-owners/${id}`, { request });
+  const response = await fetcher(`/spa-owners/${id}`, { request });
   return response as ISpaOwnerDetails;
 };
 
@@ -39,7 +38,7 @@ const createSpaOwner4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher('/admin/spa-owners', {
+    const response = await fetcher('/spa-owners', {
       method: 'POST',
       body: JSON.stringify(spaOwnerData),
       request,
@@ -59,7 +58,7 @@ const updateSpaOwner4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spa-owners/${id}`, {
+    const response = await fetcher(`/spa-owners/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       request,
@@ -74,7 +73,7 @@ const updateSpaOwner4Admin = async (
 // Delete spa owner (soft delete)
 const deleteSpaOwner4Admin = async (ownerId: string, request: ISessionUser) => {
   try {
-    const response = await fetcher(`/admin/spa-owners/${ownerId}`, {
+    const response = await fetcher(`/spa-owners/${ownerId}`, {
       method: 'DELETE',
       request,
     });
@@ -91,7 +90,7 @@ const bulkDeleteSpaOwners4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher('/admin/spa-owners/bulk', {
+    const response = await fetcher('/spa-owners/bulk', {
       method: 'DELETE',
       body: JSON.stringify({ ownerIds }),
       request,
@@ -109,7 +108,7 @@ const bulkHardDeleteSpaOwners4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher('/admin/spa-owners/bulk/hard', {
+    const response = await fetcher('/spa-owners/bulk/hard', {
       method: 'DELETE',
       body: JSON.stringify({ ownerIds }),
       request,
@@ -128,7 +127,7 @@ const assignSpasToOwner4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spa-owners/${ownerId}/assign-spa`, {
+    const response = await fetcher(`/spa-owners/${ownerId}/assign-spa`, {
       method: 'PATCH',
       body: JSON.stringify({ spaIds }),
       request,
@@ -147,7 +146,7 @@ const updateOwnerStatus4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spa-owners/${ownerId}/status`, {
+    const response = await fetcher(`/spa-owners/${ownerId}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
       request,
@@ -166,7 +165,7 @@ const changeOwnerPlan4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/spa-owners/${ownerId}/plan`, {
+    const response = await fetcher(`/spa-owners/${ownerId}/plan`, {
       method: 'PATCH',
       body: JSON.stringify(planData),
       request,
@@ -186,7 +185,7 @@ const getOwnerAuditLog4Admin = async (
 ) => {
   try {
     const { page = 1, limit = 10 } = options;
-    const url = `/admin/spa-owners/${ownerId}/audit?page=${page}&limit=${limit}`;
+    const url = `/spa-owners/${ownerId}/audit?page=${page}&limit=${limit}`;
 
     const response = await fetcher(url, { request });
     return response as {

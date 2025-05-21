@@ -57,7 +57,7 @@ const userSchema = new Schema<IUser, IUserModel>(
     usr_status: {
       type: String,
       default: 'active',
-      enum: ['active', 'inactive'],
+      enum: Object.values(USER.STATUS),
     },
     usr_role: {
       type: Schema.Types.ObjectId,

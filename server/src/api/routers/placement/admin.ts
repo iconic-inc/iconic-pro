@@ -1,4 +1,4 @@
-/* 1 ▸ ADMIN ROUTES – src/routes/admin/placement.route.ts
+/* 1 ▸ ADMIN ROUTES – src/routes/placement.route.ts
    ----------------------------------------------------- */
 import { Router } from 'express';
 import { PlacementController } from '../../controllers/placement.controller';

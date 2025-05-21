@@ -21,14 +21,6 @@ const spaOwnerSchema = new Schema<ISpaOwner, ISpaOwnerModel>(
       index: true,
       unique: true, // 1 user ↔︎ 1 spa-owner record
     },
-    /** Danh sách spa mà user sở hữu / quản lý */
-    spo_spas: [
-      {
-        type: Types.ObjectId,
-        ref: SPA.DOCUMENT_NAME,
-        required: true,
-      },
-    ],
 
     /* BUSINESS INFO ---------------------------------------------- */
     /** Quyền cấp dưới owner: “manager”, “staff”… (nếu cần phân tầng) */

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ForbiddenError } from '../core/errors';
+import { ForbiddenError, UnauthorizedError } from '../core/errors';
 import { getUserById } from '@services/user.service';
 import { getPermissions } from '@services/role.service';
 import { AccessControl, Permission, Query } from 'accesscontrol';
@@ -43,3 +43,18 @@ export const hasPermission = (resource: string, action: keyof Query) => {
     }
   };
 };
+
+export function restrictToRoles(...allowedRoles: string[]) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = await getUserById(req.user?.userId).catch((error) => {
+      throw new UnauthorizedError('Unauthorized');
+    });
+
+    if (!allowedRoles.includes(user.usr_role?.slug || '')) {
+      return next(
+        new ForbiddenError('You do not have permission to perform this action')
+      );
+    }
+    next();
+  };
+}

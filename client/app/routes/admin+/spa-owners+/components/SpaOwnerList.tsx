@@ -118,7 +118,6 @@ export default function SpaOwnerList({
     <Defer resolve={spaOwnersPromise}>
       {(response) => {
         const { data: spaOwners, pagination } = response;
-        console.log(spaOwners);
 
         if (!spaOwners || spaOwners.length === 0) {
           // Empty State

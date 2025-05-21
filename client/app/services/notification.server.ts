@@ -84,7 +84,7 @@ const createAdminNotification = async (
   data: IAdminCreateNotificationData,
   request: ISessionUser,
 ) => {
-  const response = await fetcher('/notifications/admin/create', {
+  const response = await fetcher('/notifications/create', {
     method: 'POST',
     body: JSON.stringify(data),
     request,

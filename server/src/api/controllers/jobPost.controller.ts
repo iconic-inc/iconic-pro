@@ -49,6 +49,32 @@ export class JobPostController {
     });
   }
 
+  static async bulkDeleteJobPosts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'Job posts deleted successfully',
+      metadata: await JobPostService.bulkDeleteJobPosts(req.body.jobPostIds),
+    });
+  }
+
+  static async bulkHardDeleteJobPosts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'Job posts hard deleted successfully',
+      metadata: await JobPostService.bulkHardDeleteJobPosts(
+        req.body.jobPostIds
+      ),
+    });
+  }
+
   static async updateJobPostStatus(
     req: Request,
     res: Response,

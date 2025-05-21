@@ -29,7 +29,7 @@ export interface IUserAttrs {
   birthdate?: string;
   msisdn: string;
   sex: string;
-  status: string;
+  status?: string;
   avatar?: string;
   role: string;
   password: string;

@@ -6,9 +6,13 @@
 import { JobPostModel } from '../models/jobPost.model';
 import { SpaOwnerModel } from '../models/spaOwner.model';
 import { BadRequestError, NotFoundError, ForbiddenError } from '../core/errors';
-import { getReturnData, getReturnList } from '../utils';
+import { formatAttributeName, getReturnData, getReturnList } from '../utils';
 import { IResponseList } from '../interfaces/response.interface';
-import { IJobPost } from '../interfaces/jobPost.interface';
+import { IJobPost, IJobPostAttrs } from '../interfaces/jobPost.interface';
+import { SpaOwnerService } from './spaOwner.service';
+import { SpaService } from './spa.service';
+import mongoose, { isValidObjectId } from 'mongoose';
+import { JOB_POST, SPA, SPA_OWNER, USER } from '../constants';
 
 const VALID_STATUS = ['draft', 'active', 'closed'];
 
@@ -28,11 +32,77 @@ export class JobPostService {
     if (spaId) filter.jpo_spa = spaId;
     if (keyword) filter.$text = { $search: keyword };
 
-    const docs = await JobPostModel.find(filter)
-      .populate('jpo_spa', 'sp_name')
-      .populate('jpo_owner', 'spo_user')
-      .skip((+page - 1) * +limit)
-      .limit(+limit);
+    const docs = await JobPostModel.aggregate([
+      {
+        $match: filter,
+      },
+      {
+        $lookup: {
+          from: SPA.COLLECTION_NAME,
+          localField: 'jpo_spa',
+          foreignField: '_id',
+          as: 'spa',
+        },
+      },
+      {
+        $unwind: { path: '$spa', preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          from: SPA_OWNER.COLLECTION_NAME,
+          localField: 'jpo_owner',
+          foreignField: '_id',
+          as: 'jpo_owner',
+        },
+      },
+      {
+        $unwind: '$jpo_owner',
+      },
+      {
+        $lookup: {
+          from: USER.COLLECTION_NAME,
+          localField: 'jpo_owner.spo_user',
+          foreignField: '_id',
+          as: 'jpo_owner.spo_user',
+        },
+      },
+      {
+        $unwind: '$jpo_owner.spo_user',
+      },
+      {
+        $addFields: {
+          jpo_title: { $ifNull: ['$jpo_title', ''] },
+          jpo_description: { $ifNull: ['$jpo_description', ''] },
+          jpo_status: { $ifNull: ['$jpo_status', ''] },
+        },
+      },
+      {
+        $project: {
+          jpo_title: 1,
+          jpo_description: 1,
+          jpo_status: 1,
+          jpo_spa: '$spa.sp_name',
+          jpo_owner: {
+            id: '$jpo_owner._id',
+            spo_user: {
+              id: '$jpo_owner.spo_user._id',
+              usr_email: '$jpo_owner.spo_user.usr_email',
+              usr_firstName: '$jpo_owner.spo_user.usr_firstName',
+              usr_lastName: '$jpo_owner.spo_user.usr_lastName',
+              usr_msisdn: '$jpo_owner.spo_user.usr_msisdn',
+            },
+          },
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+      {
+        $skip: (page - 1) * +limit,
+      },
+      {
+        $limit: +limit,
+      },
+    ]);
     const total = await JobPostModel.countDocuments(filter);
 
     return {
@@ -46,24 +116,35 @@ export class JobPostService {
     };
   }
 
-  static async createJobPost(body: any) {
-    const post = await JobPostModel.create(body);
+  static async createJobPost(body: IJobPostAttrs) {
+    const post = await JobPostModel.build(body);
     return getReturnData(post);
   }
 
   static async getJobPostById(id: string) {
     const post = await JobPostModel.findById(id)
       .populate('jpo_spa', 'sp_name')
-      .populate('jpo_owner', 'spo_user');
+      .populate({
+        path: 'jpo_owner',
+        select: 'spo_user',
+        populate: {
+          path: 'spo_user',
+          select: 'usr_email usr_firstName usr_lastName usr_msisdn',
+        },
+      });
     if (!post) throw new NotFoundError('Job post not found');
     return getReturnData(post);
   }
 
   static async updateJobPost(id: string, body: any) {
-    const updated = await JobPostModel.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
+    const updated = await JobPostModel.findByIdAndUpdate(
+      id,
+      formatAttributeName({ ...body, owner: undefined }, JOB_POST.PREFIX),
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!updated) throw new NotFoundError('Job post not found');
     return getReturnData(updated);
   }
@@ -76,6 +157,67 @@ export class JobPostService {
     );
     if (!del) throw new NotFoundError('Job post not found');
     return getReturnData(del);
+  }
+
+  static async bulkDeleteJobPosts(ids: string[]) {
+    // validate input
+    if (
+      !ids ||
+      !Array.isArray(ids) ||
+      ids.length === 0 ||
+      ids.some((id) => !isValidObjectId(id))
+    )
+      throw new BadRequestError('Invalid job post IDs');
+
+    // delete job posts
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const deleted = await JobPostModel.updateMany(
+        { _id: { $in: ids } },
+        { jpo_status: 'closed' }
+      ).session(session);
+      if (deleted.modifiedCount === 0)
+        throw new NotFoundError('No job posts found to delete');
+
+      await session.commitTransaction();
+      return getReturnData(deleted);
+    } catch (error) {
+      await session.abortTransaction();
+      throw new BadRequestError('Failed to delete job posts');
+    } finally {
+      session.endSession();
+    }
+  }
+
+  static async bulkHardDeleteJobPosts(ids: string[]) {
+    // validate input
+    if (
+      !ids ||
+      !Array.isArray(ids) ||
+      ids.length === 0 ||
+      ids.some((id) => !isValidObjectId(id))
+    )
+      throw new BadRequestError('Invalid job post IDs');
+
+    // hard delete job posts
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const deleted = await JobPostModel.deleteMany({
+        _id: { $in: ids },
+      }).session(session);
+      if (deleted.deletedCount === 0)
+        throw new NotFoundError('No job posts found to delete');
+
+      await session.commitTransaction();
+      return getReturnData(deleted);
+    } catch (error) {
+      await session.abortTransaction();
+      throw new BadRequestError('Failed to delete job posts');
+    } finally {
+      session.endSession();
+    }
   }
 
   static async updateJobPostStatus(id: string, status: string) {
@@ -97,15 +239,8 @@ export class JobPostService {
     const post = await JobPostModel.findById(postId, 'jpo_spa jpo_owner');
     if (!post) throw new NotFoundError('Job post not found');
 
-    const owner = await SpaOwnerModel.findOne(
-      { spo_user: ownerUserId },
-      'spo_spas'
-    );
-    if (
-      !owner ||
-      (!post.jpo_owner.toString() === owner.id &&
-        !owner.spo_spas.includes(post.jpo_spa as any))
-    )
+    const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
+    if (!owner || !post.jpo_owner.toString() === owner.id)
       throw new ForbiddenError('Not your job post');
     return { owner, post };
   }
@@ -114,19 +249,16 @@ export class JobPostService {
     ownerUserId: string,
     query: any
   ): Promise<IResponseList<IJobPost>> {
-    const owner = await SpaOwnerModel.findOne(
-      { spo_user: ownerUserId },
-      'spo_spas'
-    );
+    const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
     if (!owner) throw new NotFoundError('Owner profile not found');
 
     const docs = await JobPostModel.find({
-      $or: [{ jpo_owner: owner._id }, { jpo_spa: { $in: owner.spo_spas } }],
+      jpo_owner: owner._id,
     })
       .skip(((query.page || 1) - 1) * (query.limit || 20))
       .limit(query.limit || 20);
     const total = await JobPostModel.countDocuments({
-      $or: [{ jpo_owner: owner._id }, { jpo_spa: { $in: owner.spo_spas } }],
+      jpo_owner: owner._id,
     });
 
     return {
@@ -140,19 +272,19 @@ export class JobPostService {
     };
   }
 
-  static async createMyJobPost(ownerUserId: string, body: any) {
+  static async createMyJobPost(ownerUserId: string, body: IJobPostAttrs) {
     // verify spaId belongs to owner
-    const owner = await SpaOwnerModel.findOne(
-      { spo_user: ownerUserId },
-      'spo_spas'
-    );
+    const owner = await SpaOwnerService.getOwnerByUserId(ownerUserId);
     if (!owner) throw new NotFoundError('Owner profile not found');
-    if (!owner.spo_spas.map(String).includes(body.jpo_spa))
-      throw new ForbiddenError('You do not own this spa');
+    if (body.spa) {
+      const spa = await SpaService.getMySpaById(ownerUserId, body.spa);
+      if (!spa) throw new ForbiddenError('You do not own this spa');
+    }
 
     const post = await JobPostModel.create({
       ...body,
       jpo_owner: owner._id,
+      jpo_spa: body.spa,
     });
     return getReturnData(post);
   }

@@ -1,5 +1,6 @@
 /* src/interfaces/spa.interface.ts */
 import { Document, Model, Types } from 'mongoose';
+import { SPA } from '../constants';
 
 /* ------------------------------------------------------------------ */
 /* Sub-types                                                          */
@@ -68,7 +69,7 @@ export interface ISpaAttrs {
   averageRating?: number;
   reviewCount?: number;
   lastReviewAt?: Date;
-  status?: 'draft' | 'pending' | 'approved' | 'rejected';
+  status?: Values<typeof SPA.STATUS>;
   adminNote?: string;
   isFeatured?: boolean;
 }
@@ -103,7 +104,7 @@ export interface ISpa extends Document {
   sp_lastReviewAt?: Date;
 
   /* MODERATION */
-  sp_status: 'draft' | 'pending' | 'approved' | 'rejected';
+  sp_status: Values<typeof SPA.STATUS>; // “draft”, “active”, “suspended”
   sp_adminNote?: string;
   sp_isFeatured: boolean;
 

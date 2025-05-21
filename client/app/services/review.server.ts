@@ -112,9 +112,12 @@ const listMySpaReviews4Owner = async (
     }
   });
 
-  const response = await fetcher(`/owner/reviews?${searchParams.toString()}`, {
-    request,
-  });
+  const response = await fetcher(
+    `/spa-owners/me/reviews?${searchParams.toString()}`,
+    {
+      request,
+    },
+  );
 
   return response as IResponseList<IReviewDetails>;
 };
@@ -124,7 +127,9 @@ const getMySpaReviewById4Owner = async (
   reviewId: string,
   request: ISessionUser,
 ) => {
-  const response = await fetcher(`/owner/reviews/${reviewId}`, { request });
+  const response = await fetcher(`/spa-owners/me/reviews/${reviewId}`, {
+    request,
+  });
   return response as IReviewDetails;
 };
 
@@ -135,7 +140,7 @@ const replyToReview4Owner = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/owner/reviews/${reviewId}/reply`, {
+    const response = await fetcher(`/spa-owners/me/reviews/${reviewId}/reply`, {
       method: 'POST',
       body: JSON.stringify({ replyText }),
       request,
@@ -170,7 +175,7 @@ const listReviews4Admin = async (
     }
   });
 
-  const response = await fetcher(`/admin/reviews?${searchParams.toString()}`, {
+  const response = await fetcher(`/reviews?${searchParams.toString()}`, {
     request,
   });
 
@@ -179,14 +184,14 @@ const listReviews4Admin = async (
 
 // Get review by ID (admin)
 const getReviewById4Admin = async (reviewId: string, request: ISessionUser) => {
-  const response = await fetcher(`/admin/reviews/${reviewId}`, { request });
+  const response = await fetcher(`/reviews/${reviewId}`, { request });
   return response as IReviewDetails;
 };
 
 // Approve a review
 const approveReview4Admin = async (reviewId: string, request: ISessionUser) => {
   try {
-    const response = await fetcher(`/admin/reviews/${reviewId}/approve`, {
+    const response = await fetcher(`/reviews/${reviewId}/approve`, {
       method: 'PATCH',
       request,
     });
@@ -209,7 +214,7 @@ const rejectReview4Admin = async ({
   request: ISessionUser;
 }) => {
   try {
-    const response = await fetcher(`/admin/reviews/${reviewId}/reject`, {
+    const response = await fetcher(`/reviews/${reviewId}/reject`, {
       method: 'PATCH',
       body: JSON.stringify({ reason }),
       request,
@@ -225,7 +230,7 @@ const rejectReview4Admin = async ({
 // Delete review (admin)
 const deleteReview4Admin = async (reviewId: string, request: ISessionUser) => {
   try {
-    const response = await fetcher(`/admin/reviews/${reviewId}`, {
+    const response = await fetcher(`/reviews/${reviewId}`, {
       method: 'DELETE',
       request,
     });
@@ -243,7 +248,7 @@ const bulkHardDeleteReviews4Admin = async (
   request: ISessionUser,
 ) => {
   try {
-    const response = await fetcher(`/admin/reviews/bulk`, {
+    const response = await fetcher(`/reviews/bulk`, {
       method: 'DELETE',
       body: JSON.stringify({ reviewIds }),
       request,

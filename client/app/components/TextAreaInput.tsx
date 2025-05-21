@@ -10,7 +10,7 @@ export default function TextAreaInput({
   ...props
 }: {
   name: string;
-  label: string;
+  label: React.ReactNode;
   type?: string;
   pattern?: string;
   onChange?: (value: any) => void;

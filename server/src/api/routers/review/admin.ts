@@ -1,4 +1,4 @@
-/* 1 ▸ ADMIN REVIEW ROUTES – src/routes/admin/review.route.ts
+/* 1 ▸ ADMIN REVIEW ROUTES – src/routes/review.route.ts
    --------------------------------------------------------- */
 import { Router } from 'express';
 import { ReviewController } from '../../controllers/review.controller';

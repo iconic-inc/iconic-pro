@@ -2,7 +2,6 @@ import { Document, Model, Types } from 'mongoose';
 
 export interface IRawSpaOwner {
   spo_user: Types.ObjectId; // ref User
-  spo_spas: Types.ObjectId[]; // ref Spa[]
   spo_level: 'owner' | 'manager';
   spo_plan: string;
   spo_planExpireAt?: Date;
@@ -13,7 +12,6 @@ export interface IRawSpaOwner {
 
 /** Creating spa owner interface */
 export interface ISpaOwnerAttrs {
-  spas: string[];
   level?: 'owner' | 'manager';
   plan?: string;
   planExpireAt?: Date;
@@ -23,7 +21,6 @@ export interface ISpaOwnerAttrs {
 export interface ISpaOwner extends Document {
   /* RELATIONS */
   spo_user: Types.ObjectId; // ref User
-  spo_spas: Types.ObjectId[]; // ref Spa[]
 
   /* BUSINESS INFO */
   spo_level: 'owner' | 'manager';

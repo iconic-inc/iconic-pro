@@ -1,4 +1,6 @@
 import { HydratedDocument, Model, ObjectId } from 'mongoose';
+import { IJobPostResponse } from './jobPost.interface';
+import { ICandidateResponse } from './candidate.interface';
 
 export interface IRawJobApp {
   jap_jobPost: ObjectId;
@@ -20,4 +22,11 @@ export type IJobApp = HydratedDocument<IRawJobApp>;
 
 export interface IJobAppModel extends Model<IJobApp> {
   build(attrs: IJobAppAttrs): Promise<IJobApp>;
+}
+
+export interface IJobAppResponse {
+  id: string;
+  jap_jobPost: IJobPostResponse;
+  jap_candidate: ICandidateResponse;
+  jap_message: string;
 }
