@@ -29,5 +29,13 @@ router.use('/auth', require('./auth'));
 router.use('/app', require('./app'));
 router.use('/roles', require('./role'));
 router.use('/resources', require('./resource'));
-router.use('/notifications', require('./notification'));
+router.use('/spa-owners', require('./spaOwner'));
+router.use('/spas', require('./spa'));
+router.use('/candidates', require('./candidate'));
+router.use('/job-posts', require('./jobPost'));
+router.use('/job-applications', require('./jobApplication'));
+
+// router.use('/reviews', require('./review'));
+// router.use('/placements', require('./placement'));
+
 module.exports = router;

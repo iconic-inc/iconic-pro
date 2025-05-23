@@ -32,3 +32,17 @@ export interface IReviewModel extends Model<IReview> {
   /** Helper to create a review with formatted / prefixed keys */
   build(attrs: IReview): Promise<IReview>;
 }
+
+export interface IReviewAttrs {
+  /* RELATIONS */
+  spa: string; // ref Spa
+  author: string; // ref User
+  /* CONTENT */
+  rating: number; // 1‒5
+  title?: string;
+  content: string;
+  images?: string[]; // ref Image[]
+  /* META */
+  likes?: number;
+  isApproved?: boolean;
+}

@@ -1,7 +1,7 @@
 import { Schema, Types, model, models } from 'mongoose';
 import { ISpa, ISpaModel } from '../interfaces/spa.interface';
 import { formatAttributeName } from '../utils';
-import { IMAGE, SPA, USER } from '../constants';
+import { IMAGE, SPA, SPA_OWNER, USER } from '../constants';
 
 /**
  * Sub-documents
@@ -47,7 +47,7 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     },
     sp_owner: {
       type: Schema.Types.ObjectId,
-      ref: USER.DOCUMENT_NAME,
+      ref: SPA_OWNER.DOCUMENT_NAME,
       required: true,
     },
     sp_description: {
@@ -64,7 +64,12 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     sp_phone: String,
     sp_email: String,
     sp_website: String,
-    sp_socialLinks: { type: Map, of: String }, // facebook, tiktok …
+    sp_socialLinks: {
+      facebook: String, // facebook.com/…
+      instagram: String, // instagram.com/…
+      tiktok: String, // tiktok.com/…
+      youtube: String, // youtube.com/…
+    }, // facebook, tiktok …
     sp_address: {
       type: {
         type: String,
@@ -89,6 +94,10 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     },
 
     /* MEDIA */
+    sp_avatar: {
+      type: Types.ObjectId,
+      ref: IMAGE.DOCUMENT_NAME,
+    },
     sp_coverImage: {
       type: Types.ObjectId,
       ref: IMAGE.DOCUMENT_NAME,
@@ -115,7 +124,7 @@ const spaSchema = new Schema<ISpa, ISpaModel>(
     /* MODERATION */
     sp_status: {
       type: String,
-      enum: ['draft', 'pending', 'approved', 'rejected'],
+      enum: Object.values(SPA.STATUS),
       default: 'draft',
       index: true,
     },
@@ -138,6 +147,74 @@ spaSchema.index({ 'sp_address.coordinates': '2dsphere' });
 /* STATIC BUILD HELPER — identical pattern to PageModel */
 spaSchema.statics.build = (attrs: ISpa) => {
   return SpaModel.create(formatAttributeName(attrs, SPA.PREFIX));
+};
+
+/* VIRTUALS */
+spaSchema.statics.updateAggregateRating = async function (
+  this: ISpaModel,
+  spaId: string
+) {
+  const spa = await this.findById(spaId);
+  if (!spa) return;
+
+  const [result] = await this.aggregate([
+    {
+      $match: { _id: new Types.ObjectId(spaId) },
+    },
+    {
+      $lookup: {
+        from: 'reviews',
+        let: { spaId: '$_id' },
+        pipeline: [
+          {
+            // keep only reviews that belong to this spa **and** are approved
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$rv_spa', '$$spaId'] },
+                  { $eq: ['$rv_status', 'approved'] },
+                ],
+              },
+            },
+          },
+          { $project: { rv_rating: 1 } }, // keep only the fields we need
+        ],
+        as: 'reviews',
+      },
+    },
+    {
+      $unwind: { path: '$reviews', preserveNullAndEmptyArrays: true },
+    },
+    {
+      $group: {
+        _id: '$_id',
+        sp_averageRating: { $avg: '$reviews.rv_rating' },
+        sp_reviewCount: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        sp_averageRating: { $round: ['$sp_averageRating', 1] },
+        sp_reviewCount: 1,
+      },
+    },
+  ]);
+
+  if (result.sp_averageRating && result.sp_reviewCount) {
+    await this.findByIdAndUpdate(spaId, {
+      sp_averageRating: result.sp_averageRating,
+      sp_reviewCount: result.sp_reviewCount,
+      sp_lastReviewAt: new Date(),
+    });
+  } else {
+    await this.findByIdAndUpdate(spaId, {
+      sp_averageRating: 0,
+      sp_reviewCount: 0,
+      sp_lastReviewAt: new Date(),
+    });
+  }
+  return spa;
 };
 
 export const SpaModel =

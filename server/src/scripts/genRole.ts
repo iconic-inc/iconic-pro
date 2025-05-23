@@ -140,6 +140,10 @@ const ROLES = [
         resourceId: { slug: 'spa' },
         actions: ['create:own', 'read:any', 'update:own', 'delete:own'],
       },
+      {
+        resourceId: { slug: 'spaOwner' },
+        actions: ['read:own', 'update:own'],
+      },
     ],
   },
 
@@ -164,6 +168,12 @@ const ROLES = [
       },
       { resourceId: { slug: 'app' }, actions: ['read:any'] },
       { resourceId: { slug: 'user' }, actions: ['read:own', 'delete:own'] },
+      {
+        resourceId: {
+          slug: 'candidate',
+          actions: ['read:own', 'update:own', 'create:own'],
+        },
+      },
       {
         resourceId: { slug: 'review' },
         actions: ['create:own', 'read:any', 'update:own', 'delete:own'],

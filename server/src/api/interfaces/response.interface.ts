@@ -15,7 +15,14 @@ export interface ISuccessReponse {
   _link: Object;
 }
 
-// interface ISuccessFunc {
-//   (obj: ISuccessAttrs): void
-// }
 export type ISuccessFunc = (obj: ISuccessAttrs) => void;
+
+export interface IResponseList<T> {
+  data: T[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

@@ -5,7 +5,7 @@ import { InternalServerError } from '../core/errors';
 function pushLog2Discord(req: Request, res: Response, next: NextFunction) {
   logger
     .sendFormatLog({
-      title: req.method.toUpperCase() + ' ' + req.url,
+      title: `${req.method.toUpperCase()} ${req.url} (${req.requestId})`,
       code: req.method === 'GET' ? req.query : req.body,
       message: req.get('host') + req.originalUrl,
     })
