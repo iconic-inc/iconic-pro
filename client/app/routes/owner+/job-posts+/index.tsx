@@ -4,13 +4,13 @@ import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
 
-import { bulkDeleteSpaOwners, listSpaOwners } from '~/services/spaOwner.server';
+import { deleteMyJobPost, listMyJobPosts } from '~/services/jobPost.server';
 import DashContentHeader from '~/components/DashContentHeader';
-import SpaOwnerList from './components/SpaOwnerList';
-import { ISpaOwnerDetails } from '~/interfaces/spaOwner.interface';
-import SpaOwnerToolbar from './components/SpaOwnerToolbar';
-import SpaOwnerBulkActionBar from './components/SpaOwnerBulkActionBar';
-import SpaOwnerConfirmModal from './components/SpaOwnerConfirmModal';
+import JobPostList from './components/JobPostList';
+import { IJobPostDetails } from '~/interfaces/jobPost.interface';
+import JobPostToolbar from './components/JobPostToolbar';
+import JobPostBulkActionBar from './components/JobPostBulkActionBar';
+import JobPostConfirmModal from './components/JobPostConfirmModal';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
@@ -43,26 +43,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       sortOrder,
     };
 
-    // Fetch spaOwners data with case services
-    const spaOwnersPromise = listSpaOwners(
-      { ...query, status: 'active' },
-      options,
-      auth,
-    ).catch((fallbackError) => {
-      console.error('Fallback error:', fallbackError);
-      return {
-        data: [],
-        pagination: { total: 0, page: 1, limit: 10, totalPages: 0 },
-      };
-    });
+    // Fetch job posts data with case services
+    const jobPostsPromise = listMyJobPosts({ ...query }, options, auth).catch(
+      (fallbackError) => {
+        console.error('Fallback error:', fallbackError);
+        return {
+          data: [],
+          pagination: { total: 0, page: 1, limit: 10, totalPages: 0 },
+        };
+      },
+    );
 
     return {
-      spaOwnersPromise,
+      jobPostsPromise,
     };
   } catch (error) {
     console.error('Loader error:', error);
     return {
-      spaOwnersPromise: Promise.resolve({
+      jobPostsPromise: Promise.resolve({
         data: [],
         pagination: { total: 0, page: 1, limit: 10, totalPages: 0 },
       }),
@@ -70,7 +68,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 };
 
-// Action function để xử lý xóa chủ spa
+// Action function để xử lý xóa chủ jobPost
 export const action = async ({ request }: ActionFunctionArgs) => {
   const auth = await isAuthenticated(request);
   if (!auth) {
@@ -81,21 +79,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     switch (request.method) {
       case 'DELETE':
-        const spaOwnerIdsString = formData.get('spaOwnerIds') as string;
-        if (!spaOwnerIdsString) {
-          return { success: false, error: 'Missing spaOwner IDs' };
+        const jobPostIdsString = formData.get('jobPostIds') as string;
+        if (!jobPostIdsString) {
+          return { success: false, error: 'Thiếu ' };
         }
 
-        const spaOwnerIds = JSON.parse(spaOwnerIdsString);
-        if (!Array.isArray(spaOwnerIds) || spaOwnerIds.length === 0) {
-          return { success: false, error: 'Invalid spaOwner IDs' };
+        const jobPostIds = JSON.parse(jobPostIdsString);
+        if (!Array.isArray(jobPostIds) || jobPostIds.length === 0) {
+          return { success: false, error: 'Invalid jobPost IDs' };
         }
-        // Call the bulk delete function
-        await bulkDeleteSpaOwners(spaOwnerIds, auth);
-
+        let count = 0;
+        for (const jobPostId of jobPostIds) {
+          await deleteMyJobPost(jobPostId, auth);
+          count++;
+        }
         return {
           success: true,
-          message: `Đã xóa ${spaOwnerIds.length} chủ spa thành công`,
+          message: `Xóa ${count} tin tuyển dụng thành công`,
         };
 
       default:
@@ -110,63 +110,60 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export default function SpaOwnerIndex() {
-  const { spaOwnersPromise } = useLoaderData<typeof loader>();
+export default function JobPostIndex() {
+  const { jobPostsPromise } = useLoaderData<typeof loader>();
 
-  const [selectedSpaOwners, setSelectedSpaOwners] = useState<
-    ISpaOwnerDetails[]
-  >([]);
+  const [selectedJobPosts, setSelectedJobPosts] = useState<IJobPostDetails[]>(
+    [],
+  );
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [visibleColumns, setVisibleColumns] = useState<
-    Record<
-      'usr_firstName' | 'usr_msisdn' | 'usr_email' | 'usr_address',
-      boolean
-    >
-  >({
-    usr_firstName: true,
-    usr_msisdn: true,
-    usr_email: true,
-    usr_address: true,
-  });
+  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(
+    {
+      title: true,
+      ownerName: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  );
 
   const navigate = useNavigate();
 
   return (
     <>
       <DashContentHeader
-        title='Quản lý chủ spa'
-        actionContent='Thêm chủ spa'
-        actionHandler={() => navigate('/admin/spa-owners/new')}
+        title='Quản lý Tin tuyển dụng'
+        actionContent='Thêm Tin tuyển dụng'
+        actionHandler={() => navigate('/owner/job-posts/new')}
       />
 
       <div className='mx-auto bg-white rounded-lg shadow-sm overflow-hidden'>
         {/* Toolbar */}
-        <SpaOwnerToolbar
+        <JobPostToolbar
           visibleColumns={visibleColumns}
           setVisibleColumns={setVisibleColumns}
         />
 
         {/* Bulk Action Bar (Visible when rows selected) */}
-        {selectedSpaOwners.length > 0 && (
-          <SpaOwnerBulkActionBar
-            selectedSpaOwners={selectedSpaOwners}
+        {selectedJobPosts.length > 0 && (
+          <JobPostBulkActionBar
+            selectedJobPosts={selectedJobPosts}
             handleConfirmBulkDelete={() => setShowDeleteModal(true)}
           />
         )}
 
-        {showDeleteModal && selectedSpaOwners.length && (
-          <SpaOwnerConfirmModal
+        {showDeleteModal && selectedJobPosts.length && (
+          <JobPostConfirmModal
             setShowDeleteModal={setShowDeleteModal}
-            selectedSpaOwners={selectedSpaOwners}
-            setSelectedSpaOwners={setSelectedSpaOwners}
+            selectedJobPosts={selectedJobPosts}
+            setSelectedJobPosts={setSelectedJobPosts}
           />
         )}
 
-        <SpaOwnerList
-          spaOwnersPromise={spaOwnersPromise}
-          selectedSpaOwners={selectedSpaOwners}
-          setSelectedSpaOwners={setSelectedSpaOwners}
+        <JobPostList
+          jobPostsPromise={jobPostsPromise}
+          selectedJobPosts={selectedJobPosts}
+          setSelectedJobPosts={setSelectedJobPosts}
           visibleColumns={visibleColumns}
         />
       </div>

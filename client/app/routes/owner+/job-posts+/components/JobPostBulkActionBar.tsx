@@ -1,17 +1,17 @@
-import { IJobApplicationDetails } from '~/interfaces/jobApplication.interface';
+import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
 
-export default function JobApplicationBulkActionBar({
-  selectedJobApplications,
+export default function JobPostBulkActionBar({
+  selectedJobPosts,
   handleConfirmBulkDelete,
 }: {
-  selectedJobApplications: IJobApplicationDetails[];
+  selectedJobPosts: IJobPostDetails[];
   handleConfirmBulkDelete: () => void;
 }) {
   return (
     <div className='bg-blue-50 p-3 border-b border-blue-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-0'>
       <div className='flex items-center gap-2 w-full md:w-auto'>
         <span className='font-medium text-blue-700'>
-          {selectedJobApplications.length} Đơn ứng tuyển đã chọn
+          {selectedJobPosts.length} tin tuyển dụng đã chọn
         </span>
       </div>
       <div className='flex flex-wrap items-center gap-2 w-full md:w-auto mt-2 md:mt-0'>

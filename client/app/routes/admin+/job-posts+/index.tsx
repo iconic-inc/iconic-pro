@@ -4,7 +4,11 @@ import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
 
-import { bulkDeleteJobPosts, listJobPosts } from '~/services/jobPost.server';
+import {
+  bulkDeleteJobPosts,
+  bulkHardDeleteJobPosts,
+  listJobPosts,
+} from '~/services/jobPost.server';
 import DashContentHeader from '~/components/DashContentHeader';
 import JobPostList from './components/JobPostList';
 import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
@@ -89,7 +93,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           return { success: false, error: 'Invalid jobPost IDs' };
         }
         // Call the bulk delete function
-        await bulkDeleteJobPosts(jobPostIds, auth);
+        await bulkHardDeleteJobPosts(jobPostIds, auth);
 
         return {
           success: true,
@@ -129,11 +133,7 @@ export default function JobPostIndex() {
 
   return (
     <>
-      <DashContentHeader
-        title='Quản lý Tin tuyển dụng'
-        // actionContent='Thêm jobPost'
-        // actionHandler={() => navigate('/admin/job-posts/new')}
-      />
+      <DashContentHeader title='Quản lý Tin tuyển dụng' />
 
       <div className='mx-auto bg-white rounded-lg shadow-sm overflow-hidden'>
         {/* Toolbar */}

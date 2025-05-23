@@ -8,6 +8,7 @@ import UserProfileForm from '../_components/UserProfileForm';
 import { getCurrentUser, updateUser } from '~/services/user.server';
 import CustomButton from '~/widgets/CustomButton';
 import DashContentHeader from '~/components/DashContentHeader';
+import { updateMySpaOwner, updateSpaOwner } from '~/services/spaOwner.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const auth = await isAuthenticated(request);
@@ -28,10 +29,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData.entries());
 
-    // Extract ID
-    const id = data.id as string;
-    delete data.id;
-
     // Prepare update data
     const updateData = {
       firstName: data.firstName as string,
@@ -46,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       avatar: data.avatar as string,
     };
 
-    const updatedEmployee = await updateUser(auth?.user.id, updateData, auth!);
+    const updatedEmployee = await updateMySpaOwner(updateData, auth!);
     return {
       employee: updatedEmployee,
       toast: { message: 'Cập nhật thông tin thành công!', type: 'success' },
@@ -62,9 +59,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export default function AdminProfile() {
+export default function OwnerProfile() {
   const { user } = useLoaderData<typeof loader>();
-  const formId = 'admin-profile-form';
+  const formId = 'owner-profile-form';
 
   const [isChanged, setIsChanged] = useState(false);
 
@@ -98,4 +95,4 @@ export default function AdminProfile() {
   );
 }
 
-export const ErrorBoundary = () => <HandsomeError basePath='/admin' />;
+export const ErrorBoundary = () => <HandsomeError basePath='/owner' />;

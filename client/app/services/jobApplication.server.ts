@@ -118,25 +118,6 @@ const listMyJobApplications = async (
   return response as IResponseList<IJobApplicationDetails>;
 };
 
-// Create new job post for one of owner's spas
-const createMyJobApplication = async (
-  jobApplicationData: IJobApplicationAttrs,
-  request: ISessionUser,
-) => {
-  try {
-    const response = await fetcher('/spa-owners/me/job-applications', {
-      method: 'POST',
-      body: JSON.stringify(jobApplicationData),
-      request,
-    });
-
-    return response as IJobApplication;
-  } catch (error: any) {
-    console.error('Error creating job post:', error);
-    throw error;
-  }
-};
-
 // Get job post by ID (for owner)
 const getMyJobApplicationById = async (id: string, request: ISessionUser) => {
   const response = await fetcher(`/spa-owners/me/job-applications/${id}`, {
@@ -191,4 +172,10 @@ export {
   createJobApplication,
   updateJobApplication,
   deleteJobApplication,
+
+  // Owner services
+  listMyJobApplications,
+  getMyJobApplicationById,
+  updateMyJobApplication,
+  deleteMyJobApplication,
 };

@@ -6,7 +6,7 @@ export interface ISpaOwnerAttrs extends IUserAttrs {
   level?: 'owner' | 'manager';
   plan?: string;
   planExpireAt?: Date;
-  status: 'active' | 'suspended';
+  status?: 'active' | 'suspended';
 }
 
 export interface ISpaOwner {

@@ -1,33 +1,19 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { IJobPostAttrs } from '~/interfaces/jobPost.interface';
 import { isAuthenticated } from '~/services/auth.server';
-import { createJobPost } from '~/services/jobPost.server';
+import { createMyJobPost } from '~/services/jobPost.server';
 import DashContentHeader from '~/components/DashContentHeader';
 import JobPostCreateForm from './components/JobPostCreateForm';
-import { listJobPosts } from '~/services/jobPost.server';
-import { useLoaderData } from '@remix-run/react';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      throw new Error('Unauthorized');
-    }
+    // const auth = await isAuthenticated(request);
+    // if (!auth) {
+    //   throw new Error('Unauthorized');
+    // }
 
-    const ownersPromise = listJobPosts(
-      { status: 'active' },
-      { page: 1, limit: 1000 },
-      auth,
-    ).catch((fallbackError) => {
-      console.error('Fallback error:', fallbackError);
-      return {
-        data: [],
-        pagination: { total: 0, page: 1, limit: 10, totalPages: 0 },
-      };
-    });
-
-    return { ownersPromise };
+    return {};
   } catch (error: any) {
     console.error('Lỗi xác thực:', error);
     throw new Response(error.message, { status: 401 });
@@ -35,13 +21,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function NewJobPost() {
-  const { ownersPromise } = useLoaderData<typeof loader>();
-
   return (
     <>
-      <DashContentHeader title='Thêm mới jobPost' />
+      <DashContentHeader title='Thêm Tin tuyển dụng' />
 
-      <JobPostCreateForm ownersPromise={ownersPromise} />
+      <JobPostCreateForm />
     </>
   );
 }
@@ -76,23 +60,23 @@ export const action = async ({
     };
 
     // Gọi API tạo jobPost cùng case service
-    const jobPost = await createJobPost(jobPostData, auth);
+    const jobPost = await createMyJobPost(jobPostData, auth);
 
     if (!jobPost) {
       return {
         success: false,
-        message: 'Lỗi khi tạo jobPost',
+        message: 'Lỗi khi tạo Tin tuyển dụng',
       };
     }
 
     return {
       success: true,
-      message: 'Thêm mới jobPost thành công!',
+      message: 'Thêm mới Tin tuyển dụng thành công!',
       jobPost,
-      redirectTo: `/admin/job-posts/${jobPost.id}`,
+      redirectTo: `/owner/job-posts/${jobPost.id}`,
     };
   } catch (error: any) {
-    console.error('Lỗi tạo jobPost:', error);
+    console.error('Lỗi tạo Tin tuyển dụng:', error);
     return {
       success: false,
       message: error.message || 'Đã xảy ra lỗi không xác định',

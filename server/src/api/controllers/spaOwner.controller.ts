@@ -32,6 +32,29 @@ export class SpaOwnerController {
     });
   }
 
+  static async getMyProfile(req: Request, res: Response, next: NextFunction) {
+    return OK({
+      res,
+      message: 'My profile',
+      metadata: await SpaOwnerService.getOwnerByUserId(req.user.userId),
+    });
+  }
+
+  static async updateMyProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'My profile updated successfully',
+      metadata: await SpaOwnerService.updateMyProfile(
+        req.user.userId,
+        req.body
+      ),
+    });
+  }
+
   static async updateSpaOwner(req: Request, res: Response, next: NextFunction) {
     return OK({
       res,

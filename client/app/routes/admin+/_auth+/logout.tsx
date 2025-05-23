@@ -18,14 +18,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     });
 
     // Clear session data
-    return redirect(`/hrm/login?redirect=${redirectUrl}`, {
+    return redirect(`/admin/login?redirect=${redirectUrl}`, {
       headers: {
         'Set-Cookie': await deleteAuthCookie(),
       },
     });
   } catch (error) {
     console.error('Logout error:', error);
-    throw redirect(`/hrm/login?redirect=${redirectUrl}`, {
+    throw redirect(`/admin/login?redirect=${redirectUrl}`, {
       headers: {
         'Set-Cookie': await deleteAuthCookie(),
       },

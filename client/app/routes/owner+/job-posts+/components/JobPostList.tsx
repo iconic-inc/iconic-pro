@@ -56,7 +56,7 @@ export default function JobPostList({
       visible: visibleColumns.title,
       render: (jobPost: IJobPostDetails) => (
         <Link
-          to={`/admin/job-posts/${jobPost.id}`}
+          to={`/owner/job-posts/${jobPost.id}`}
           className='block w-full h-full hover:text-red-500'
         >
           {jobPost.jpo_title}
@@ -134,11 +134,11 @@ export default function JobPostList({
                 tin.
               </p>
               <Link
-                to='/admin/job-posts/new'
+                to='/owner/job-posts/new'
                 className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition shadow-sm flex items-center gap-2'
               >
                 <span className='material-symbols-outlined text-sm'>add</span>
-                Thêm jobPost
+                Thêm Tin tuyển dụng
               </Link>
             </div>
           );

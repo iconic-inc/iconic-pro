@@ -31,6 +31,6 @@ export interface IUserAttrs {
   sex: string;
   status?: string;
   avatar?: string;
-  role: string;
+  role?: string;
   password: string;
 }

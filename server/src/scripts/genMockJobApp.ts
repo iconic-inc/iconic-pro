@@ -20,7 +20,9 @@ async function main() {
 
   for (const canId of canUserIds) {
     for (const jobId of jobPostIds) {
-      await JobApplicationService.applyJob(canId, jobId);
+      try {
+        await JobApplicationService.applyJob(canId, jobId);
+      } catch {}
     }
   }
 

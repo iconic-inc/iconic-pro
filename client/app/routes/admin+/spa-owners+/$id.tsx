@@ -2,7 +2,7 @@ import { Link, useLoaderData, useNavigate } from '@remix-run/react';
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
-import { getSpaOwnerById4Admin } from '~/services/spaOwner.server';
+import { getSpaOwnerById } from '~/services/spaOwner.server';
 import { formatDate, calculateAge } from '~/utils';
 import CustomButton from '~/widgets/CustomButton';
 import DashContentHeader from '~/components/DashContentHeader';
@@ -24,7 +24,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     }
 
     // Gọi song song các API để tăng tốc độ
-    const spaOwner = await getSpaOwnerById4Admin(id, auth);
+    const spaOwner = await getSpaOwnerById(id, auth);
     // Trả về dữ liệu để component sử dụng với cache headers
     return {
       spaOwner,

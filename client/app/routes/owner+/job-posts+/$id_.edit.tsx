@@ -2,11 +2,10 @@ import { useLoaderData } from '@remix-run/react';
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
-import { getJobPostById, updateJobPost } from '~/services/jobPost.server';
+import { getMyJobPostById, updateMyJobPost } from '~/services/jobPost.server';
 import JobPostEditForm from './components/JobPostEditForm';
 import { IJobPostAttrs } from '~/interfaces/jobPost.interface';
 import DashContentHeader from '~/components/DashContentHeader';
-import { listJobPosts } from '~/services/jobPost.server';
 
 type ActionData = {
   success: boolean;
@@ -61,7 +60,7 @@ export const action = async ({
         }
 
         // Gọi API tạo jobPost cùng case service
-        const response = await updateJobPost(id, jobPostData, auth);
+        const response = await updateMyJobPost(id, jobPostData, auth);
 
         if (!response) {
           return {
@@ -74,7 +73,7 @@ export const action = async ({
           success: true,
           message: 'Cập nhật tin tuyển dụng thành công',
           jobPost: response,
-          redirectTo: '/admin/job-posts',
+          redirectTo: '/owner/job-posts',
         };
 
       default:
@@ -103,7 +102,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     throw new Response('JobPost ID is required', { status: 400 });
   }
 
-  const jobPost = await getJobPostById(id, auth);
+  const jobPost = await getMyJobPostById(id, auth);
 
   return { jobPost };
 };

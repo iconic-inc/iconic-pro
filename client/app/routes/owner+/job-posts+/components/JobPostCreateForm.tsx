@@ -1,22 +1,17 @@
 import { useFetcher, useNavigate } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import TextInput from '~/components/TextInput';
-import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
 import Select from '~/widgets/Select';
-import { action } from '../$id_.edit';
-import CustomButton from '~/widgets/CustomButton';
+import { action } from '../new';
+import TextInput from '~/components/TextInput';
 import TextAreaInput from '~/components/TextAreaInput';
 
-export default function JobPostEditForm({
-  jobPost,
-}: {
-  jobPost: IJobPostDetails;
-}) {
+export default function JobPostCreateForm() {
+  const fetcher = useFetcher<typeof action>();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fetcher = useFetcher<typeof action>();
   const toastIdRef = useRef<any>(null);
+
   // Xử lý thông báo và chuyển hướng
   useEffect(() => {
     switch (fetcher.state) {
@@ -41,9 +36,9 @@ export default function JobPostEditForm({
             type: 'success',
             isLoading: false,
           });
-          // if (actionData.redirectTo) {
-          //   navigate(actionData.redirectTo);
-          // }
+          if (actionData.redirectTo) {
+            navigate(actionData.redirectTo);
+          }
         } else if (!actionData?.success) {
           toast.update(toastIdRef.current, {
             autoClose: 5000,
@@ -64,12 +59,16 @@ export default function JobPostEditForm({
 
   // Xử lý khi hủy chỉnh sửa
   const handleCancel = () => {
-    navigate(`/admin/job-posts/${jobPost.id}`);
+    navigate(`/owner/job-posts`);
   };
 
   return (
-    <fetcher.Form method='PUT'>
-      <div className='mx-auto bg-white rounded-lg shadow-sm overflow-hidden'>
+    <fetcher.Form
+      method='POST'
+      action='/owner/job-posts/new'
+      encType='multipart/form-data'
+    >
+      <div className='mx-auto overflow-hidden'>
         {/* Two column details */}
 
         <div>
@@ -87,7 +86,6 @@ export default function JobPostEditForm({
                   name='title'
                   placeholder='Nhập tiêu đề công việc'
                   required
-                  defaultValue={jobPost.jpo_title}
                 />
 
                 <div className='flex gap-4'>
@@ -103,7 +101,6 @@ export default function JobPostEditForm({
                     type='number'
                     step={100_000}
                     required
-                    defaultValue={jobPost.jpo_salaryFrom}
                   />
 
                   <TextInput
@@ -118,7 +115,6 @@ export default function JobPostEditForm({
                     type='number'
                     step={100_000}
                     required
-                    defaultValue={jobPost.jpo_salaryTo}
                   />
                 </div>
 
@@ -130,7 +126,6 @@ export default function JobPostEditForm({
                   }
                   id='type'
                   name='type'
-                  defaultValue={jobPost.jpo_type}
                   className='w-full'
                   required
                 >
@@ -147,7 +142,6 @@ export default function JobPostEditForm({
                   }
                   id='status'
                   name='status'
-                  defaultValue={jobPost.jpo_status}
                   className='w-full'
                   required
                 >
@@ -171,7 +165,6 @@ export default function JobPostEditForm({
                   placeholder='Nhập yêu cầu công việc'
                   required
                   rows={4}
-                  defaultValue={jobPost.jpo_requirements}
                 />
 
                 <TextAreaInput
@@ -185,7 +178,6 @@ export default function JobPostEditForm({
                   placeholder='Nhập mô tả công việc'
                   required
                   rows={4}
-                  defaultValue={jobPost.jpo_description}
                 />
               </div>
             </div>
@@ -194,30 +186,30 @@ export default function JobPostEditForm({
       </div>
 
       {/* Footer Actions */}
-      <div className='flex justify-between border-t border-gray-200 pt-4 px-6 sm:px-8 -mx-6 mt-8'>
-        <CustomButton type='button' color='gray' onClick={handleCancel}>
-          Quay lại
-        </CustomButton>
-
-        <div className='flex flex-wrap justify-end gap-3 max-w-6xl'>
-          <CustomButton
+      <div className='border-t border-gray-200 pt-4 px-6 sm:px-8 -mx-6 mt-8'>
+        <div className='flex flex-wrap justify-end gap-3 max-w-6xl mx-auto'>
+          <button
             type='button'
             onClick={handleCancel}
-            color='red'
+            className='px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition'
             disabled={isSubmitting}
           >
             Hủy
-          </CustomButton>
-          <CustomButton
+          </button>
+          <button
             type='reset'
-            color='transparent'
+            className='px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition'
             disabled={isSubmitting}
           >
             Đặt lại
-          </CustomButton>
-          <CustomButton type='submit' disabled={isSubmitting}>
+          </button>
+          <button
+            type='submit'
+            className='px-4 py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 transition flex items-center gap-2'
+            disabled={isSubmitting}
+          >
             {isSubmitting ? 'Đang lưu...' : 'Lưu'}
-          </CustomButton>
+          </button>
         </div>
       </div>
     </fetcher.Form>

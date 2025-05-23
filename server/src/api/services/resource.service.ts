@@ -2,6 +2,7 @@ import { NotFoundError } from '../core/errors';
 import { ResourceModel } from '../models/resource.model';
 import { IResourceInput } from '../interfaces/resource.interface';
 import { getReturnData, getReturnList } from '@utils/index';
+import { isValidObjectId } from 'mongoose';
 
 const getResources = async (query: any = {}) => {
   try {
@@ -29,7 +30,11 @@ const createResource = async (resourceData: IResourceInput) => {
 
 const getResourceById = async (resourceId: string) => {
   try {
-    const resource = await ResourceModel.findById(resourceId);
+    let resource;
+    if (isValidObjectId(resourceId))
+      resource = await ResourceModel.findById(resourceId);
+    else resource = await ResourceModel.findOne({ slug: resourceId });
+
     if (!resource) throw new NotFoundError('Resource not found');
     return getReturnData(resource);
   } catch (error) {

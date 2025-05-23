@@ -1,5 +1,6 @@
 import { HydratedDocument, Model, ObjectId } from 'mongoose';
 import { JOB_POST } from '../constants';
+import { ISpaOwner } from './spaOwner.interface';
 
 export interface IRawJobPost {
   jpo_title: string;
@@ -48,7 +49,7 @@ export interface IJobPostResponse {
   jpo_salaryTo?: number;
   jpo_currency?: string;
   jpo_spa?: ObjectId;
-  jpo_owner: ObjectId;
+  jpo_owner: ISpaOwner;
   jpo_type?: Values<typeof JOB_POST.TYPE>;
   jpo_status?: Values<typeof JOB_POST.STATUS>;
   jpo_deadline?: Date;

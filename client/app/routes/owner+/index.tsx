@@ -11,7 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 };
 
-export default function IndexAdmin() {
+export default function IndexHRM() {
   return (
     <>
       {/* Content Header */}

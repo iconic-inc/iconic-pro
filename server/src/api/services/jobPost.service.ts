@@ -11,8 +11,9 @@ import { IResponseList } from '../interfaces/response.interface';
 import { IJobPost, IJobPostAttrs } from '../interfaces/jobPost.interface';
 import { SpaOwnerService } from './spaOwner.service';
 import { SpaService } from './spa.service';
-import mongoose, { isValidObjectId } from 'mongoose';
+import mongoose, { isValidObjectId, Types } from 'mongoose';
 import { JOB_POST, SPA, SPA_OWNER, USER } from '../constants';
+import { IJobPostDetails } from '../../../../client/app/interfaces/jobPost.interface';
 
 const VALID_STATUS = ['draft', 'active', 'closed'];
 
@@ -25,12 +26,15 @@ export class JobPostService {
     status?: string;
     spaId?: string;
     keyword?: string;
+    ownerId?: string;
   }): Promise<IResponseList<IJobPost>> {
-    const { page = 1, limit = 20, status, spaId, keyword } = query;
+    const { page = 1, limit = 20, status, spaId, keyword, ownerId } = query;
     const filter: any = {};
     if (status) filter.jpo_status = status;
     if (spaId) filter.jpo_spa = spaId;
     if (keyword) filter.$text = { $search: keyword };
+    if (ownerId && isValidObjectId(ownerId))
+      filter.jpo_owner = new Types.ObjectId(ownerId);
 
     const docs = await JobPostModel.aggregate([
       {
@@ -133,7 +137,7 @@ export class JobPostService {
         },
       });
     if (!post) throw new NotFoundError('Job post not found');
-    return getReturnData(post);
+    return getReturnData(post) as any as IJobPostDetails;
   }
 
   static async updateJobPost(id: string, body: any) {
@@ -150,11 +154,7 @@ export class JobPostService {
   }
 
   static async deleteJobPost(id: string) {
-    const del = await JobPostModel.findByIdAndUpdate(
-      id,
-      { jpo_status: 'closed' },
-      { new: true }
-    );
+    const del = await JobPostModel.findByIdAndDelete(id);
     if (!del) throw new NotFoundError('Job post not found');
     return getReturnData(del);
   }
@@ -236,13 +236,13 @@ export class JobPostService {
 
   /** helper: ensure user owns spa/job‑post */
   private static async assertOwnership(ownerUserId: string, postId: string) {
-    const post = await JobPostModel.findById(postId, 'jpo_spa jpo_owner');
+    const post = await this.getJobPostById(postId);
     if (!post) throw new NotFoundError('Job post not found');
 
-    const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
-    if (!owner || !post.jpo_owner.toString() === owner.id)
+    // const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
+    if (post.jpo_owner.spo_user.id !== ownerUserId)
       throw new ForbiddenError('Not your job post');
-    return { owner, post };
+    return { post };
   }
 
   static async listMyJobPosts(
@@ -252,24 +252,10 @@ export class JobPostService {
     const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
     if (!owner) throw new NotFoundError('Owner profile not found');
 
-    const docs = await JobPostModel.find({
-      jpo_owner: owner._id,
-    })
-      .skip(((query.page || 1) - 1) * (query.limit || 20))
-      .limit(query.limit || 20);
-    const total = await JobPostModel.countDocuments({
-      jpo_owner: owner._id,
+    return await this.listJobPosts({
+      ...query,
+      ownerId: owner.id,
     });
-
-    return {
-      data: getReturnList(docs) as IJobPost[],
-      pagination: {
-        total,
-        page: query.page || 1,
-        limit: query.limit || 20,
-        totalPages: Math.ceil(total / (query.limit || 20)),
-      },
-    };
   }
 
   static async createMyJobPost(ownerUserId: string, body: IJobPostAttrs) {
@@ -281,39 +267,26 @@ export class JobPostService {
       if (!spa) throw new ForbiddenError('You do not own this spa');
     }
 
-    const post = await JobPostModel.create({
+    const post = await JobPostModel.build({
       ...body,
-      jpo_owner: owner._id,
-      jpo_spa: body.spa,
+      owner: owner.id,
     });
     return getReturnData(post);
   }
 
   static async getMyJobPostById(ownerUserId: string, postId: string) {
     const { post } = await this.assertOwnership(ownerUserId, postId);
-    return getReturnData(post);
+    return post;
   }
 
   static async updateMyJobPost(ownerUserId: string, postId: string, body: any) {
     await this.assertOwnership(ownerUserId, postId);
-    const updated = await JobPostModel.findByIdAndUpdate(postId, body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updated) throw new NotFoundError('Job post not found');
-
-    return getReturnData(updated);
+    return await this.updateJobPost(postId, body);
   }
 
   static async deleteMyJobPost(ownerUserId: string, postId: string) {
     await this.assertOwnership(ownerUserId, postId);
-    const del = await JobPostModel.findByIdAndUpdate(
-      postId,
-      { jpo_status: 'closed' },
-      { new: true }
-    );
-    if (!del) throw new NotFoundError('Job post not found');
-    return getReturnData(del);
+    return this.deleteJobPost(postId);
   }
 
   static async updateMyJobPostStatus(

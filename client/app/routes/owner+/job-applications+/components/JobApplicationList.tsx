@@ -1,39 +1,40 @@
 import { Link, useSearchParams } from '@remix-run/react';
-import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
+import { IJobApplicationDetails } from '~/interfaces/jobApplication.interface';
 import Defer from '~/components/Defer';
-import JobPostPagination from './JobPostPagination';
+import JobApplicationPagination from './JobApplicationPagination';
 import { IResponseList } from '~/interfaces/app.interface';
+import { IUser } from '~/interfaces/user.interface';
 
-export default function JobPostList({
-  jobPostsPromise,
-  selectedJobPosts,
-  setSelectedJobPosts,
+export default function JobApplicationList({
+  jobAppsPromise,
+  selectedJobApplications,
+  setSelectedJobApplications,
   visibleColumns,
 }: {
-  jobPostsPromise: Promise<IResponseList<IJobPostDetails>>;
-  selectedJobPosts: IJobPostDetails[];
-  setSelectedJobPosts: (jobPosts: IJobPostDetails[]) => void;
+  jobAppsPromise: Promise<IResponseList<IJobApplicationDetails>>;
+  selectedJobApplications: IJobApplicationDetails[];
+  setSelectedJobApplications: (jobApps: IJobApplicationDetails[]) => void;
   visibleColumns: Record<string, boolean>;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-  const handleSelectAll = (posts: IJobPostDetails[]) => {
-    if (selectedJobPosts.length === posts.length) {
-      setSelectedJobPosts([]);
+  const handleSelectAll = (cases: IJobApplicationDetails[]) => {
+    if (selectedJobApplications.length === cases.length) {
+      setSelectedJobApplications([]);
     } else {
-      setSelectedJobPosts(posts);
+      setSelectedJobApplications(cases);
     }
   };
 
-  const handleJobPostSelect = (jobPost: IJobPostDetails) => {
-    if (selectedJobPosts.some((item) => item.id === jobPost.id)) {
-      setSelectedJobPosts(
-        selectedJobPosts.filter((jobPost) => jobPost.id !== jobPost.id),
+  const handleJobApplicationSelect = (jobApp: IJobApplicationDetails) => {
+    if (selectedJobApplications.some((item) => item.id === jobApp.id)) {
+      setSelectedJobApplications(
+        selectedJobApplications.filter((jobApp) => jobApp.id !== jobApp.id),
       );
     } else {
-      setSelectedJobPosts([...selectedJobPosts, jobPost]);
+      setSelectedJobApplications([...selectedJobApplications, jobApp]);
     }
   };
 
@@ -47,77 +48,63 @@ export default function JobPostList({
     setSearchParams(searchParams);
   };
 
-  // Define table columns for the JobPostList component
+  // Define table columns for the JobApplicationList component
   const columns = [
     {
-      key: 'title',
-      title: 'Tiêu đề',
-      sortField: 'jpo_title',
-      visible: visibleColumns.title,
-      render: (jobPost: IJobPostDetails) => (
+      key: 'postTitle',
+      title: 'Tiêu đề công việc',
+      sortField: 'jap_jobPost.jpo_title',
+      visible: visibleColumns.postTitle,
+      render: (jobApp: IJobApplicationDetails) => (
         <Link
-          to={`/admin/job-posts/${jobPost.id}`}
-          className='block w-full h-full hover:text-red-500'
+          to={`/owner/job-applications/${jobApp.id}`}
+          className='text-gray-900 hover:text-red-500'
         >
-          {jobPost.jpo_title}
+          {jobApp.jap_jobPost?.jpo_title || 'N/A'}
         </Link>
       ),
     },
     {
+      key: 'candidateName',
+      title: 'Tên ứng viên',
+      sortField: 'jobApp.jap_candidate.can_user.usr_firstName',
+      visible: visibleColumns.candidateName,
+      render: (jobApp: IJobApplicationDetails) => (
+        <div className='text-sm text-gray-900'>
+          {`${jobApp.jap_candidate.can_user.usr_firstName} ${jobApp.jap_candidate.can_user.usr_lastName}`}
+        </div>
+      ),
+    },
+    {
       key: 'ownerName',
-      title: 'Tên người đăng',
-      sortField: 'jpo_owner.spo_user.usr_fistName',
+      title: 'Tên chủ spa',
+      sortField: 'jobApp.jap_postPost.jpo_owner.spo_user.usr_firstName',
       visible: visibleColumns.ownerName,
-      render: (jobPost: IJobPostDetails) => (
-        <div className='flex items-center'>
-          <span>{`${jobPost.jpo_owner.spo_user.usr_firstName} ${jobPost.jpo_owner.spo_user.usr_lastName}`}</span>
+      render: (jobApp: IJobApplicationDetails) => (
+        <div className='text-sm text-gray-900'>
+          {`${jobApp.jap_jobPost?.jpo_owner.spo_user.usr_firstName} ${jobApp.jap_jobPost?.jpo_owner.spo_user.usr_lastName}`}
         </div>
       ),
     },
     {
-      key: 'createdAt',
-      title: 'Ngày tạo',
-      sortField: 'createdAt',
-      visible: visibleColumns.createdAt,
-      render: (jobPost: IJobPostDetails) => (
-        <div className='flex items-center'>
-          <span>
-            {new Date(jobPost.createdAt).toLocaleDateString('vi-VN', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            })}
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: 'updatedAt',
-      title: 'Cập nhật lúc',
-      sortField: 'updatedAt',
-      visible: visibleColumns.updatedAt,
-      render: (jobPost: IJobPostDetails) => (
-        <div className='flex items-center'>
-          <span>
-            {new Date(jobPost.updatedAt).toLocaleDateString('vi-VN', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </span>
+      key: 'status',
+      title: 'Trạng thái',
+      sortField: 'jap_status',
+      visible: visibleColumns.status,
+      render: (jobApp: IJobApplicationDetails) => (
+        <div className='text-sm text-gray-900 max-w-xs truncate'>
+          {jobApp.jap_status}
         </div>
       ),
     },
   ];
 
   return (
-    <Defer resolve={jobPostsPromise}>
+    <Defer resolve={jobAppsPromise}>
       {(response) => {
-        const { data: jobPosts, pagination } = response;
+        const { data: jobApps, pagination } = response;
 
-        if (!jobPosts || jobPosts.length === 0) {
+        if (!jobApps || jobApps.length === 0) {
           // Empty State
           return (
             <div className='py-12 flex flex-col items-center justify-center'>
@@ -127,19 +114,11 @@ export default function JobPostList({
                 </span>
               </div>
               <h3 className='text-xl font-medium text-gray-800 mb-2'>
-                Chưa có Tin tuyển dụng nào
+                Chưa có Đơn ứng tuyển nào
               </h3>
               <p className='text-gray-500 mb-6 text-center max-w-md'>
-                Thêm Tin tuyển dụng đầu tiên của bạn để bắt đầu quản lý thông
-                tin.
+                Hãy chờ ứng viên ứng tuyển đề quản lý Đơn ứng tuyển.
               </p>
-              <Link
-                to='/admin/job-posts/new'
-                className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition shadow-sm flex items-center gap-2'
-              >
-                <span className='material-symbols-outlined text-sm'>add</span>
-                Thêm jobPost
-              </Link>
             </div>
           );
         }
@@ -155,10 +134,10 @@ export default function JobPostList({
                       <input
                         type='checkbox'
                         checked={
-                          selectedJobPosts.length === jobPosts.length &&
-                          jobPosts.length > 0
+                          selectedJobApplications.length === jobApps.length &&
+                          jobApps.length > 0
                         }
-                        onChange={() => handleSelectAll(jobPosts)}
+                        onChange={() => handleSelectAll(jobApps)}
                         className='rounded text-blue-500'
                       />
                     </th>
@@ -192,15 +171,15 @@ export default function JobPostList({
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200'>
-                  {jobPosts.map((jpo) => (
-                    <tr key={jpo.id} className='hover:bg-gray-50'>
+                  {jobApps.map((jobApp) => (
+                    <tr key={jobApp.id} className='hover:bg-gray-50'>
                       <td className='px-4 py-4 whitespace-nowrap'>
                         <input
                           type='checkbox'
-                          checked={selectedJobPosts.some(
-                            (item) => item.id === jpo.id,
+                          checked={selectedJobApplications.some(
+                            (item) => item.id === jobApp.id,
                           )}
-                          onChange={() => handleJobPostSelect(jpo)}
+                          onChange={() => handleJobApplicationSelect(jobApp)}
                           className='rounded text-blue-500'
                         />
                       </td>
@@ -209,7 +188,7 @@ export default function JobPostList({
                         .filter((column) => column.visible)
                         .map((column) => (
                           <td key={column.key as string} className='px-4 py-4'>
-                            {column.render(jpo)}
+                            {column.render(jobApp)}
                           </td>
                         ))}
                     </tr>
@@ -218,10 +197,17 @@ export default function JobPostList({
               </table>
             </div>
 
-            <JobPostPagination pagination={pagination} />
+            <JobApplicationPagination pagination={pagination} />
           </>
         );
       }}
     </Defer>
   );
+}
+
+interface Column<T> {
+  key: keyof T;
+  title: string;
+  sortField?: keyof T;
+  visible?: boolean;
 }

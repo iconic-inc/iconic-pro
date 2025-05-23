@@ -8,7 +8,7 @@ import {
 import { IPaginationOptions, IResponseList } from '~/interfaces/app.interface';
 
 // Get all spa owners with pagination and filtering
-const listSpaOwners4Admin = async (
+const listSpaOwners = async (
   query: any = {},
   options: IPaginationOptions = {},
   request: ISessionUser,
@@ -27,13 +27,24 @@ const listSpaOwners4Admin = async (
 };
 
 // Get spa owner by ID
-const getSpaOwnerById4Admin = async (id: string, request: ISessionUser) => {
+const getSpaOwnerById = async (id: string, request: ISessionUser) => {
   const response = await fetcher(`/spa-owners/${id}`, { request });
   return response as ISpaOwnerDetails;
 };
 
+// Get my spa owner information
+const getMySpaOwner = async (request: ISessionUser) => {
+  try {
+    const response = await fetcher('/spa-owners/me', { request });
+    return response as ISpaOwner;
+  } catch (error) {
+    console.error('Error fetching my spa owner:', error);
+    throw error;
+  }
+};
+
 // Create new spa owner
-const createSpaOwner4Admin = async (
+const createSpaOwner = async (
   spaOwnerData: ISpaOwnerAttrs,
   request: ISessionUser,
 ) => {
@@ -51,8 +62,26 @@ const createSpaOwner4Admin = async (
   }
 };
 
+// Update My spa owner information
+const updateMySpaOwner = async (
+  data: ISpaOwnerAttrs,
+  request: ISessionUser,
+) => {
+  try {
+    const response = await fetcher(`/spa-owners/me`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      request,
+    });
+    return response as ISpaOwner;
+  } catch (error) {
+    console.error('Error updating my spa owner:', error);
+    throw error;
+  }
+};
+
 // Update spa owner information
-const updateSpaOwner4Admin = async (
+const updateSpaOwner = async (
   id: string,
   data: ISpaOwnerAttrs,
   request: ISessionUser,
@@ -71,7 +100,7 @@ const updateSpaOwner4Admin = async (
 };
 
 // Delete spa owner (soft delete)
-const deleteSpaOwner4Admin = async (ownerId: string, request: ISessionUser) => {
+const deleteSpaOwner = async (ownerId: string, request: ISessionUser) => {
   try {
     const response = await fetcher(`/spa-owners/${ownerId}`, {
       method: 'DELETE',
@@ -85,7 +114,7 @@ const deleteSpaOwner4Admin = async (ownerId: string, request: ISessionUser) => {
 };
 
 // Bulk delete spa owners (soft delete)
-const bulkDeleteSpaOwners4Admin = async (
+const bulkDeleteSpaOwners = async (
   ownerIds: string[],
   request: ISessionUser,
 ) => {
@@ -103,7 +132,7 @@ const bulkDeleteSpaOwners4Admin = async (
 };
 
 // Bulk hard delete spa owners
-const bulkHardDeleteSpaOwners4Admin = async (
+const bulkHardDeleteSpaOwners = async (
   ownerIds: string[],
   request: ISessionUser,
 ) => {
@@ -121,7 +150,7 @@ const bulkHardDeleteSpaOwners4Admin = async (
 };
 
 // Assign spas to owner
-const assignSpasToOwner4Admin = async (
+const assignSpasToOwner = async (
   ownerId: string,
   spaIds: string[],
   request: ISessionUser,
@@ -140,7 +169,7 @@ const assignSpasToOwner4Admin = async (
 };
 
 // Update owner status (active/suspended)
-const updateOwnerStatus4Admin = async (
+const updateOwnerStatus = async (
   ownerId: string,
   status: 'active' | 'suspended',
   request: ISessionUser,
@@ -159,7 +188,7 @@ const updateOwnerStatus4Admin = async (
 };
 
 // Change subscription plan
-const changeOwnerPlan4Admin = async (
+const changeOwnerPlan = async (
   ownerId: string,
   planData: { plan: string; expireAt?: string },
   request: ISessionUser,
@@ -178,7 +207,7 @@ const changeOwnerPlan4Admin = async (
 };
 
 // Get owner audit log
-const getOwnerAuditLog4Admin = async (
+const getOwnerAuditLog = async (
   ownerId: string,
   options: IPaginationOptions = {},
   request: ISessionUser,
@@ -201,15 +230,17 @@ const getOwnerAuditLog4Admin = async (
 };
 
 export {
-  listSpaOwners4Admin,
-  getSpaOwnerById4Admin,
-  createSpaOwner4Admin,
-  updateSpaOwner4Admin,
-  deleteSpaOwner4Admin,
-  bulkDeleteSpaOwners4Admin,
-  bulkHardDeleteSpaOwners4Admin,
-  assignSpasToOwner4Admin,
-  updateOwnerStatus4Admin,
-  changeOwnerPlan4Admin,
-  getOwnerAuditLog4Admin,
+  listSpaOwners,
+  getSpaOwnerById,
+  createSpaOwner,
+  updateSpaOwner,
+  deleteSpaOwner,
+  bulkDeleteSpaOwners,
+  bulkHardDeleteSpaOwners,
+  assignSpasToOwner,
+  updateOwnerStatus,
+  changeOwnerPlan,
+  getOwnerAuditLog,
+  getMySpaOwner,
+  updateMySpaOwner,
 };

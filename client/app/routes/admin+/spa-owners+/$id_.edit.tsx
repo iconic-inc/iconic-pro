@@ -2,10 +2,7 @@ import { useLoaderData } from '@remix-run/react';
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
-import {
-  getSpaOwnerById4Admin,
-  updateSpaOwner4Admin,
-} from '~/services/spaOwner.server';
+import { getSpaOwnerById, updateSpaOwner } from '~/services/spaOwner.server';
 import SpaOwnerEditForm from './components/SpaOwnerEditForm';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
 import DashContentHeader from '~/components/DashContentHeader';
@@ -65,7 +62,7 @@ export const action = async ({
         }
 
         // Gọi API tạo chủ spa cùng case service
-        const response = await updateSpaOwner4Admin(id, spaOwnerData, auth);
+        const response = await updateSpaOwner(id, spaOwnerData, auth);
 
         if (!response) {
           return {
@@ -107,7 +104,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     throw new Response('SpaOwner ID is required', { status: 400 });
   }
 
-  const spaOwner = await getSpaOwnerById4Admin(id, auth);
+  const spaOwner = await getSpaOwnerById(id, auth);
 
   return { spaOwner };
 };

@@ -28,16 +28,16 @@ spaOwnerRouter.use(
   restrictToRoles('admin', 'spa-owner'),
   require('../jobApplication/owner')
 );
-// spaOwnerRouter.get(
-//   '/me',
-//   hasPermission('spaOwner', 'readOwn'),
-//   SpaOwnerController.getMyProfile
-// );
-// spaOwnerRouter.put(
-//   '/me',
-//   hasPermission('spaOwner', 'updateOwn'),
-//   SpaOwnerController.updateMyProfile
-// );
+spaOwnerRouter.get(
+  '/me',
+  hasPermission('spaOwner', 'readOwn'),
+  SpaOwnerController.getMyProfile
+);
+spaOwnerRouter.put(
+  '/me',
+  hasPermission('spaOwner', 'updateOwn'),
+  SpaOwnerController.updateMyProfile
+);
 
 /* ──────────────────────────────────────────────────────────────
    ADMIN CRUD – resource = "spaOwner"

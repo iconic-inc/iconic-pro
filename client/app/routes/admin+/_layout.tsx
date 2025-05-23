@@ -38,11 +38,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return redirect('/admin/login' + `?redirect=${url.pathname}`);
     }
 
-    if (
-      !url.pathname.includes('/admin/nhan-vien') &&
-      !['admin'].includes(user.usr_role.slug)
-    )
-      return redirect('/admin/nhan-vien');
+    switch (user.usr_role.slug) {
+      case 'spa-owner':
+        return redirect('/owner');
+      case 'client':
+        return redirect('/profile');
+      default:
+        break;
+    }
 
     const foundUser = getCurrentUser(auth);
     return { user: foundUser };

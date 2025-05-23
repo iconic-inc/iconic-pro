@@ -2,7 +2,7 @@ import { Link, useLoaderData, useNavigate } from '@remix-run/react';
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
-import { getJobApplicationById } from '~/services/jobApplication.server';
+import { getMyJobApplicationById } from '~/services/jobApplication.server';
 import { formatDate, calculateAge } from '~/utils';
 import CustomButton from '~/widgets/CustomButton';
 import DashContentHeader from '~/components/DashContentHeader';
@@ -20,11 +20,11 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const { id } = params;
     if (!id) {
       // Nếu không có ID, chuyển hướng về trang danh sách Đơn ứng tuyển
-      return redirect('/admin/job-applications');
+      return redirect('/owner/job-applications');
     }
 
     // Gọi song song các API để tăng tốc độ
-    const jobApp = await getJobApplicationById(id, auth);
+    const jobApp = await getMyJobApplicationById(id, auth);
     // Trả về dữ liệu để component sử dụng với cache headers
     return {
       jobApp,
@@ -68,7 +68,7 @@ export default function EmpJobApplicationDetail() {
           </div>
           <div className='flex justify-center'>
             <Link
-              to='/admin/job-applications'
+              to='/owner/job-applications'
               className='px-4 py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 transition'
             >
               Quay Lại Danh Sách
@@ -80,6 +80,7 @@ export default function EmpJobApplicationDetail() {
   }
 
   const { jap_candidate: candidate, jap_jobPost: jobPost } = jobApp;
+  console.log(jobApp);
 
   return (
     <>

@@ -3,7 +3,10 @@ import { useState } from 'react';
 import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
-import { listJobApplications } from '~/services/jobApplication.server';
+import {
+  listJobApplications,
+  listMyJobApplications,
+} from '~/services/jobApplication.server';
 import DashContentHeader from '~/components/DashContentHeader';
 import JobApplicationList from './components/JobApplicationList';
 import { IJobApplicationDetails } from '~/interfaces/jobApplication.interface';
@@ -41,7 +44,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     };
 
     // Fetch customers data with case services
-    const jobAppsPromise = listJobApplications(
+    const jobAppsPromise = listMyJobApplications(
       { ...query },
       options,
       auth,

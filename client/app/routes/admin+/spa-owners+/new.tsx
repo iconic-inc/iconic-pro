@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
 import { isAuthenticated } from '~/services/auth.server';
-import { createSpaOwner4Admin } from '~/services/spaOwner.server';
+import { createSpaOwner } from '~/services/spaOwner.server';
 import SpaOwnerCreateForm from './components/SpaOwnerCreateForm';
 import DashContentHeader from '~/components/DashContentHeader';
 
@@ -47,7 +47,7 @@ export const action = async ({
     };
 
     // Gọi API tạo chủ spa cùng case service
-    const spaOwner = await createSpaOwner4Admin(spaOwnerData, auth);
+    const spaOwner = await createSpaOwner(spaOwnerData, auth);
 
     if (!spaOwner) {
       return {

@@ -1,16 +1,16 @@
 import { useFetcher } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { IJobApplicationDetails } from '~/interfaces/jobApplication.interface';
+import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
 
-export default function JobApplicationConfirmModal({
+export default function JobPostConfirmModal({
   setShowDeleteModal,
-  selectedJobApplications,
-  setSelectedJobApplications,
+  selectedJobPosts,
+  setSelectedJobPosts,
 }: {
   setShowDeleteModal: (show: boolean) => void;
-  selectedJobApplications: IJobApplicationDetails[];
-  setSelectedJobApplications: (jobApps: IJobApplicationDetails[]) => void;
+  selectedJobPosts: IJobPostDetails[];
+  setSelectedJobPosts: (jobPosts: IJobPostDetails[]) => void;
 }) {
   const bulkDeleteFetcher = useFetcher();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -25,13 +25,12 @@ export default function JobApplicationConfirmModal({
       };
       if (response.success) {
         toast.success(
-          `Đã xóa ${selectedJobApplications.length} Đơn ứng tuyển thành công!`,
+          `Đã xóa ${selectedJobPosts.length} tin tuyển dụng thành công!`,
         );
-        setSelectedJobApplications([]);
+        setSelectedJobPosts([]);
         // Refresh dữ liệu
-        window.location.reload();
       } else {
-        toast.error(response.error || 'Có lỗi xảy ra khi xóa Đơn ứng tuyển.');
+        toast.error(response.error || 'Có lỗi xảy ra khi xóa tin tuyển dụng.');
       }
       setIsDeleting(false);
     }
@@ -39,9 +38,9 @@ export default function JobApplicationConfirmModal({
 
   const handleDelete = () => {
     setIsDeleting(true);
-    const jobAppIds = selectedJobApplications.map((jobApp) => jobApp.id);
+    const jobPostIds = selectedJobPosts.map((jobPost) => jobPost.id);
     bulkDeleteFetcher.submit(
-      { jobAppIds: JSON.stringify(jobAppIds) },
+      { jobPostIds: JSON.stringify(jobPostIds) },
       { method: 'DELETE' },
     );
   };
@@ -54,9 +53,9 @@ export default function JobApplicationConfirmModal({
       >
         <h3 className='text-lg font-bold mb-4'>Xác nhận xóa</h3>
         <p className='mb-6'>
-          {selectedJobApplications.length > 1
-            ? `Bạn có chắc chắn muốn xóa ${selectedJobApplications.length} Đơn ứng tuyển?`
-            : `Bạn có chắc chắn muốn xóa Đơn ứng tuyển này?`}
+          {selectedJobPosts.length > 1
+            ? `Bạn có chắc chắn muốn xóa ${selectedJobPosts.length} tin tuyển dụng?`
+            : `Bạn có chắc chắn muốn xóa tin tuyển dụng này?`}
           Thao tác này không thể khôi phục.
         </p>
 

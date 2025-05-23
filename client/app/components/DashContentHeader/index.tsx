@@ -4,10 +4,12 @@ export default function DashContentHeader({
   title,
   actionContent,
   actionHandler,
+  actionDisabled,
 }: {
   title: string;
   actionContent?: React.ReactNode;
   actionHandler?: () => void;
+  actionDisabled?: boolean;
 }) {
   return (
     <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4'>
@@ -18,6 +20,7 @@ export default function DashContentHeader({
             color='blue'
             type='button'
             onClick={() => actionHandler()}
+            disabled={actionDisabled}
           >
             {actionContent}
           </CustomButton>

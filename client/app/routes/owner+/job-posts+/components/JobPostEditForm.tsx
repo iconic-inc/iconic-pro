@@ -64,7 +64,7 @@ export default function JobPostEditForm({
 
   // Xử lý khi hủy chỉnh sửa
   const handleCancel = () => {
-    navigate(`/admin/job-posts/${jobPost.id}`);
+    navigate(`/owner/job-posts/${jobPost.id}`);
   };
 
   return (

@@ -273,6 +273,7 @@ export class SpaOwnerService {
             'sex',
             'status',
             'role',
+            'password',
           ],
         })
       );
@@ -542,9 +543,20 @@ export class SpaOwnerService {
     }
     const owner = await SpaOwnerModel.findOne({ spo_user: userId }).populate(
       'spo_user',
-      'usr_email usr_firstName usr_lastName'
+      'usr_email usr_firstName usr_lastName usr_msisdn usr_address usr_birthdate usr_username'
     );
     if (!owner) throw new NotFoundError('Spa owner not found');
     return getReturnData(owner);
+  }
+
+  /* ▸ 13. UPDATE MY PROFILE ▸──────────────────────────────── */
+  static async updateMyProfile(
+    userId: string,
+    body: ISpaOwnerAttrs & IUserAttrs
+  ) {
+    const owner = await SpaOwnerModel.findOne({ spo_user: userId });
+    if (!owner) throw new NotFoundError('Spa owner not found');
+
+    return this.updateSpaOwner(owner.id, body);
   }
 }

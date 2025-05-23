@@ -16,7 +16,7 @@ import {
   IJobAppResponse,
 } from '../interfaces/jobApplication.interface';
 import { SPA, SPA_OWNER, JOB_POST, CANDIDATE, USER } from '../constants';
-import mongoose, { isValidObjectId } from 'mongoose';
+import { Types, isValidObjectId } from 'mongoose';
 
 const VALID_STATUSES = [
   'applied',
@@ -35,13 +35,16 @@ export class JobApplicationService {
     limit?: number;
     status?: string;
     spaId?: string;
+    ownerId?: string;
   }): Promise<IResponseList<IJobApp>> {
-    const { page = 1, limit = 20, status, spaId } = query;
+    const { page = 1, limit = 20, status, spaId, ownerId } = query;
     const filter: any = {};
     if (status) filter.jap_status = status;
-    if (spaId)
+    if (ownerId && isValidObjectId(ownerId))
       filter['jap_jobPost'] = {
-        $in: await JobPostModel.find({ jpo_spa: spaId }).distinct('_id'),
+        $in: await JobPostModel.find({
+          jpo_owner: new Types.ObjectId(ownerId),
+        }).distinct('_id'),
       };
 
     const apps = await JobApplicationModel.aggregate([
@@ -130,8 +133,28 @@ export class JobApplicationService {
   /** GET /job-applications/:id */
   static async getApplicationById(id: string) {
     const app = await JobApplicationModel.findById(id).populate([
-      { path: 'jap_jobPost', select: 'jpo_title jpo_spa jpo_owner' },
-      { path: 'jap_candidate', select: 'can_fullName can_summary' },
+      {
+        path: 'jap_jobPost',
+        select:
+          'jpo_title jpo_spa jpo_owner jpo_description jpo_requirements jpo_salaryFrom jpo_salaryTo jpo_type jpo_status',
+        populate: {
+          path: 'jpo_owner',
+          select: 'spo_user',
+          populate: {
+            path: 'spo_user',
+            select:
+              'usr_firstName usr_lastName usr_email usr_msisdn usr_address',
+          },
+        },
+      },
+      {
+        path: 'jap_candidate',
+        select: 'can_summary',
+        populate: {
+          path: 'can_user',
+          select: 'usr_firstName usr_lastName usr_email usr_msisdn usr_address',
+        },
+      },
     ]);
     if (!app) throw new NotFoundError('Application not found');
     return getReturnData(app) as any as IJobAppResponse;
@@ -227,7 +250,7 @@ export class JobApplicationService {
     if (!app) throw new NotFoundError('Application not found');
 
     const owner = await SpaOwnerModel.findOne({
-      _id: app.jap_jobPost.jpo_owner,
+      _id: app.jap_jobPost.jpo_owner.id,
       spo_user: ownerUserId,
     });
     if (!owner) throw new ForbiddenError('Not your application');
@@ -241,34 +264,12 @@ export class JobApplicationService {
     const owner = await SpaOwnerModel.findOne({ spo_user: ownerUserId });
     if (!owner) throw new NotFoundError('Owner profile not found');
 
-    const filter = {
-      jap_jobPost: {
-        $in: await JobPostModel.find({
-          jpo_owner: owner.id,
-        }).distinct('_id'),
-      },
-    };
-    const apps = await JobApplicationModel.find(filter)
-      .populate('jap_candidate', 'can_fullName')
-      .populate('jap_jobPost', 'jpo_title')
-      .skip(((query.page || 1) - 1) * (query.limit || 20))
-      .limit(query.limit || 20);
-    const total = await JobApplicationModel.countDocuments(filter);
-
-    return {
-      data: getReturnList(apps) as IJobApp[],
-      pagination: {
-        total,
-        page: +query.page,
-        limit: +query.limit,
-        totalPages: Math.ceil(total / +query.limit),
-      },
-    };
+    return await this.listApplications({ ...query, ownerId: owner.id });
   }
 
   static async getOwnerApplicationById(ownerUserId: string, appId: string) {
     const app = await this.assertOwnerApp(ownerUserId, appId);
-    return getReturnData(app);
+    return app;
   }
 
   static async updateOwnerApplicationStatus(

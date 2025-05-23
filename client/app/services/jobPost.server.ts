@@ -257,4 +257,12 @@ export {
   bulkDeleteJobPosts,
   bulkHardDeleteJobPosts,
   updateJobPostStatus,
+
+  // Owner services
+  listMyJobPosts,
+  createMyJobPost,
+  getMyJobPostById,
+  updateMyJobPost,
+  deleteMyJobPost,
+  updateMyJobPostStatus,
 };
