@@ -12,7 +12,7 @@ function createTokenPair({
 }) {
   const accessToken = JWT.sign(payload, privateKey, {
     algorithm: 'RS256',
-    expiresIn: '15m',
+    expiresIn: '1d',
   });
 
   const refreshToken = JWT.sign(payload, privateKey, {

@@ -9,10 +9,19 @@ const userRouter = Router();
 // Require authentication routers
 userRouter.use(authenticationV2);
 
-userRouter.get('/me', UserController.getCurrentUser);
+userRouter.get(
+  '/me',
+  hasPermission('user', 'readOwn'),
+  UserController.getCurrentUser
+);
+// userRouter.put(
+//   '/me',
+//   hasPermission('user', 'updateOwn'),
+//   UserController.updateCurrentUser
+// );
 
 userRouter.post(
-  '/change-password',
+  '/me/change-password',
   hasPermission('user', 'updateAny'),
   UserController.changePassword
 );

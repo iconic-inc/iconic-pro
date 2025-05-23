@@ -4,8 +4,7 @@ export const USER = {
   PREFIX: 'usr_',
   STATUS: {
     ACTIVE: 'active',
-    PENDING: 'pending',
-    DELETED: 'deleted',
+    INACTIVE: 'inactive',
   },
   SEX: {
     MALE: 'male',
