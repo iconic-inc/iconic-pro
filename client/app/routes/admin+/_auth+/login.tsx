@@ -4,15 +4,16 @@ import { redirect, useFetcher, useNavigation } from '@remix-run/react';
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { toast } from 'react-toastify';
 
-import { authenticator, isAuthenticated, logout } from '~/services/auth.server';
+import { authenticator, logout } from '~/services/auth.server';
 import { isExpired } from '~/utils';
 import {
   deleteAuthCookie,
+  parseAuthCookie,
   serializeAuthCookie,
 } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const auth = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
   const url = new URL(request.url);
   const redirectUrl = url.searchParams.get('redirect') || '/admin';
 

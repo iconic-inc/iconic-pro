@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, data, LoaderFunctionArgs } from '@remix-run/node';
 import { ICandidateAttrs } from '~/interfaces/candidate.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createCandidate } from '~/services/candidate.server';
@@ -12,14 +12,13 @@ type ActionData = {
   redirectTo?: string;
 };
 
-export const action = async ({
-  request,
-}: ActionFunctionArgs): Promise<ActionData> => {
+export const action = async ({ request }: ActionFunctionArgs) => {
+  // Xác thực người dùng
+  const { session, headers } = await isAuthenticated(request);
+
   try {
-    // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      return { success: false, message: 'Unauthorized' };
+    if (!session) {
+      return data({ success: false, message: 'Unauthorized' }, { headers });
     }
 
     const formData = await request.formData();
@@ -48,27 +47,36 @@ export const action = async ({
     };
 
     // Gọi API tạo Ứng viên cùng case service
-    const candidate = await createCandidate(candidateData, auth);
+    const candidate = await createCandidate(candidateData, session);
 
     if (!candidate) {
-      return {
-        success: false,
-        message: 'Lỗi khi tạo Ứng viên',
-      };
+      return data(
+        {
+          success: false,
+          message: 'Lỗi khi tạo Ứng viên',
+        },
+        { headers },
+      );
     }
 
-    return {
-      success: true,
-      message: 'Thêm mới Ứng viên thành công!',
-      candidate,
-      redirectTo: `/admin/candidates/${candidate.id}`,
-    };
+    return data(
+      {
+        success: true,
+        message: 'Thêm mới Ứng viên thành công!',
+        candidate,
+        redirectTo: `/admin/candidates/${candidate.id}`,
+      },
+      { headers },
+    );
   } catch (error: any) {
     console.error('Lỗi tạo Ứng viên:', error);
-    return {
-      success: false,
-      message: error.message || 'Đã xảy ra lỗi không xác định',
-    };
+    return data(
+      {
+        success: false,
+        message: error.message || 'Đã xảy ra lỗi không xác định',
+      },
+      { headers },
+    );
   }
 };
 

@@ -1,24 +1,9 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, data, LoaderFunctionArgs } from '@remix-run/node';
 import { IJobPostAttrs } from '~/interfaces/jobPost.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createMyJobPost } from '~/services/jobPost.server';
 import DashContentHeader from '~/components/DashContentHeader';
 import JobPostCreateForm from './components/JobPostCreateForm';
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  try {
-    // Xác thực người dùng
-    // const auth = await isAuthenticated(request);
-    // if (!auth) {
-    //   throw new Error('Unauthorized');
-    // }
-
-    return {};
-  } catch (error: any) {
-    console.error('Lỗi xác thực:', error);
-    throw new Response(error.message, { status: 401 });
-  }
-};
 
 export default function NewJobPost() {
   return (
@@ -30,14 +15,12 @@ export default function NewJobPost() {
   );
 }
 
-export const action = async ({
-  request,
-}: ActionFunctionArgs): Promise<ActionData> => {
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { session, headers } = await isAuthenticated(request);
   try {
     // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      return { success: false, message: 'Unauthorized' };
+    if (!session) {
+      return data({ success: false, message: 'Unauthorized' }, { headers });
     }
 
     const formData = await request.formData();
@@ -60,33 +43,35 @@ export const action = async ({
     };
 
     // Gọi API tạo jobPost cùng case service
-    const jobPost = await createMyJobPost(jobPostData, auth);
+    const jobPost = await createMyJobPost(jobPostData, session);
 
     if (!jobPost) {
-      return {
-        success: false,
-        message: 'Lỗi khi tạo Tin tuyển dụng',
-      };
+      return data(
+        {
+          success: false,
+          message: 'Lỗi khi tạo Tin tuyển dụng',
+        },
+        { headers },
+      );
     }
 
-    return {
-      success: true,
-      message: 'Thêm mới Tin tuyển dụng thành công!',
-      jobPost,
-      redirectTo: `/owner/job-posts/${jobPost.id}`,
-    };
+    return data(
+      {
+        success: true,
+        message: 'Thêm mới Tin tuyển dụng thành công!',
+        jobPost,
+        redirectTo: `/owner/job-posts/${jobPost.id}`,
+      },
+      { headers },
+    );
   } catch (error: any) {
     console.error('Lỗi tạo Tin tuyển dụng:', error);
-    return {
-      success: false,
-      message: error.message || 'Đã xảy ra lỗi không xác định',
-    };
+    return data(
+      {
+        success: false,
+        message: error.message || 'Đã xảy ra lỗi không xác định',
+      },
+      { headers },
+    );
   }
-};
-
-type ActionData = {
-  success: boolean;
-  message: string;
-  jobPost?: any;
-  redirectTo?: string;
 };

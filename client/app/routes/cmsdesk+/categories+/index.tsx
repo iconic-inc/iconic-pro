@@ -1,10 +1,11 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 import { Link, Outlet, useFetcher, useLoaderData } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import LoadingOverlay from '~/components/LoadingOverlay';
 import TextInput from '~/components/TextInput';
-import { authenticator, isAuthenticated } from '~/services/auth.server';
+import { isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import { createCategory, getCategories } from '~/services/category.server';
 import { getPages } from '~/services/page.server';
 import {
@@ -15,7 +16,10 @@ import {
 import Select from '~/widgets/Select';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const user = await isAuthenticated(request);
+  const { session, headers } = await isAuthenticated(request);
+  if (!session) {
+    return data({ success: false, message: 'Unauthorized' }, { headers });
+  }
 
   switch (request.method) {
     case 'POST': {
@@ -26,39 +30,65 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const page = body.get('page');
 
       if (!name) {
-        return {
-          toast: { message: 'Tên danh mục không được để trống', type: 'error' },
-        };
+        return data(
+          {
+            toast: {
+              message: 'Tên danh mục không được để trống',
+              type: 'error',
+            },
+          },
+          { headers },
+        );
       }
       if (!order) {
-        return { toast: { message: 'Chưa nhập thứ tự', type: 'error' } };
+        return data(
+          {
+            toast: { message: 'Chưa nhập thứ tự', type: 'error' },
+          },
+          { headers },
+        );
       }
       if (!page) {
-        return { toast: { message: 'Chưa chọn trang', type: 'error' } };
+        return data(
+          {
+            toast: { message: 'Chưa chọn trang', type: 'error' },
+          },
+          { headers },
+        );
       }
 
       // Add category to database
-      // await CategoryModel.build({ cat_name: name, cat_parent: parent, cat_page: page }).save();
-      await createCategory({ name, order, parent, page }, user!);
+      await createCategory({ name, order, parent, page }, session);
 
-      return {
-        toast: { message: 'Thêm danh mục thành công', type: 'success' },
-      };
+      return data(
+        {
+          toast: { message: 'Thêm danh mục thành công', type: 'success' },
+        },
+        { headers },
+      );
     }
 
     default: {
-      return { toast: { message: 'Method not allowed', type: 'error' } };
+      return data(
+        {
+          toast: { message: 'Method not allowed', type: 'error' },
+        },
+        { headers },
+      );
     }
   }
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
+  if (!auth) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
 
   const categories = await getCategories();
-  const pages = await getPages({ isPublished: true, user: user! });
+  const pages = await getPages({ isPublished: true, user: auth });
 
-  return { categories, pages };
+  return data({ categories, pages }, { headers: request.headers });
 };
 
 export default function ManageCategories() {
@@ -72,40 +102,50 @@ export default function ManageCategories() {
   const [page, setPage] = useState('');
 
   useEffect(() => {
-    switch (fetcher.state) {
-      case 'submitting':
-        toastIdRef.current = toast.loading('Loading...', {
-          autoClose: false,
-        });
-        setLoading(true);
-        break;
+    if (fetcher.state === 'submitting') {
+      toastIdRef.current = toast.loading('Loading...', {
+        autoClose: false,
+      });
+      setLoading(true);
+    } else if (fetcher.state === 'idle' && fetcher.data && toastIdRef.current) {
+      // Handle the response, which could have different shapes
+      const responseData = fetcher.data as any;
 
-      case 'idle':
-        if (fetcher.data?.toast && toastIdRef.current) {
-          const { toast: toastData } = fetcher.data as any;
-          toast.update(toastIdRef.current, {
-            render: toastData.message,
-            type: toastData.type || 'success', // Default to 'success' if type is not provided
-            autoClose: 3000,
-            isLoading: false,
-          });
-          toastIdRef.current = null;
-          setLoading(false);
-          setName('');
-          setOrder('');
-          break;
-        }
-
+      if (responseData.toast) {
+        // Standard toast response
         toast.update(toastIdRef.current, {
-          render: fetcher.data?.toast.message,
+          render: responseData.toast.message,
+          type: responseData.toast.type || 'success',
           autoClose: 3000,
           isLoading: false,
-          type: 'error',
         });
 
-        break;
+        if (responseData.toast.type === 'success') {
+          setName('');
+          setOrder('');
+        }
+      } else if (responseData.message) {
+        // Error message response
+        toast.update(toastIdRef.current, {
+          render: responseData.message,
+          type: 'error',
+          autoClose: 3000,
+          isLoading: false,
+        });
+      } else {
+        // Fallback
+        toast.update(toastIdRef.current, {
+          render: 'Operation completed',
+          type: 'info',
+          autoClose: 3000,
+          isLoading: false,
+        });
+      }
+
+      toastIdRef.current = null;
+      setLoading(false);
     }
-  }, [fetcher.state]);
+  }, [fetcher.state, fetcher.data]);
 
   return (
     <div className='grid grid-cols-12 gap-16'>

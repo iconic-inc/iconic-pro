@@ -10,16 +10,15 @@ import Defer from '~/components/Defer';
 
 import HandsomeError from '~/components/HandsomeError';
 import LoadingOverlay from '~/components/LoadingOverlay';
-import { isAuthenticated, logout } from '~/services/auth.server';
-import { deleteAuthCookie } from '~/services/cookie.server';
+import { logout } from '~/services/auth.server';
+import { deleteAuthCookie, parseAuthCookie } from '~/services/cookie.server';
 import { isExpired } from '~/utils';
 import Sidebar from './_components/SideBar';
 import { getCurrentUser } from '~/services/user.server';
-import CustomButton from '~/widgets/CustomButton';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
-  const auth = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
 
   try {
     if (['/admin/login', '/admin/logout'].includes(url.pathname)) {

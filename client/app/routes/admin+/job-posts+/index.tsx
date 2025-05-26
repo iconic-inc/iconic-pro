@@ -1,11 +1,10 @@
-import { useLoaderData, useNavigate } from '@remix-run/react';
+import { data, useLoaderData, useNavigate } from '@remix-run/react';
 import { useState } from 'react';
 import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
 
 import {
-  bulkDeleteJobPosts,
   bulkHardDeleteJobPosts,
   listJobPosts,
 } from '~/services/jobPost.server';
@@ -15,10 +14,11 @@ import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
 import JobPostToolbar from './components/JobPostToolbar';
 import JobPostBulkActionBar from './components/JobPostBulkActionBar';
 import JobPostConfirmModal from './components/JobPostConfirmModal';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
-    const auth = await isAuthenticated(request);
+    const auth = await parseAuthCookie(request);
     if (!auth) {
       throw new Error('Unauthorized');
     }
@@ -74,9 +74,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 // Action function để xử lý xóa chủ jobPost
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const auth = await isAuthenticated(request);
-  if (!auth) {
-    return { success: false, error: 'Unauthorized' };
+  const { session, headers } = await isAuthenticated(request);
+  if (!session) {
+    return data({ success: false, error: 'Unauthorized' }, { headers });
   }
   const formData = await request.formData();
 
@@ -84,31 +84,40 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     switch (request.method) {
       case 'DELETE':
         const jobPostIdsString = formData.get('jobPostIds') as string;
-        if (!jobPostIdsString) {
-          return { success: false, error: 'Thiếu ' };
-        }
-
         const jobPostIds = JSON.parse(jobPostIdsString);
         if (!Array.isArray(jobPostIds) || jobPostIds.length === 0) {
-          return { success: false, error: 'Invalid jobPost IDs' };
+          return data(
+            { success: false, error: 'Dữ liệu không hợp lệ' },
+            { headers },
+          );
         }
-        // Call the bulk delete function
-        await bulkHardDeleteJobPosts(jobPostIds, auth);
 
-        return {
-          success: true,
-          message: `Đã xóa ${jobPostIds.length} tin tuyển dụng thành công`,
-        };
+        // Call the bulk delete function
+        await bulkHardDeleteJobPosts(jobPostIds, session);
+
+        return data(
+          {
+            success: true,
+            message: `Đã xóa ${jobPostIds.length} tin tuyển dụng thành công`,
+          },
+          { headers },
+        );
 
       default:
-        return { success: false, error: 'Method not allowed' };
+        return data(
+          { success: false, error: 'Method not allowed' },
+          { headers },
+        );
     }
   } catch (error: any) {
     console.error('Action error:', error);
-    return {
-      success: false,
-      error: error.message || 'Có lỗi xảy ra khi thực hiện hành động',
-    };
+    return data(
+      {
+        success: false,
+        error: error.message || 'Có lỗi xảy ra khi thực hiện hành động',
+      },
+      { headers },
+    );
   }
 };
 

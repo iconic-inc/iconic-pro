@@ -35,25 +35,25 @@ export default function ImageUploader({
             if (!e.target.files || e.target.files.length === 0) {
               toast.update(toastId, {
                 type: 'error',
-                data: 'No image selected',
+                render: 'No image selected',
               });
               return;
             }
 
             try {
               const res = await uploadImages(e.target.files);
-
+              console.log('update image response', res);
               if (res.success !== 1) {
                 toast.update(toastId, {
                   type: 'error',
-                  data: res.toast.message,
+                  render: res.toast.message,
                 });
                 return;
               }
 
               toast.update(toastId, {
                 type: 'success',
-                data: res.toast.message,
+                render: res.toast.message,
                 autoClose: 3000,
                 isLoading: false,
               });

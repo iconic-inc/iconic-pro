@@ -1,25 +1,32 @@
-import { LoaderFunctionArgs } from '@remix-run/node';
+import { LoaderFunctionArgs, data } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 
-import { authenticator, isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import { getBookings } from '~/services/booking.server';
 import HandsomeError from '~/components/HandsomeError';
 import BookingList from '~/widgets/BookingList';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
-    const user = await isAuthenticated(request);
-    if (!user) {
-      throw new Response(null, { status: 401 });
+    const auth = await parseAuthCookie(request);
+    if (!auth) {
+      throw new Response('Unauthorized', { status: 401 });
     }
-    const bookings = await getBookings(user);
 
-    return {
-      bookings,
-    };
+    const bookings = await getBookings(auth);
+
+    return data(
+      {
+        bookings,
+      },
+      { headers: request.headers },
+    );
   } catch (error) {
     console.error('Error loading bookings:', error);
-    return { bookings: [] };
+    if (error instanceof Response) {
+      throw error;
+    }
+    return data({ bookings: [] }, { headers: request.headers });
   }
 };
 

@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { LoaderFunctionArgs, MetaFunction, redirect } from '@remix-run/node';
+import { LoaderFunctionArgs, MetaFunction, data } from '@remix-run/node';
 import { useEffect, useRef, useState } from 'react';
 import {
   useFetcher,
@@ -12,7 +12,8 @@ import { toVnDateString } from '~/utils';
 import { deleteImage, getImage, updateImage } from '~/services/image.server';
 import HandsomeError from '~/components/HandsomeError';
 import TextInput from '~/components/TextInput';
-import { authenticator, isAuthenticated } from '~/services/auth.server';
+import { isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import LoadingOverlay from '~/components/LoadingOverlay';
 import ImageMetadata from '~/components/ImageInput/ImagePicker/ImageMetadata';
 import Select from '~/widgets/Select';
@@ -23,7 +24,10 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const { id } = params;
   if (!id) throw new Response('Image not found', { status: 404 });
 
-  const user = await isAuthenticated(request);
+  const { session, headers } = await isAuthenticated(request);
+  if (!session) {
+    return data({ success: false, message: 'Unauthorized' }, { headers });
+  }
 
   try {
     switch (request.method) {
@@ -38,26 +42,39 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
         await updateImage(
           id,
           { title, type, isPublic, link, description },
-          user!,
+          session,
         );
 
-        return { toast: { message: 'Cập nhật thành công', type: 'success' } };
+        return data(
+          {
+            toast: { message: 'Cập nhật thành công', type: 'success' },
+          },
+          { headers },
+        );
       }
 
       case 'DELETE': {
-        await deleteImage(id, user!);
+        await deleteImage(id, session);
 
-        return {
-          imageId: id,
-          toast: { message: 'Xóa ảnh thành công', type: 'success' },
-        };
+        return data(
+          {
+            imageId: id,
+            toast: { message: 'Xóa ảnh thành công', type: 'success' },
+          },
+          { headers },
+        );
       }
 
       default:
         throw new Response('Method not allowed', { status: 405 });
     }
   } catch (error: any) {
-    return { toast: { message: error.message, type: 'error' } };
+    return data(
+      {
+        toast: { message: error.message, type: 'error' },
+      },
+      { headers },
+    );
   }
 };
 
@@ -65,10 +82,15 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { id } = params;
   if (!id) throw new Response('Image not found', { status: 404 });
 
+  const auth = await parseAuthCookie(request);
+  if (!auth) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
+
   try {
     const image = await getImage(id);
 
-    return { image };
+    return data({ image }, { headers: request.headers });
   } catch (error: any) {
     throw new Response(error.message, { status: error.status || 500 });
   }
@@ -128,26 +150,37 @@ export default function ImagePopup() {
         break;
 
       case 'loading':
-        if (fetcher.data?.toast && toastIdRef.current) {
-          const { toast: toastData } = fetcher.data as any;
+        if (fetcher.data && toastIdRef.current) {
+          const responseData = fetcher.data as any;
+          let message = 'Operation completed';
+          let toastType: 'success' | 'error' | 'info' = 'success';
+
+          if (responseData.toast) {
+            message = responseData.toast.message;
+            toastType =
+              (responseData.toast.type as 'success' | 'error') || 'success';
+          } else if (responseData.message) {
+            message = responseData.message;
+            toastType = 'error';
+          }
+
           toast.update(toastIdRef.current, {
-            render: toastData.message,
-            type: toastData.type || 'success', // Default to 'success' if type is not provided
+            render: message,
+            type: toastType,
             autoClose: 3000,
             isLoading: false,
           });
+
           toastIdRef.current = null;
           setLoading(false);
 
-          if (fetcher.formMethod === 'DELETE') {
+          if (fetcher.formMethod === 'DELETE' && responseData.imageId) {
             navigate('/cmsdesk/images');
           }
-          break;
         }
-
         break;
     }
-  }, [fetcher.state]);
+  }, [fetcher.state, fetcher.formMethod, navigate]);
 
   return (
     <div

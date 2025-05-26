@@ -1,4 +1,4 @@
-import { useLoaderData } from '@remix-run/react';
+import { data, useLoaderData } from '@remix-run/react';
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { useState } from 'react';
 
@@ -8,9 +8,10 @@ import UserProfileForm from '../_components/UserProfileForm';
 import { getCurrentUser, updateUser } from '~/services/user.server';
 import CustomButton from '~/widgets/CustomButton';
 import DashContentHeader from '~/components/DashContentHeader';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const auth = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
 
   const user = await getCurrentUser(auth!);
   return {
@@ -19,46 +20,52 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const { session, headers } = await isAuthenticated(request);
+
   try {
-    const auth = await isAuthenticated(request);
-    if (!auth) {
+    if (!session) {
       throw new Response('Unauthorized', { status: 401 });
     }
 
     const formData = await request.formData();
-    const data = Object.fromEntries(formData.entries());
-
-    // Extract ID
-    const id = data.id as string;
-    delete data.id;
 
     // Prepare update data
     const updateData = {
-      firstName: data.firstName as string,
-      lastName: data.lastName as string,
-      email: data.email as string,
-      msisdn: data.msisdn as string,
-      address: data.address as string,
-      sex: data.sex as string,
-      birthdate: data.birthdate as string,
-      username: data.username as string,
-      password: data.password as string,
-      avatar: data.avatar as string,
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+      email: formData.get('email') as string,
+      msisdn: formData.get('msisdn') as string,
+      address: formData.get('address') as string,
+      avatar: formData.get('avatar') as string, // Assuming avatar is a file input
+      birthdate: formData.get('birthdate') as string,
+      sex: (formData.get('sex') as string) || 'other',
+      username: formData.get('username') as string,
+      password: formData.get('password') as string, // Assuming password is optional
     };
 
-    const updatedEmployee = await updateUser(auth?.user.id, updateData, auth!);
-    return {
-      employee: updatedEmployee,
-      toast: { message: 'Cập nhật thông tin thành công!', type: 'success' },
-    };
+    const updatedEmployee = await updateUser(
+      session?.user.id,
+      updateData,
+      session!,
+    );
+    return data(
+      {
+        employee: updatedEmployee,
+        toast: { message: 'Cập nhật thông tin thành công!', type: 'success' },
+      },
+      { headers },
+    );
   } catch (error: any) {
     console.error('Error updating profile:', error);
-    return {
-      toast: {
-        message: error.message || error.statusText || 'Cập nhật thất bại!',
-        type: 'error',
+    return data(
+      {
+        toast: {
+          message: error.message || error.statusText || 'Cập nhật thất bại!',
+          type: 'error',
+        },
       },
-    };
+      { headers },
+    );
   }
 };
 
