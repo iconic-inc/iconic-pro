@@ -8,7 +8,7 @@ import {
   bulkHardDeleteCandidates,
   listCandidates,
 } from '~/services/candidate.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import CandidateList from './components/CandidateList';
 import {
   ICandidate,

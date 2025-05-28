@@ -90,7 +90,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   try {
     const image = await getImage(id);
 
-    return data({ image }, { headers: request.headers });
+    return { image };
   } catch (error: any) {
     throw new Response(error.message, { status: error.status || 500 });
   }

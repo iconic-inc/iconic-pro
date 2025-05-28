@@ -2,8 +2,8 @@ import { LoaderFunctionArgs, data } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
 import { getPages } from '~/services/page.server';
-import PostCard from '~/components/PostCard';
-import { RiAddLine } from '@remixicon/react';
+import PostCard from '~/components/website/PostCard';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import LoadingOverlay from '~/components/LoadingOverlay';
@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const pages = await getPages({ user: auth });
 
-  return data({ pages }, { headers: request.headers });
+  return { pages };
 };
 
 export default function PageManager() {
@@ -43,7 +43,7 @@ export default function PageManager() {
             }
           }}
         >
-          <RiAddLine />
+          <Plus />
         </button>
       </div>
     );
@@ -71,7 +71,7 @@ export default function PageManager() {
           }
         }}
       >
-        <RiAddLine />
+        <Plus />
       </button>
     </div>
   );

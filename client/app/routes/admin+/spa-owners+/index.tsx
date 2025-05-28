@@ -6,7 +6,7 @@ import { isAuthenticated } from '~/services/auth.server';
 import { parseAuthCookie } from '~/services/cookie.server';
 
 import { bulkDeleteSpaOwners, listSpaOwners } from '~/services/spaOwner.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import SpaOwnerList from './components/SpaOwnerList';
 import { ISpaOwnerDetails } from '~/interfaces/spaOwner.interface';
 import SpaOwnerToolbar from './components/SpaOwnerToolbar';

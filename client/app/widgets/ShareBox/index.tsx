@@ -1,4 +1,4 @@
-import { RiFacebookFill, RiLinkM, RiPrinterLine } from '@remixicon/react';
+import { Facebook, Link2, Printer } from 'lucide-react';
 import { MouseEventHandler } from 'react';
 import Hydrated from '~/components/Hydrated';
 
@@ -56,13 +56,13 @@ export default function ShareBox() {
           <ul className='flex items-center border-l border-[color:--sub4-text] ml-4'>
             <li className='ml-4'>
               <a href='#' onClick={shareOnFacebook}>
-                <RiFacebookFill className='text-[color:#0866ff]' size={24} />
+                <Facebook className='text-[color:#0866ff]' size={24} />
               </a>
             </li>
 
             <li className='ml-4'>
               <a href='#' onClick={handlePrint}>
-                <RiPrinterLine size={24} />
+                <Printer size={24} />
               </a>
             </li>
 
@@ -74,7 +74,7 @@ export default function ShareBox() {
                   navigator.clipboard.writeText(window.location.href);
                 }}
               >
-                <RiLinkM size={24} />
+                <Link2 size={24} />
               </a>
             </li>
           </ul>

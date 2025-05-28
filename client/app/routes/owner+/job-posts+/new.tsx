@@ -2,7 +2,7 @@ import { ActionFunctionArgs, data, LoaderFunctionArgs } from '@remix-run/node';
 import { IJobPostAttrs } from '~/interfaces/jobPost.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createMyJobPost } from '~/services/jobPost.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import JobPostCreateForm from './components/JobPostCreateForm';
 
 export default function NewJobPost() {

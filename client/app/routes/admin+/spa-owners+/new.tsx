@@ -3,7 +3,7 @@ import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createSpaOwner } from '~/services/spaOwner.server';
 import SpaOwnerCreateForm from './components/SpaOwnerCreateForm';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 type ActionData = {
   success: boolean;

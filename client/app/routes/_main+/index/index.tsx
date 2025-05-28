@@ -1,611 +1,706 @@
+import { type MetaFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
+import {
+  BookOpen,
+  FileText,
+  Users,
+  IdCard,
+  UserCheck,
+  UserCog,
+} from 'lucide-react';
 import { useState } from 'react';
 
-import { getPosts } from '~/services/page.server';
-import HandsomeError from '~/components/HandsomeError';
-import { useLoaderData } from '@remix-run/react';
-import { useMainLoaderData } from '~/lib/useMainLoaderData';
+import ItemList from '~/components/website/ItemList';
+import Post from '~/widgets/Post';
+import Card from '~/widgets/Card';
+import Specifications from '~/widgets/Specifications';
+import SearchBox from '~/components/website/SearchBox';
 
-const sliders = [
-  { img_name: 'banner.jpg' },
-  { img_name: 'banner2.jpg' },
-  { img_name: 'banner3.jpg' },
-  { img_name: 'banner4.jpg' },
-  { img_name: 'banner5.jpg' },
-];
-
-export const loader = async () => {
-  const posts = getPosts();
-  const limitedSliders = sliders.slice(0, 5); // Limit sliders here if needed
-
-  return { sliders: limitedSliders, posts };
+export const meta: MetaFunction = ({ data }) => {
+  console.log('meta loader data:', data);
+  return [
+    { title: 'New Remix App' },
+    { name: 'description', content: 'Welcome to Remix!' },
+  ];
 };
 
 export default function Index() {
-  const { posts, sliders: loaderSliders } = useLoaderData<typeof loader>();
-  const { branches } = useMainLoaderData();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const limitedSliders = loaderSliders || sliders.slice(0, 5); // Fallback to static sliders if loaderSliders is undefined
-
-  const handlePlayVideo = () => {
-    setIsPlaying(true);
-  };
+  const [items, setItems] = useState(schools);
 
   return (
-    <main id='webcrumbs'>
-      <div className='w-full bg-black text-white font-sans'>
-        {/* Hero Section */}
-        <section className='relative flex flex-col items-center pt-8 pb-16 px-12'>
-          <div className='flex flex-col lg:flex-row justify-between w-full'>
-            <div className='max-w-xl'>
-              <p className='text-gray-400 uppercase tracking-wider text-sm mb-2'>
-                TRANSFORM YOUR BUSINESS STRATEGY
-              </p>
-              <h1 className='text-4xl font-bold mb-4'>
-                UNLOCK THE TOOLS TO{' '}
-                <span className='text-red-600'>MASTERY & CONFIDENCE</span>
+    <>
+      <section>
+        <div
+          style={{
+            backgroundImage: 'url(/assets/banner-1.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: 600,
+          }}
+        >
+          <div className='bg-slate-950/60 h-full w-full'>
+            <div className='container flex items-center justify-center h-full flex-col text-[--sub4-text]'>
+              <h1 className='text-3xl font-bold text-[--sub4-text]'>
+                TÌM TRƯỜNG, TRUNG TÂM PHÙ HỢP{' '}
+                <span className='text-[--main-color]'>NHANH NHẤT</span> VỚI
+                KIDDIHUB
               </h1>
-              <p className='text-gray-300 mb-6'>
-                Elite Business Coaching provides entrepreneurs, business owners,
-                and aspiring experts the marketing, branding, and SEO strategies
-                needed to accelerate growth and thrive in today's competitive
-                market.
+
+              <p className='text-lg my-4 text-[--sub4-text]'>
+                Nền tảng chọn trường, trung tâm{' '}
+                <b className='text-[--main-color]'>#1</b> Việt Nam được đầu tư
+                bởi Gakken - Tập đoàn giáo dục hàng đầu Nhật Bản
               </p>
 
-              <button className='bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white font-bold py-3 px-8 rounded-md flex items-center group'>
-                GET STARTED TODAY
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 5l7 7-7 7'
-                  />
-                </svg>
-              </button>
+              <SearchBox />
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <div className='flex items-center mt-6 text-sm'>
-                <div className='flex'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    className='h-5 w-5 text-red-600'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke='currentColor'
+      <Specifications />
+
+      <section className='container'>
+        <h2 className='title col-span-12'>Tin mới</h2>
+
+        <div className='col-span-12'>
+          <Post
+            post={{
+              thumbnail: '/assets/news.png',
+              title:
+                'KiddiHub giới thiệu tài liệu "Ranking Top 100 Trường Hot Nhất Tháng 10" – thông tin đáng giá về xu hướng và chất lượng giáo dục mầm non',
+              excerpt:
+                'Trong bối cảnh các tiêu chí lựa chọn trường mầm non của phụ huynh đang không ngừng thay đổi, KiddiHub hân hạnh giới thiệu tài liệu "Ranking Top 100 Trường Hot Nhất Tháng 10" nhằm cung cấp những thông tin cập nhật và chuyên sâu về xu hướng chọn trường, giúp các chủ trường và nhà đầu tư giáo dục định hình rõ hơn về thị trường ...',
+              slug: 'ranking-top-100-truong-hot-nhat-thang-10',
+            }}
+          />
+        </div>
+      </section>
+
+      <section className='container' id='phu-huynh'>
+        <h2 className='title col-span-12'>DÀNH CHO PHỤ HUYNH</h2>
+
+        <section className='col-span-12'>
+          <div className='my-6'>
+            <button
+              className={
+                'text-[--sub3-color] inline-flex items-center rounded border border-current px-4 py-2 text-sm font-semibold transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' +
+                (items[0].slug === schools[0].slug
+                  ? ' bg-[--sub3-color] text-white'
+                  : '')
+              }
+              onClick={() => {
+                setItems(schools);
+              }}
+            >
+              Trường
+            </button>
+
+            <button
+              className={
+                'text-[--sub3-color] inline-flex items-center rounded border border-current px-4 py-2 text-sm font-semibold transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2' +
+                (items[0].slug === centers[0].slug
+                  ? ' bg-[--sub3-color] text-white'
+                  : '')
+              }
+              onClick={() => {
+                setItems(centers);
+              }}
+            >
+              Trung tâm
+            </button>
+          </div>
+
+          <ItemList items={items} />
+
+          <div className='mt-6'>
+            <Link
+              to='/blog/tutorial'
+              className='text-[--sub3-color] underline text-sm'
+            >
+              <i>Hướng dẫn cách tìm trường phù hợp và nhanh nhất</i>
+            </Link>
+          </div>
+        </section>
+
+        {/* <section className='col-span-12'>
+          <h3 className='text-lg'>
+            <b>Tìm kiếm gia sư, bảo mẫu cho bé</b>
+          </h3>
+
+          <div className='grid gap-6 grid-cols-12 mt-4'>
+            {[
+              {
+                tag: 'KiddiHub store',
+                image: 'https://s3.kiddihub.site/prod/hethongdochoi.png',
+                title: 'Hệ thống đồ chơi thông minh, giáo dục sớm.',
+                link: '/',
+                description:
+                  'Mua sắm đồ chơi thông minh, sáng tạo giáo dục sớm dành cho trẻ em.',
+              },
+              {
+                tag: 'KiddiHub store',
+                image: 'https://s3.kiddihub.site/prod/hethongdochoi.png',
+                title: 'Hệ thống đồ chơi thông minh, giáo dục sớm.',
+                link: '/',
+                description:
+                  'Mua sắm đồ chơi thông minh, sáng tạo giáo dục sớm dành cho trẻ em.',
+              },
+            ].map((data, i) => (
+              <Card data={data} key={i} />
+            ))}
+          </div>
+        </section> */}
+
+        <section className='col-span-12 gap-6 mt-6'>
+          <h3 className='text-lg'>
+            <b>Tiện ích khác</b>
+          </h3>
+
+          <div className='grid gap-6 grid-cols-12 mt-4'>
+            {[
+              {
+                tag: 'KiddiHub store',
+                image: 'https://s3.kiddihub.site/prod/hethongdochoi.png',
+                title: 'Hệ thống đồ chơi thông minh, giáo dục sớm.',
+                link: '/',
+                description:
+                  'Mua sắm đồ chơi thông minh, sáng tạo giáo dục sớm dành cho trẻ em.',
+              },
+              {
+                tag: 'KiddiHub store',
+                image: 'https://s3.kiddihub.site/prod/hethongdochoi.png',
+                title: 'Hệ thống đồ chơi thông minh, giáo dục sớm.',
+                link: '/',
+                description:
+                  'Mua sắm đồ chơi thông minh, sáng tạo giáo dục sớm dành cho trẻ em.',
+              },
+            ].map((data, i) => (
+              <Card data={data} key={i} />
+            ))}
+          </div>
+        </section>
+      </section>
+
+      <section id='chu-truong'>
+        <div className='container'>
+          <h2 className='title col-span-12'>DÀNH CHO CHỦ TRƯỜNG</h2>
+
+          <div className='col-span-12 flex flex-col lg:grid grid-cols-12 mt-4'>
+            <div className='col-span-6'>
+              <ul>
+                {services.map((service, i) => (
+                  <li
+                    key={i}
+                    className='rounded-lg shadow-lg border px-4 py-2 mt-4 flex items-center justify-between gap-4'
                   >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M5 13l4 4L19 7'
-                    />
-                  </svg>
-                </div>
-                <span className='ml-2 text-gray-400'>
-                  5,000+ SUCCESSFUL BUSINESS TRANSFORMATIONS
-                </span>
-              </div>
+                    <p className='uppercase text-[--sub2-text] text-sm'>
+                      {service.title}
+                    </p>
+
+                    <div>
+                      <Link
+                        to={service.link}
+                        className='block w-max bg-[--sub4-color] text-[--sub4-text] px-2 py-1 rounded font-medium'
+                      >
+                        Xem thêm
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div className='relative mt-8 lg:mt-0'>
-              <div className='absolute top-0 right-0 w-80 h-80 bg-gradient-to-r from-red-600/30 to-red-800/30 rounded-full blur-3xl'></div>
+            <div className='col-span-6'>
               <img
-                src='https://placehold.co/500x400/404040/red?text=Business+App'
-                alt='Business Analytics Dashboard'
-                className='relative z-10 h-auto max-w-full lg:h-96 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300'
+                src='/assets/illustration.png'
+                alt='Các dịch vụ của chủ trường'
               />
             </div>
           </div>
+        </div>
+      </section>
 
-          <p className='text-gray-400 text-sm mt-12 max-w-5xl'>
-            Elite Business Coaching isn't just a consulting service—it's a
-            complete business transformation program. Get access to our premier
-            marketing, branding, and SEO strategies,{' '}
-            <span className='text-red-600 font-semibold underline'>
-              specifically designed for businesses at any stage
-            </span>
-            . With 15+ years of industry experience, we've developed frameworks
-            that walk you through exactly what's needed step by step to
-            establish your brand and increase your visibility.{' '}
-            <span className='underline text-red-600 font-semibold'>
-              Perfect for those who want to build a sustainable business model
-            </span>{' '}
-            with proven strategies that deliver measurable results.
-          </p>
-        </section>
+      <section id='doi-tac'>
+        <div className='container'>
+          <h2 className='title col-span-12'>ĐỐI TÁC</h2>
 
-        {/* Who is it for section */}
-        <section className='py-16 px-12 bg-gradient-to-b from-black to-gray-950'>
-          <h2 className='text-3xl font-bold text-center mb-12'>
-            WHO IS ELITE BUSINESS COACHING FOR?
-          </h2>
+          <div className='col-span-12 flex flex-col lg:flex-row justify-between items-center mt-8 gap-8 lg:gap-0 items-center justify-center'>
+            {partners.map((partner, i) => (
+              <Link
+                to={partner.link}
+                key={i}
+                className='block h-full'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                <img
+                  src={partner.logo}
+                  alt={partner.name + ' logo'}
+                  title={partner.name}
+                  className='object-cover h-16 md:h-24'
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-            <div className='border border-gray-800 hover:border-red-700 transition-colors duration-300 p-6 rounded-lg flex flex-col items-center text-center group hover:bg-gray-900/50'>
-              <div className='w-14 h-14 mb-4 bg-gray-800 group-hover:bg-red-900 transition-colors duration-300 flex items-center justify-center rounded-lg'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-7 w-7'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
-                  />
-                </svg>
+      <section>
+        <div className='container'>
+          <h2 className='title col-span-12'>VÌ SAO NÊN CHỌN KIDDIHUB</h2>
+
+          <div className='col-span-12 grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-6 mt-8'>
+            <div className='col-span-4 flex items-center border border-zinc-200 shadow-lg rounded-lg p-4 gap-4'>
+              <div>
+                <Users size={40} color='var(--main-color)' />
               </div>
-              <h3 className='font-bold mb-3'>BUSINESS OWNERS</h3>
-              <p className='text-gray-400 text-sm'>
-                Discover your unique market position and develop targeted
-                marketing strategies that convert visitors into loyal customers.
+
+              <p className='font-semibold'>
+                <span className='text-[--main-color]'>40 triệu</span> lượt phụ
+                huynh truy cập
               </p>
             </div>
 
-            <div className='border border-gray-800 hover:border-red-700 transition-colors duration-300 p-6 rounded-lg flex flex-col items-center text-center group hover:bg-gray-900/50'>
-              <div className='w-14 h-14 mb-4 bg-gray-800 group-hover:bg-red-900 transition-colors duration-300 flex items-center justify-center rounded-lg'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-7 w-7'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-                  />
-                </svg>
+            <div className='col-span-4 flex items-center border border-zinc-200 shadow-lg rounded-lg p-4 gap-4'>
+              <div>
+                <UserCheck size={40} color='var(--main-color)' />
               </div>
-              <h3 className='font-bold mb-3'>MARKETING PROFESSIONALS</h3>
-              <p className='text-gray-400 text-sm'>
-                Elevate your marketing skills with advanced SEO techniques,
-                content strategies, and data-driven campaign optimization.
+
+              <p className='font-semibold'>
+                <span className='text-[--main-color]'>182 nghìn</span> lượt phụ
+                huynh tin tưởng và đăng ký học
               </p>
             </div>
 
-            <div className='border border-gray-800 hover:border-red-700 transition-colors duration-300 p-6 rounded-lg flex flex-col items-center text-center group hover:bg-gray-900/50'>
-              <div className='w-14 h-14 mb-4 bg-gray-800 group-hover:bg-red-900 transition-colors duration-300 flex items-center justify-center rounded-lg'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-7 w-7'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M13 10V3L4 14h7v7l9-11h-7z'
-                  />
-                </svg>
+            <div className='col-span-4 flex items-center border border-zinc-200 shadow-lg rounded-lg p-4 gap-4'>
+              <div>
+                <UserCog size={40} color='var(--main-color)' />
               </div>
-              <h3 className='font-bold mb-3'>STARTUPS & ENTREPRENEURS</h3>
-              <p className='text-gray-400 text-sm'>
-                Build a strong brand foundation, develop effective go-to-market
-                strategies, and establish a competitive online presence.
+
+              <p className='font-semibold'>
+                <span className='text-[--main-color]'>38 nghìn</span> lượt đánh
+                giá từ phụ huynh
               </p>
             </div>
 
-            <div className='border border-gray-800 hover:border-red-700 transition-colors duration-300 p-6 rounded-lg flex flex-col items-center text-center group hover:bg-gray-900/50'>
-              <div className='w-14 h-14 mb-4 bg-gray-800 group-hover:bg-red-900 transition-colors duration-300 flex items-center justify-center rounded-lg'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-7 w-7'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z'
-                  />
-                </svg>
+            <div className='col-span-4 flex items-center border border-zinc-200 shadow-lg rounded-lg p-4 gap-4'>
+              <div>
+                <FileText size={40} color='var(--main-color)' />
               </div>
-              <h3 className='font-bold mb-3'>E-COMMERCE BUSINESSES</h3>
-              <p className='text-gray-400 text-sm'>
-                Optimize your online store, increase conversion rates, and
-                implement effective digital marketing strategies for sustainable
-                growth.
+
+              <p className='font-semibold'>
+                Thông tin chính xác, đầy đủ và cập nhật thường xuyên
+              </p>
+            </div>
+
+            <div className='col-span-4 flex items-center border border-zinc-200 shadow-lg rounded-lg p-4 gap-4'>
+              <div>
+                <IdCard size={40} color='var(--main-color)' />
+              </div>
+
+              <p className='font-semibold'>
+                Tốc độ phản hồi từ phía nhà trường, trung tâm trong 1 phút
+              </p>
+            </div>
+
+            <div className='col-span-4 flex items-center border border-zinc-200 shadow-lg rounded-lg p-4 gap-4'>
+              <div>
+                <BookOpen size={40} color='var(--main-color)' />
+              </div>
+
+              <p className='font-semibold'>
+                Gợi ý chính xác theo nhu cầu về chương trình học, học phí
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Testimonials Section */}
-        <section className='py-16 px-12 bg-gradient-to-b from-black to-gray-950'>
-          <div className='max-w-7xl mx-auto'>
-            <h2 className='text-3xl font-bold text-center mb-6'>
-              SUCCESS STORIES FROM OUR CLIENTS
-            </h2>
-            <p className='text-gray-400 text-center mb-12 max-w-3xl mx-auto'>
-              Hear from business owners who have transformed their companies
-              through our strategic coaching and proven methodologies.
-            </p>
+      <section id='giao-vien'>
+        <div className='container'>
+          <h2 className='title col-span-12'>DÀNH CHO GIÁO VIÊN</h2>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-              {/* Testimonial 1 */}
-              <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 hover:shadow-lg hover:shadow-red-900/20 transition-all duration-300 group border border-gray-800 hover:border-red-700'>
-                <div className='flex flex-col h-full'>
-                  <div className='flex-1'>
-                    <div className='flex mb-4'>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <svg
-                          key={star}
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='h-5 w-5 text-yellow-500'
-                          viewBox='0 0 20 20'
-                          fill='currentColor'
-                        >
-                          <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className='text-gray-300 italic mb-4'>
-                      "Elite Business Coaching completely transformed my
-                      approach to marketing. Within 3 months, our e-commerce
-                      sales increased by 215% and we've been able to expand into
-                      two new markets."
-                    </p>
-                    <p className='text-gray-400 text-sm mb-6'>
-                      The strategies for content creation and SEO optimization
-                      were particularly valuable for our niche market. I now
-                      have a framework I can apply to all future product
-                      launches.
-                    </p>
-                  </div>
-                  <div className='flex items-center mt-auto'>
-                    <div className='w-12 h-12 rounded-full overflow-hidden mr-4 ring-2 ring-red-600 group-hover:ring-red-500 transition-colors duration-300'>
-                      <img
-                        src='https://placehold.co/200x200/404040/red?text=SM'
-                        alt='Sarah Mitchell'
-                        className='w-full h-full object-cover'
-                        loading='lazy' // Lazy loading for testimonial images
-                      />
-                    </div>
-                    <div>
-                      <h4 className='font-bold text-white group-hover:text-red-400 transition-colors duration-300'>
-                        Sarah Mitchell
-                      </h4>
-                      <p className='text-sm text-gray-400'>
-                        CEO, Artisan Home Decor
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className='col-span-12 grid grid-cols-12 gap-6 mt-8'>
+            {[
+              {
+                tag: 'KiddiHub store',
+                image: 'https://s3.kiddihub.site/prod/hethongdochoi.png',
+                title: 'Hệ thống đồ chơi thông minh, giáo dục sớm.',
+                link: '/',
+                description:
+                  'Mua sắm đồ chơi thông minh, sáng tạo giáo dục sớm dành cho trẻ em.',
+              },
+              {
+                tag: 'KiddiHub store',
+                image: 'https://s3.kiddihub.site/prod/hethongdochoi.png',
+                title: 'Hệ thống đồ chơi thông minh, giáo dục sớm.',
+                link: '/',
+                description:
+                  'Mua sắm đồ chơi thông minh, sáng tạo giáo dục sớm dành cho trẻ em.',
+              },
+            ].map((data, i) => (
+              <Card data={data} key={i} />
+            ))}
+          </div>
+        </div>
+      </section>
 
-              {/* Testimonial 2 */}
-              <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 hover:shadow-lg hover:shadow-red-900/20 transition-all duration-300 group border border-gray-800 hover:border-red-700'>
-                <div className='flex flex-col h-full'>
-                  <div className='flex-1'>
-                    <div className='flex mb-4'>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <svg
-                          key={star}
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='h-5 w-5 text-yellow-500'
-                          viewBox='0 0 20 20'
-                          fill='currentColor'
-                        >
-                          <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className='text-gray-300 italic mb-4'>
-                      "As a startup founder, I was struggling with our brand
-                      positioning. The coaching program gave me clarity and a
-                      step-by-step playbook for establishing our market
-                      presence."
-                    </p>
-                    <p className='text-gray-400 text-sm mb-6'>
-                      Our website traffic increased by 450% in just 6 months,
-                      and our conversion rate doubled. We've secured two major
-                      partnerships directly from our improved online visibility.
-                    </p>
-                  </div>
-                  <div className='flex items-center mt-auto'>
-                    <div className='w-12 h-12 rounded-full overflow-hidden mr-4 ring-2 ring-red-600 group-hover:ring-red-500 transition-colors duration-300'>
-                      <img
-                        src='https://placehold.co/200x200/404040/red?text=JR'
-                        alt='James Rodriguez'
-                        className='w-full h-full object-cover'
-                        loading='lazy' // Lazy loading for testimonial images
-                      />
-                    </div>
-                    <div>
-                      <h4 className='font-bold text-white group-hover:text-red-400 transition-colors duration-300'>
-                        James Rodriguez
-                      </h4>
-                      <p className='text-sm text-gray-400'>
-                        Founder, TechFlow Solutions
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <section className='bg-white py-8'>
+        <div className='container'>
+          <h2 className='title col-span-12'>TRUYỀN THÔNG NÓI GÌ VỀ KIDDIHUB</h2>
 
-              {/* Testimonial 3 */}
-              <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 hover:shadow-lg hover:shadow-red-900/20 transition-all duration-300 group border border-gray-800 hover:border-red-700'>
-                <div className='flex flex-col h-full'>
-                  <div className='flex-1'>
-                    <div className='flex mb-4'>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <svg
-                          key={star}
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='h-5 w-5 text-yellow-500'
-                          viewBox='0 0 20 20'
-                          fill='currentColor'
-                        >
-                          <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className='text-gray-300 italic mb-4'>
-                      "The ROI from this program has been incredible. We
-                      invested $997 and have seen a 1,200% return in the first
-                      year through improved lead generation and conversion
-                      strategies."
-                    </p>
-                    <p className='text-gray-400 text-sm mb-6'>
-                      The community aspect was an unexpected bonus - connecting
-                      with other business owners has led to collaborative
-                      opportunities and valuable insights.
-                    </p>
-                  </div>
-                  <div className='flex items-center mt-auto'>
-                    <div className='w-12 h-12 rounded-full overflow-hidden mr-4 ring-2 ring-red-600 group-hover:ring-red-500 transition-colors duration-300'>
-                      <img
-                        src='https://placehold.co/200x200/404040/red?text=AJ'
-                        alt='Alexandra Johnson'
-                        className='w-full h-full object-cover'
-                        loading='lazy' // Lazy loading for testimonial images
-                      />
-                    </div>
-                    <div>
-                      <h4 className='font-bold text-white group-hover:text-red-400 transition-colors duration-300'>
-                        Alexandra Johnson
-                      </h4>
-                      <p className='text-sm text-gray-400'>
-                        Director, Wellness Collective
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className='flex flex-col lg:grid grid-cols-12 gap-6 mt-8 col-span-12'>
+            <section className='col-span-6 px-32'>
+              <img src='/assets/illus-social.png' alt='illustration image' />
+            </section>
 
-            {/* Results Metrics */}
-            <div className='mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-              <div className='bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-red-700 transition-all duration-300 group'>
-                <div className='text-red-600 text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300'>
-                  215%
-                </div>
-                <div className='text-gray-300 font-semibold'>
-                  Average Revenue Growth
-                </div>
-                <p className='text-gray-400 text-sm mt-2'>
-                  For e-commerce businesses within 6 months
-                </p>
-              </div>
-
-              <div className='bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-red-700 transition-all duration-300 group'>
-                <div className='text-red-600 text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300'>
-                  450%
-                </div>
-                <div className='text-gray-300 font-semibold'>
-                  Traffic Increase
-                </div>
-                <p className='text-gray-400 text-sm mt-2'>
-                  Average website traffic growth after SEO implementation
-                </p>
-              </div>
-
-              <div className='bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-red-700 transition-all duration-300 group'>
-                <div className='text-red-600 text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300'>
-                  87%
-                </div>
-                <div className='text-gray-300 font-semibold'>
-                  Client Satisfaction
-                </div>
-                <p className='text-gray-400 text-sm mt-2'>
-                  Of clients report exceeding their business goals
-                </p>
-              </div>
-
-              <div className='bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-red-700 transition-all duration-300 group'>
-                <div className='text-red-600 text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300'>
-                  12X
-                </div>
-                <div className='text-gray-300 font-semibold'>Average ROI</div>
-                <p className='text-gray-400 text-sm mt-2'>
-                  Return on investment within the first year
-                </p>
-              </div>
-            </div>
-
-            {/* Featured Success Story */}
-            <div className='mt-16 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-500 group border border-gray-800 hover:border-red-700'>
-              <div className='flex flex-col lg:flex-row'>
-                <div className='lg:w-1/2 p-8 lg:p-10 flex flex-col justify-center'>
-                  <div className='inline-block bg-red-900/30 px-4 py-2 rounded-full text-sm font-semibold text-red-400 mb-6'>
-                    FEATURED SUCCESS STORY
-                  </div>
-                  <h3 className='text-2xl font-bold mb-4 group-hover:text-red-400 transition-colors duration-300'>
-                    From Struggling Local Business to Industry Leader
-                  </h3>
-                  <p className='text-gray-300 mb-6'>
-                    "Before joining Elite Business Coaching, we were a small
-                    local fitness studio struggling to compete. After
-                    implementing the marketing and branding strategies, we've
-                    expanded to 3 locations and launched a successful online
-                    training platform reaching clients worldwide."
-                  </p>
-
-                  <div className='flex items-center mb-6'>
-                    <div className='w-16 h-16 rounded-full overflow-hidden mr-4 ring-2 ring-red-600'>
-                      <img
-                        src='https://placehold.co/200x200/404040/red?text=DW'
-                        alt='David Wilson'
-                        className='w-full h-full object-cover'
-                        loading='lazy' // Lazy loading for featured image - might be good to eager load this one as it's more prominent
-                      />
-                    </div>
-                    <div>
-                      <h4 className='font-bold text-white'>David Wilson</h4>
-                      <p className='text-sm text-gray-400'>
-                        Founder, FitLife Studios
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className='flex flex-wrap gap-4'>
-                    <div className='flex items-center bg-gray-800/70 px-4 py-2 rounded-lg'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='h-5 w-5 text-red-500 mr-2'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
-                      >
-                        <path
-                          fillRule='evenodd'
-                          d='M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z'
-                          clipRule='evenodd'
-                        />
-                      </svg>
-                      <span className='text-sm'>450% Revenue Growth</span>
-                    </div>
-                    <div className='flex items-center bg-gray-800/70 px-4 py-2 rounded-lg'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='h-5 w-5 text-red-500 mr-2'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
-                      >
-                        <path d='M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z' />
-                      </svg>
-                      <span className='text-sm'>20,000+ New Clients</span>
-                    </div>
-                    <div className='flex items-center bg-gray-800/70 px-4 py-2 rounded-lg'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='h-5 w-5 text-red-500 mr-2'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
-                      >
-                        <path d='M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z' />
-                      </svg>
-                      <span className='text-sm'>Launched Digital Platform</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='lg:w-1/2 relative overflow-hidden'>
-                  <div className='absolute inset-0 bg-gradient-to-r from-black to-transparent z-10 lg:from-transparent lg:to-black'></div>
+            <section className='col-span-6 grid grid-cols-6 gap-12'>
+              {newspapers.map((newspaper, i) => (
+                <Link
+                  to={newspaper.link}
+                  key={i}
+                  className='col-span-2'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
                   <img
-                    src='https://placehold.co/600x400/404040/red?text=Success+Story'
-                    alt='FitLife Success Story'
-                    className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-700'
-                    loading='eager' // Eager loading for featured image as it's visually important
+                    src={newspaper.image}
+                    alt='newspaper logo'
+                    className='object-contain h-full'
                   />
-                </div>
-              </div>
-            </div>
-
-            <div className='mt-12 text-center'>
-              <button className='bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white font-bold py-3 px-8 rounded-md inline-flex items-center group'>
-                READ MORE SUCCESS STORIES
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 5l7 7-7 7'
-                  />
-                </svg>
-              </button>
-            </div>
+                </Link>
+              ))}
+            </section>
           </div>
-        </section>
-
-        {/* Two Paths Section */}
-        <section className='py-16 px-12'>
-          <h2 className='text-3xl font-bold text-center mb-12'>
-            TWO PATHS, ONE CHOICE
-          </h2>
-
-          <div className='flex flex-col md:flex-row gap-6 justify-center'>
-            <div className='w-full md:w-1/3 border border-red-800 hover:border-red-600 transition-colors duration-300 p-8 rounded-lg bg-gradient-to-b from-black to-gray-900 group'>
-              <h3 className='text-2xl font-bold mb-2'>
-                <span className='text-red-600'>$10,000+</span>
-              </h3>
-              <p className='text-gray-300 mb-8'>
-                Traditional marketing agencies with high monthly retainers,
-                long-term contracts, and generic strategies that don't align
-                with your specific business needs.
-              </p>
-
-              <button className='w-full border border-red-600 hover:bg-red-900/30 transition-colors duration-300 text-red-600 font-bold py-3 px-6 rounded-md flex items-center justify-center group'>
-                EXPLORE THIS OPTION
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 5l7 7-7 7'
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className='w-full md:w-1/3 bg-gradient-to-r from-red-800 to-red-900 p-8 rounded-lg hover:from-red-700 hover:to-red-800 transition-colors duration-300 transform hover:scale-105 duration-300 shadow-lg'>
-              <h3 className='text-2xl font-bold mb-2'>$997</h3>
-              <p className='text-gray-200 mb-8'>
-                Get comprehensive business coaching with personalized marketing,
-                branding, and SEO strategies tailored to your specific industry
-                and goals.
-              </p>
-
-              <button className='w-full bg-white hover:bg-gray-100 transition-colors duration-300 text-red-800 font-bold py-3 px-6 rounded-md flex items-center justify-center group'>
-                GET STARTED NOW
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                ></svg>
-              </button>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+        </div>
+      </section>
+    </>
   );
 }
+
+const schools = [
+  {
+    title: 'Trường mầm non',
+    slug: 'truong-mam-non',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 9978,
+  },
+  {
+    title: 'trường tiểu học',
+    slug: 'truong-tieu-hoc',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 789,
+  },
+  {
+    title: 'Trường THCS',
+    slug: 'truong-thcs',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 123,
+  },
+  {
+    title: 'Trường THPT',
+    slug: 'truong-thpt',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 456,
+  },
+  {
+    title: 'Trường quốc tế',
+    slug: 'truong-quoc-te',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 789,
+  },
+  {
+    title: 'Trường trung cấp nghề',
+    slug: 'truong-trung-cap-nghe',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 123,
+  },
+  {
+    title: 'Trường cao đẳng',
+    slug: 'truong-cao-dang',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 456,
+  },
+  {
+    title: 'Trường đại học',
+    slug: 'truong-dai-hoc',
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    count: 789,
+  },
+];
+
+const centers = [
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/YdXJB0S5ITJEODXv-GMIQfkOJyBmQkXmH.jpg',
+    title: 'Trung tâm tiếng Anh',
+    slug: 'trung-tam-tieng-anh',
+    count: 1922,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/eghdEP7dod63W53T-ytwo3eeLKOe0RK6a.jpg',
+    title: 'Trung tâm dạy nhạc',
+    slug: 'trung-tam-day-nhac',
+    count: 200,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/B9EFfouVyd5Ymdyx-bMI05NZVZh24bd5Y.jpg',
+    title: 'Trung tâm dạy toán',
+    slug: 'trung-tam-day-toan',
+    count: 522,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/3Wel9TM63CQP2xn3-LkPahaDiH4eDJpBz.jpg',
+    title: 'Trung tâm kỹ năng sống',
+    slug: 'trung-tam-ky-nang-song',
+    count: 244,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/9qLjEH6Jp43FS2Nl-ZL2ZruiODPDdh0ar.jpg',
+    title: 'Trung tâm tiếng Nhật',
+    slug: 'trung-tam-tieng-nhat',
+    count: 83,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/KZFxTsacAiDhZw1t-RgG9rF9uxcFR4CtZ.jpg',
+    title: 'Trung tâm dạy bơi',
+    slug: 'trung-tam-day-boi',
+    count: 23,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/0kdA7DshiqPrDSYr-1K9R2kMxSTkobOkd.jpg',
+    title: 'Luyện viết chữ đẹp',
+    slug: 'luyen-viet-chu-dep',
+    count: 80,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/AKXtRF8dMz7U3gsc-uFerJXeUzqxlZOP7.jpg',
+    title: 'Trung Tâm Mỹ Thuật',
+    slug: 'trung-tam-my-thuat',
+    count: 303,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/0or5SvBwwia1lzaU-NMYjfksBOBRAhC40.jpg',
+    title: 'Trung tâm dạy cờ vua',
+    slug: 'trung-tam-day-co-vua',
+    count: 91,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/F0QLskk0RZAHcWPs-3QhJBQW8ve2lrKqV.jpg',
+    title: 'Trung tâm dạy múa',
+    slug: 'trung-tam-day-mua',
+    count: 58,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/LZc2sJfViDLNbUYs-W1cayId4VzWXdwX4.jpg',
+    title: 'Trung tâm đào tạo MC',
+    slug: 'trung-tam-dao-tao-mc',
+    count: 53,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/AgJYakZ8MYLppa7w-cwBtbXTYLy3rutUy.jpg',
+    title: 'Trung tâm dạy nhảy',
+    slug: 'trung-tam-day-nhay',
+    count: 55,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/mMKZP4zlQ7DIsyZP-368WSvOILjl2472t.jpg',
+    title: 'Trung tâm dành cho trẻ đặc biệt',
+    slug: 'trung-tam-danh-cho-tre-dac-biet',
+    count: 324,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/eNOQ6O4NqyB5ow2X-6MZ2JaRcU6VXsran.jpg',
+    title: 'Trung tâm tiếng Trung',
+    slug: 'trung-tam-tieng-trung',
+    count: 204,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/FyxybLnRmecXq5vQ-2SANowh7CioO8R42.jpg',
+    title: 'Trung tâm mẫu nhí',
+    slug: 'trung-tam-mau-nhi',
+    count: 9,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/tdA8SlOKcM6wMkyx-jghKPK1JZSkHW6Lj.png',
+    title: 'Trung tâm dạy kèm, trung tâm gia sư',
+    slug: 'trung-tam-day-kem-trung-tam-gia-su',
+    count: 142,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/gmCwYadVWzRhMbLR-leWGkvhUlNViLcbe.png',
+    title: 'Trông trẻ',
+    slug: 'trong-tre',
+    count: 0,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/bmk6OmM6RfTw3OJA-QsPJFBZOU5tQ0oae.jpg',
+    title: 'Trung tâm đào tạo lập trình viên nhí',
+    slug: 'trung-tam-dao-tao-lap-trinh-vien-nhi',
+    count: 14,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/u1ifzpU8AWcxj1aj-RBJPDUlKbW64R6RG.jpg',
+    title: 'Trung tâm tiếng Hàn',
+    slug: 'trung-tam-tieng-han',
+    count: 91,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/z7YDL37wFjE7sd4Y-nhKLjcQjhfSl9z8z.png',
+    title: 'Tiền Tiểu Học',
+    slug: 'tien-tieu-hoc',
+    count: 10,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/pIUJmqhBvbhJh1T3-3GN2iLoKSxccikcc.png',
+    title: 'Trung tâm tiếng Anh Online',
+    slug: 'trung-tam-tieng-anh-online',
+    count: 15,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/4lNi8UEJNZbMWJ2b-WSEG1pSCGmMuk6JI.png',
+    title: 'Trung tâm tư vấn du học',
+    slug: 'trung-tam-tu-van-du-hoc',
+    count: 3,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/Wus7s4qfJqvxlpnv-mtvzmLvuXVxNkwEi.jpg',
+    title: 'Trung tâm luyện thi đại học',
+    slug: 'trung-tam-luyen-thi-dai-hoc',
+    count: 0,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/RfWXQANfNdn0hXdd-3vg3YYhRfcaHxjSd.jpg',
+    title: 'Trung tâm luyện thi cấp 3',
+    slug: 'trung-tam-luyen-thi-cap-3',
+    count: 0,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/RxXppD0Y1GncDFT7-vkTxiEHlcdIFqf2N.jpg',
+    title: 'Trung tâm luyện thi cấp 2',
+    slug: 'trung-tam-luyen-thi-cap-2',
+    count: 0,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/Utnhcp9SYYxuqop6-v99NwR7jg9Xfv9ST.png',
+    title: 'Trung tâm tiếng Pháp',
+    slug: 'trung-tam-tieng-phap',
+    count: 1,
+  },
+  {
+    thumbnail:
+      'https://s3.ap-southeast-1.amazonaws.com/kiddihub-prod/1/5jk2ilzQPtSy9Lb4-uTRTw1AYiESRFbpi.png',
+    title: 'Trung Tâm Bồi Dưỡng Cán bộ, Quản Lý Giáo Dục',
+    slug: 'trung-tam-boi-duong-can-bo-quan-ly-giao-duc',
+    count: 0,
+  },
+];
+
+const partners = [
+  {
+    name: 'gakken',
+    logo: 'https://gakkensteamprogram.vn/wp-content/uploads/2023/10/Gakken-logo.png',
+    link: 'https://gakken.vn',
+  },
+  {
+    name: 'kidsup',
+    logo: 'https://www.kidsup.net/wp-content/uploads/2021/11/logo_kidsup.svg',
+    link: 'https://kidsup.vn',
+  },
+  {
+    name: 'littlelives',
+    logo: 'https://cdn-1.littlelives.com/img/8600690.svg',
+    link: 'https://littlelives.vn',
+  },
+  {
+    name: 'UEd',
+    logo: 'https://logotruonghoc.vinadesign.vn/logo-img/logo-dai-hoc-giao-duc.jpg',
+    link: 'https://edu.vnu.edu.vn',
+  },
+];
+
+const newspapers = [
+  {
+    link: 'https://vtv.vn/goc-doanh-nghiep/kiddihub-va-gakken-holdings-trao-doi-van-kien-hop-tac-duoi-su-chung-kien-cua-thu-tuong-pham-minh-chinh-20211129164742809.htm',
+    image: 'https://s3.kiddihub.site/prod/vtv.png',
+  },
+  {
+    link: 'https://giaoducthoidai.vn/kiddihub-va-tap-doan-gakken-holdings-nhat-ban-trao-doi-bien-ban-ghi-nho-hop-tac-post464262.html',
+    image: 'https://s3.kiddihub.site/prod/giaoducthoidai.png',
+  },
+  {
+    link: 'https://www.24h.com.vn/tin-tuc-giao-duc/dau-dau-voi-bai-toan-tuyen-sinh-mam-non-tu-thuc-c678a1192843.html',
+    image: 'https://s3.kiddihub.site/prod/24h.png',
+  },
+  {
+    link: 'https://phunutoday.vn/chon-truong-mam-non-dung-qua-voi-vang-hay-ki-cang-voi-kiddihub-d267366.html',
+    image: 'https://s3.kiddihub.site/prod/phunutoday.png',
+  },
+  {
+    link: 'https://tamsugiadinh.vn/luu-y-khi-cha-me-chon-truong-mam-non-qua-internet/',
+    image: 'https://s3.kiddihub.site/prod/tamsugiadinh.png',
+  },
+  {
+    link: 'https://tinmoi.vn/chon-truong-mam-non-thoi-dai-cong-nghe-so-nhanh-chong-ma-van-du-thong-tin-011560997.html',
+    image: 'https://s3.kiddihub.site/prod/tinmoi.png',
+  },
+];
+
+const services = [
+  {
+    title: 'CÁC DỊCH VỤ TUYỂN SINH MẦM NON ĐA KÊNH CỦA KIDDIHUB',
+    link: '/',
+  },
+  {
+    title:
+      'ÁP DỤNG STEAM CỦA TẬP ĐOÀN HÀNG ĐẦU NHẬT BẢN (GSP) ĐỂ NÂNG CAO LỢI THẾ TUYỂN SINH',
+    link: '/',
+  },
+  {
+    title: 'CÁC DỊCH VỤ TUYỂN SINH MẦM NON ĐA KÊNH CỦA KIDDIHUB',
+    link: '/',
+  },
+  {
+    title:
+      'ÁP DỤNG STEAM CỦA TẬP ĐOÀN HÀNG ĐẦU NHẬT BẢN (GSP) ĐỂ NÂNG CAO LỢI THẾ TUYỂN SINH',
+    link: '/',
+  },
+  {
+    title: 'CÁC DỊCH VỤ TUYỂN SINH MẦM NON ĐA KÊNH CỦA KIDDIHUB',
+    link: '/',
+  },
+];

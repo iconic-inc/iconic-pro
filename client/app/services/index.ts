@@ -30,17 +30,13 @@ const fetcher = async <T = any>(
     console.log('fetch error');
     console.error(error);
 
-    throw new Response('Lỗi hệ thống', {
-      status: 500,
-    });
+    throw new Error('Lỗi hệ thống');
   });
   if (!response) {
     console.log('fetch error');
     console.error('No response');
 
-    throw new Response('Lỗi hệ thống', {
-      status: 500,
-    });
+    throw new Error('Lỗi hệ thống');
   }
 
   const data = (await response.json()) as {
@@ -68,7 +64,9 @@ const fetcher = async <T = any>(
   }
 
   if (data.errors) {
-    throw new Error(data.errors.message || response.statusText);
+    throw new Response(data.errors.message || response.statusText, {
+      status: data.errors.status || response.status,
+    });
   }
   return data.metadata;
 };

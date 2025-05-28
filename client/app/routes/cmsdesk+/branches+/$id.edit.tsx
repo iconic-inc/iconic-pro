@@ -155,7 +155,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     throw new Response('Chi nhánh không tồn tại', { status: 404 });
   }
 
-  return data({ branch }, { headers: request.headers });
+  return { branch };
 };
 
 export default function BranchEdit() {

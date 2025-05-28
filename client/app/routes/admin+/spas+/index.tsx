@@ -6,7 +6,7 @@ import { isAuthenticated } from '~/services/auth.server';
 import { parseAuthCookie } from '~/services/cookie.server';
 
 import { bulkDeleteSpas4Admin, listSpas4Admin } from '~/services/spa.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import SpaList from './components/SpaList';
 import { ISpa } from '~/interfaces/spa.interface';
 import SpaToolbar from './components/SpaToolbar';

@@ -8,7 +8,7 @@ import {
   bulkHardDeleteJobPosts,
   listJobPosts,
 } from '~/services/jobPost.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import JobPostList from './components/JobPostList';
 import { IJobPost, IJobPostDetails } from '~/interfaces/jobPost.interface';
 import JobPostToolbar from './components/JobPostToolbar';

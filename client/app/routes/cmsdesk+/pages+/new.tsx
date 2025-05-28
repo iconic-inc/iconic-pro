@@ -8,7 +8,14 @@ import PageEditor from './components/PageEditor';
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session, headers } = await isAuthenticated(request);
   if (!session) {
-    return data({ success: false, message: 'Unauthorized' }, { headers });
+    return data(
+      {
+        success: false,
+        toast: { message: 'Unauthorized', type: 'error' },
+        page: null,
+      },
+      { headers },
+    );
   }
 
   switch (request.method) {
@@ -79,15 +86,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         { headers },
       );
   }
-};
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const auth = await parseAuthCookie(request);
-  if (!auth) {
-    throw new Response('Unauthorized', { status: 401 });
-  }
-
-  return data({}, { headers: request.headers });
 };
 
 export default function CreatePage() {

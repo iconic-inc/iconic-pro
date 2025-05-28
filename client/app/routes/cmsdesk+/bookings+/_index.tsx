@@ -15,18 +15,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     const bookings = await getBookings(auth);
 
-    return data(
-      {
-        bookings,
-      },
-      { headers: request.headers },
-    );
+    return {
+      bookings,
+    };
   } catch (error) {
     console.error('Error loading bookings:', error);
     if (error instanceof Response) {
       throw error;
     }
-    return data({ bookings: [] }, { headers: request.headers });
+    return { bookings: [] };
   }
 };
 

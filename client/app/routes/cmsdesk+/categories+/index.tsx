@@ -81,6 +81,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const auth = await parseAuthCookie(request);
+
   if (!auth) {
     throw new Response('Unauthorized', { status: 401 });
   }
@@ -88,7 +89,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const categories = await getCategories();
   const pages = await getPages({ isPublished: true, user: auth });
 
-  return data({ categories, pages }, { headers: request.headers });
+  return { categories, pages };
 };
 
 export default function ManageCategories() {
@@ -149,7 +150,6 @@ export default function ManageCategories() {
 
   return (
     <div className='grid grid-cols-12 gap-16'>
-      {loading && <LoadingOverlay />}
       <Outlet />
 
       <fetcher.Form
@@ -265,8 +265,6 @@ export default function ManageCategories() {
           ))}
         </ul>
       </div>
-
-      <Outlet />
     </div>
   );
 }

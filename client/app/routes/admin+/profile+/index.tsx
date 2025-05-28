@@ -7,7 +7,7 @@ import HandsomeError from '~/components/HandsomeError';
 import UserProfileForm from '../_components/UserProfileForm';
 import { getCurrentUser, updateUser } from '~/services/user.server';
 import CustomButton from '~/widgets/CustomButton';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { parseAuthCookie } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

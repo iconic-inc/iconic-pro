@@ -17,7 +17,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   const { session, headers } = await isAuthenticated(request);
   if (!session) {
-    return data({ success: false, message: 'Unauthorized' }, { headers });
+    return data(
+      { success: false, toast: { type: 'error', message: 'Unauthorized' } },
+      { headers },
+    );
   }
 
   switch (request.method) {
@@ -107,7 +110,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   // Fetch the page from the database
   const page = await getPostDetail(id, auth);
 
-  return data({ page }, { headers: request.headers });
+  return { page };
 };
 
 export default function EditPage() {

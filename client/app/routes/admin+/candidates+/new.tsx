@@ -3,7 +3,7 @@ import { ICandidateAttrs } from '~/interfaces/candidate.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createCandidate } from '~/services/candidate.server';
 import CandidateCreateForm from './components/CandidateCreateForm';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 type ActionData = {
   success: boolean;

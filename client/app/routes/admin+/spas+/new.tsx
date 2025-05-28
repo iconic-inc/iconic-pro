@@ -3,7 +3,7 @@ import { ISpaAttrs } from '~/interfaces/spa.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { parseAuthCookie } from '~/services/cookie.server';
 import { createSpa4Admin } from '~/services/spa.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import SpaCreateForm from './components/SpaCreateForm';
 import { listSpaOwners } from '~/services/spaOwner.server';
 import { useLoaderData } from '@remix-run/react';

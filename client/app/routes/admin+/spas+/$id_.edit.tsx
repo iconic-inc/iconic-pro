@@ -6,7 +6,7 @@ import { parseAuthCookie } from '~/services/cookie.server';
 import { getSpaById4Admin, updateSpa4Admin } from '~/services/spa.server';
 import SpaEditForm from './components/SpaEditForm';
 import { ISpaAttrs } from '~/interfaces/spa.interface';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { listSpaOwners } from '~/services/spaOwner.server';
 
 type ActionData = {

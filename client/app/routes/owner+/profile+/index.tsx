@@ -6,7 +6,7 @@ import { isAuthenticated } from '~/services/auth.server';
 import HandsomeError from '~/components/HandsomeError';
 import UserProfileForm from '../_components/UserProfileForm';
 import { getCurrentUser } from '~/services/user.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { updateMySpaOwner } from '~/services/spaOwner.server';
 import { parseAuthCookie } from '~/services/cookie.server';
 

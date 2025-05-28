@@ -70,18 +70,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const pages = await getPages({ isPublished: true, user: auth });
     const categories = await getCategories();
 
-    return data({ category, pages, categories }, { headers: request.headers });
+    return { category, pages, categories };
   } catch (error) {
     console.error('Error loading category detail:', error);
     if (error instanceof Response) {
       throw error;
     }
-    return data({ category: null }, { headers: request.headers });
+    throw new Response('Internal Server Error', { status: 500 });
   }
 };
 
 export default function CategoryDetailPopup() {
-  const { category, pages, categories } = useLoaderData<typeof loader>() as any;
+  const { category, pages, categories } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const revalidator = useRevalidator();
 

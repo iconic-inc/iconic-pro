@@ -3,7 +3,7 @@ import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 
 import { getMyJobPostById } from '~/services/jobPost.server';
 import CustomButton from '~/widgets/CustomButton';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { formatCurrency } from '~/utils';
 import { parseAuthCookie } from '~/services/cookie.server';
 

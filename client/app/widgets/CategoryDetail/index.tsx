@@ -104,7 +104,7 @@ export default function CategoryDetail({
 
         <div className='flex justify-between items-center'>
           <button
-            className='center rounded-lg bg-red py-2 px-3 font-sans font-bold uppercase text-white 
+            className='center rounded-lg bg-red-500 py-2 px-3 font-sans font-bold uppercase text-white 
           shadow-md shadow-red/20 transition-all hover:shadow-lg enable:active:bg-red/80 
           disabled:opacity-60'
             type='button'
@@ -124,7 +124,7 @@ export default function CategoryDetail({
           </button>
 
           <button
-            className='center rounded-lg bg-green py-2 px-3 font-sans font-bold uppercase text-white 
+            className='center rounded-lg bg-green-500 py-2 px-3 font-sans font-bold uppercase text-white 
         shadow-md shadow-green/20 transition-all hover:shadow-lg enable:active:bg-green/80 
         disabled:opacity-60'
             type='button'

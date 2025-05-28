@@ -1,9 +1,9 @@
 import { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { Suspense, useEffect } from 'react';
-import Footer from '~/components/Footer';
+import Footer from '~/components/website/Footer';
 import HandsomeError from '~/components/HandsomeError';
-import Header from '~/components/Header';
+import Header from '~/components/website/Header';
 
 export const links: LinksFunction = () => {
   return [

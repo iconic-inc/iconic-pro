@@ -5,7 +5,7 @@ import { isAuthenticated } from '~/services/auth.server';
 import { getCandidateById, updateCandidate } from '~/services/candidate.server';
 import CandidateEditForm from './components/CandidateEditForm';
 import { ICandidateAttrs } from '~/interfaces/candidate.interface';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { parseAuthCookie } from '~/services/cookie.server';
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {

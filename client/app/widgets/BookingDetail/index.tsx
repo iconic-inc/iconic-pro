@@ -40,11 +40,11 @@ export default function BookingDetail({
         <div>
           <b>Trạng thái: </b>
           {booking.bok_viewed ? (
-            <p className='inline w-fit lg:hidden absolute top-0 left-0 bg-green px-2 py-1 text-xs font-bold uppercase text-white'>
+            <p className='inline w-fit lg:hidden absolute top-0 left-0 bg-green-500 px-2 py-1 text-xs font-bold uppercase text-white'>
               Đã xem
             </p>
           ) : (
-            <p className='inline w-fit rounded bg-red py-1 px-3 text-xs font-bold text-white'>
+            <p className='inline w-fit rounded bg-red-500 py-1 px-3 text-xs font-bold text-white'>
               Chưa xem
             </p>
           )}
@@ -63,7 +63,7 @@ export default function BookingDetail({
 
         {booking.bok_viewed ? (
           <button
-            className='center rounded-lg bg-red py-2 px-3 font-sans font-bold uppercase text-white 
+            className='center rounded-lg bg-red-500 py-2 px-3 font-sans font-bold uppercase text-white 
           shadow-md shadow-red/20 transition-all hover:shadow-lg enable:active:bg-red/80 
           disabled:opacity-60'
             type='button'
@@ -79,7 +79,7 @@ export default function BookingDetail({
           </button>
         ) : (
           <button
-            className='center rounded-lg bg-green py-2 px-3 font-sans font-bold uppercase text-white 
+            className='center rounded-lg bg-green-500 py-2 px-3 font-sans font-bold uppercase text-white 
         shadow-md shadow-green/20 transition-all hover:shadow-lg enable:active:bg-green/80 
         disabled:opacity-60'
             type='button'

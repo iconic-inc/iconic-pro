@@ -44,13 +44,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       throw new Response('Booking ID is required', { status: 400 });
     }
     const booking = await getBookingDetail(params.id, auth);
-    return data({ booking }, { headers: request.headers });
+    return { booking };
   } catch (error) {
     console.error('Error loading booking detail:', error);
     if (error instanceof Response) {
       throw error;
     }
-    return data({ booking: null }, { headers: request.headers });
+    return { booking: null };
   }
 };
 

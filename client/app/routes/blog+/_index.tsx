@@ -1,12 +1,12 @@
 import { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
 
 import { IPage } from '~/interfaces/page.interface';
-import VerticalPost from '~/components/Post/Vertical';
-import HorizontalPost from '~/components/Post/Horizontal';
+import VerticalPost from '~/components/website/Post/Vertical';
+import HorizontalPost from '~/components/website/Post/Horizontal';
 import { getPosts } from '~/services/page.server';
 import { Link, useLoaderData } from '@remix-run/react';
 import Defer from '~/components/Defer';
-import PostList from '~/components/PostList';
+import PostList from '~/components/website/PostList';
 
 export const links: LinksFunction = () => {
   return [

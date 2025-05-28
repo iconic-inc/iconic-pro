@@ -6,7 +6,7 @@ import { parseAuthCookie } from '~/services/cookie.server';
 import { getSpaOwnerById } from '~/services/spaOwner.server';
 import { formatDate, calculateAge } from '~/utils';
 import CustomButton from '~/widgets/CustomButton';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 // Loader function to fetch data from API
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {

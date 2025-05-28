@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from '@remix-run/node';
 import { Await, useLoaderData } from '@remix-run/react';
 import { Suspense } from 'react';
-import PostList from '~/components/PostList';
+import PostList from '~/components/website/PostList';
 import { clientFetch } from '~/lib';
 import { getPosts } from '~/services/page.server';
 

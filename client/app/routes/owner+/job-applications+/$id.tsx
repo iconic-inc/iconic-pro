@@ -3,7 +3,7 @@ import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 
 import { getMyJobApplicationById } from '~/services/jobApplication.server';
 import { formatDate, calculateAge } from '~/utils';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { parseAuthCookie } from '~/services/cookie.server';
 
 // Loader function to fetch data from API

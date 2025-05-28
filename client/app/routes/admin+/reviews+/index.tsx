@@ -9,7 +9,7 @@ import {
   bulkHardDeleteReviews4Admin,
   listReviews4Admin,
 } from '~/services/review.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import ReviewList from './components/ReviewList';
 import { IReview } from '~/interfaces/review.interface';
 import ReviewToolbar from './components/ReviewToolbar';

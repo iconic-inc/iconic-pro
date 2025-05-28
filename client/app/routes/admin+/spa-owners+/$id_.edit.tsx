@@ -6,7 +6,7 @@ import { parseAuthCookie } from '~/services/cookie.server';
 import { getSpaOwnerById, updateSpaOwner } from '~/services/spaOwner.server';
 import SpaOwnerEditForm from './components/SpaOwnerEditForm';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 type ActionData = {
   success: boolean;

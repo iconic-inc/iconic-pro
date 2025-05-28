@@ -89,13 +89,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const auth = await parseAuthCookie(request);
 
-    if (url.pathname === '/admin/login') {
-      return {
-        user: null,
-        unseenBookings: 0,
-      };
-    }
-
     if (!auth) {
       return redirect('/admin/login' + `?redirect=${url.pathname}`);
     }

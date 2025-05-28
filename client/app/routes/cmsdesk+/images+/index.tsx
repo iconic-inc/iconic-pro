@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { RiAddLine, RiLayoutGridLine, RiListCheck } from '@remixicon/react';
+import { Plus, LayoutGrid, ListChecks } from 'lucide-react';
 import { Link, useLoaderData, useLocation } from '@remix-run/react';
 
 import { IImage } from '~/interfaces/image.interface';
@@ -50,7 +50,7 @@ export default function ImagesPage() {
             setLayout('grid');
           }}
         >
-          <RiLayoutGridLine size={20} />
+          <LayoutGrid size={20} />
         </button>
 
         <button
@@ -62,7 +62,7 @@ export default function ImagesPage() {
             setLayout('list');
           }}
         >
-          <RiListCheck size={20} />
+          <ListChecks size={20} />
         </button>
       </div>
 
@@ -104,7 +104,7 @@ export default function ImagesPage() {
           input.click();
         }}
       >
-        <RiAddLine />
+        <Plus />
       </button>
 
       {loading && <LoadingOverlay />}

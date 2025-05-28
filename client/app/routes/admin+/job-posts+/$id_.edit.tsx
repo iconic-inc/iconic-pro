@@ -5,7 +5,7 @@ import { isAuthenticated } from '~/services/auth.server';
 import { getJobPostById, updateJobPost } from '~/services/jobPost.server';
 import JobPostEditForm from './components/JobPostEditForm';
 import { IJobPostAttrs } from '~/interfaces/jobPost.interface';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import { listJobPosts } from '~/services/jobPost.server';
 import { parseAuthCookie } from '~/services/cookie.server';
 
