@@ -1,10 +1,10 @@
 import { ISessionUser } from '~/interfaces/auth.interface';
 import { fetcher } from '.';
-import { IUser } from '~/interfaces/user.interface';
-
-const getUsers = async () => {
-  const user = await fetcher('/users');
-};
+import {
+  IUser,
+  IUserAttrs,
+  IUserSocialLogin,
+} from '~/interfaces/user.interface';
 
 const getCurrentUser = async (request: ISessionUser) => {
   const user = await fetcher('/users/me', {
@@ -12,8 +12,6 @@ const getCurrentUser = async (request: ISessionUser) => {
   });
   return user as IUser;
 };
-
-const createUser = async () => {};
 
 const updateUser = async (userId: string, data: any, request: ISessionUser) => {
   const user = await fetcher(`/users/${userId}`, {
@@ -24,6 +22,19 @@ const updateUser = async (userId: string, data: any, request: ISessionUser) => {
   return user as IUser;
 };
 
-const deleteUser = async () => {};
+async function createOrUpdateUserFromOAuth({
+  provider,
+  profile,
+  browserId,
+}: {
+  provider: 'google' | 'facebook';
+  profile: IUserSocialLogin;
+  browserId: string;
+}) {
+  return await fetcher<ISessionUser>('/auth/social-login', {
+    method: 'POST',
+    body: JSON.stringify({ provider, profile, browserId }),
+  });
+}
 
-export { getUsers, getCurrentUser, createUser, updateUser, deleteUser };
+export { getCurrentUser, updateUser, createOrUpdateUserFromOAuth };

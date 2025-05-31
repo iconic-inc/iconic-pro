@@ -66,6 +66,7 @@ const fetcher = async <T = any>(
   if (data.errors) {
     throw new Response(data.errors.message || response.statusText, {
       status: data.errors.status || response.status,
+      statusText: response.statusText,
     });
   }
   return data.metadata;

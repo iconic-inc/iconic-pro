@@ -17,7 +17,7 @@ import Specifications from '~/widgets/Specifications';
 import SearchBox from '~/components/website/SearchBox';
 
 export const meta: MetaFunction = ({ data }) => {
-  console.log('meta loader data:', data);
+  console.log('meta loade data:', data);
   return [
     { title: 'New Remix App' },
     { name: 'description', content: 'Welcome to Remix!' },

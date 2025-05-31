@@ -11,6 +11,8 @@ import {
   parseAuthCookie,
   serializeAuthCookie,
 } from '~/services/cookie.server';
+import PasswordInput from '~/components/PasswordInput';
+import TextInput from '~/components/TextInput';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const auth = await parseAuthCookie(request);
@@ -85,7 +87,12 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   } catch (err: any) {
     if (err instanceof Response) {
-      throw err;
+      return {
+        toast: {
+          message: 'Đăng nhập không thành công. Vui lòng thử lại.',
+          type: 'error',
+        },
+      };
     }
 
     return {
@@ -155,11 +162,17 @@ const Login = () => {
   const [fingerprint, setFingerprint] = useState('');
 
   useEffect(() => {
-    import('@thumbmarkjs/thumbmarkjs').then((module) => {
-      module
-        .getFingerprint()
+    import('@fingerprintjs/fingerprintjs').then((FingerprintJS) => {
+      // Initialize an agent at application startup
+      FingerprintJS.load()
+        .then((fp) => {
+          // Get the visitor identifier when you need it
+          return fp.get();
+        })
         .then((result) => {
-          setFingerprint(result);
+          // This is the visitor identifier
+          const visitorId = result.visitorId;
+          setFingerprint(visitorId);
         })
         .catch((error) => {
           console.error('Error getting fingerprint:', error);
@@ -190,74 +203,23 @@ const Login = () => {
           </p>
 
           <fetcher.Form method='POST' className='space-y-5'>
-            <div className='space-y-2'>
-              <label className='block text-sm font-medium text-gray-700'>
-                Username
-              </label>
-              <div className='relative'>
-                <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400'>
-                  <span className='material-symbols-outlined text-sm'>
-                    person
-                  </span>
-                </span>
-                <input
-                  type='text'
-                  name='username'
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder='Nhập tên đăng nhập hoặc email'
-                  className='w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-1 
-                  focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 focus-visible:outline-none'
-                />
-              </div>
-            </div>
-
-            <div className='space-y-2'>
-              <div className='flex justify-between items-center'>
-                <label className='block text-sm font-medium text-gray-700'>
-                  Password
-                </label>
-                <a
-                  href='#'
-                  className='text-xs text-blue-500 hover:text-blue-600 hover:underline transition-all'
-                >
-                  Forgot password?
-                </a>
-              </div>
-              <div className='relative'>
-                <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400'>
-                  <span className='material-symbols-outlined text-sm'>
-                    lock
-                  </span>
-                </span>
-                <input
-                  type='password'
-                  placeholder='Enter your password'
-                  name='password'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className='w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-1 
-                  focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 focus-visible:outline-none'
-                />
-                <button
-                  type='button'
-                  className='absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-all'
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <span className='material-symbols-outlined text-normal'>
-                      visibility
-                    </span>
-                  ) : (
-                    <span className='material-symbols-outlined text-normal'>
-                      visibility_off
-                    </span>
-                  )}
-                </button>
-              </div>
-            </div>
-
             <input type='hidden' name='fingerprint' value={fingerprint} />
+            <TextInput
+              label='Tên đăng nhập'
+              id='username'
+              name='username'
+              value={username}
+              onChange={(value) => setUsername(value)}
+              placeholder='Nhập tên đăng nhập hoặc email'
+            />
+            <PasswordInput
+              id='password'
+              name='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder='Nhập mật khẩu'
+              isInvalid={false}
+            />
 
             <button
               type='submit'

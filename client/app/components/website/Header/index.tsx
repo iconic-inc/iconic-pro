@@ -2,10 +2,23 @@ import { Link, NavLink } from '@remix-run/react';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import Defer from '~/components/Defer';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Button } from '~/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
+import { AuthConsumer, isClient } from '~/context/auth.context';
+import { ICategory } from '~/interfaces/category.interface';
+import { IUser } from '~/interfaces/user.interface';
 import { useMainLoaderData } from '~/lib/useMainLoaderData';
 
 export default function Header({ shadow }: { shadow?: boolean }) {
-  const { appSettings, categories } = useMainLoaderData();
+  const { appSettings, categories, user } = useMainLoaderData();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -16,7 +29,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
       } fixed top-0 w-full bg-white flex z-40 `}
     >
       <div className='container flex items-center justify-between'>
-        <Defer resolve={appSettings}>
+        <Defer resolve={appSettings} fallback={<div className='logo' />}>
           {(app) => (
             <div className='logo'>
               <Link className='px-2 py-4' to='/'>
@@ -44,7 +57,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
                   className='flex items-center text-[--sub1-text] rounded-lg bg-white h-full min-w-60 gap-4 lg:w-full flex-col lg:flex-row m-2 lg:m-0 p-4 lg:p-0'
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <Defer resolve={categories}>
+                  <Defer<ICategory[]> resolve={categories}>
                     {(cats) =>
                       cats.map((item, index) => (
                         <li
@@ -68,21 +81,91 @@ export default function Header({ shadow }: { shadow?: boolean }) {
         </Defer>
 
         <div className='btn text-[--sub4-text] font-semibold'>
-          <Link
-            to='/login'
-            className='inline-flex items-center gap-2 rounded border bg-[--sub4-color] px-4 py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
-          >
-            Chủ Spa
-          </Link>
+          <AuthConsumer>
+            {(auth) =>
+              auth.isLoggedIn ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className='w-8 h-8 transition-transform hover:scale-105'>
+                      <Defer<IUser>
+                        resolve={user!}
+                        fallback={
+                          <AvatarImage src='/assets/user-avatar-placeholder.jpg' />
+                        }
+                      >
+                        {(user) => (
+                          <>
+                            <AvatarImage
+                              src={
+                                user?.usr_avatar?.img_url ||
+                                '/assets/user-avatar-placeholder.jpg'
+                              }
+                              alt={`${user?.usr_firstName} ${user?.usr_lastName}`}
+                            />
+                            <AvatarFallback>
+                              {user?.usr_firstName?.charAt(0).toUpperCase() ||
+                                user?.usr_lastName?.charAt(0).toUpperCase() ||
+                                'U'}
+                            </AvatarFallback>
+                          </>
+                        )}
+                      </Defer>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className='w-56'>
+                    <DropdownMenuGroup>
+                      {isClient(auth.role) ? (
+                        <>
+                          <DropdownMenuItem>
+                            <Link className='w-full' to='/user/profile'>
+                              Tài khoản
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Link to='/user/don-ung-tuyen' className='w-full'>
+                              Đơn ứng tuyển
+                            </Link>
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <DropdownMenuItem>
+                          <Link to='/owner'>Trang quản lý</Link>
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
 
-          <Link
-            to='/login'
-            className='inline-flex items-center gap-2 rounded border border-[--sub4-color] px-4 
+                    <DropdownMenuItem
+                      onClick={() => {
+                        auth.logout();
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Link
+                    to='/login?tab=chuspa'
+                    className='inline-flex items-center gap-2 rounded border bg-[--sub4-color] px-4 py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
+                  >
+                    Chủ Spa
+                  </Link>
+
+                  <Link
+                    to='/login'
+                    className='inline-flex items-center gap-2 rounded border border-[--sub4-color] px-4 
             py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none 
             disabled:opacity-50 disabled:shadow-none hidden sm:inline-block text-[--sub4-color]'
-          >
-            Đăng nhập
-          </Link>
+                  >
+                    Đăng nhập
+                  </Link>
+                </>
+              )
+            }
+          </AuthConsumer>
 
           <button
             className='lg:hidden'

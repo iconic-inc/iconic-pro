@@ -41,7 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       case 'spa-owner':
         return redirect('/owner');
       case 'client':
-        return redirect('/profile');
+        return redirect('/user/profile');
       default:
         break;
     }

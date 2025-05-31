@@ -41,7 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       case 'admin':
         return redirect('/admin');
       case 'client':
-        return redirect('/profile');
+        return redirect('/user/profile');
       default:
         break;
     }
