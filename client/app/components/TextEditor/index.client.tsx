@@ -1,106 +1,160 @@
 import { useEffect, useRef, useState } from 'react';
-import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header';
-import List from '@editorjs/list';
-import Image from '@editorjs/image';
-// @ts-ignore
-import Link from '@editorjs/link';
-// @ts-ignore
-import Raw from '@editorjs/raw';
-// @ts-ignore
-import Embed from '@editorjs/embed';
-import Table from '@editorjs/table';
-import Quote from '@editorjs/quote';
-// @ts-ignore
-import Marker from '@editorjs/marker';
-import Warning from '@editorjs/warning';
-import Underline from '@editorjs/underline';
-import Delimiter from '@editorjs/delimiter';
-import Paragraph from '@editorjs/paragraph';
-// @ts-ignore
-import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
+import Quill from 'quill';
 
+import 'quill/dist/quill.snow.css';
 import './index.css';
+import { ITextEditorProps } from '~/interfaces/app.interface';
 
-export default function TextEditor({
+export default function TextEditorClient({
   value,
   onChange,
-}: {
-  value: any;
-  onChange: (...args: any[]) => any;
-}) {
-  const isReady = useRef(false);
-  const [editor, setEditor] = useState<EditorJS>();
+  name,
+  className = '',
+  placeholder = 'Nhập nội dung ở đây...',
+  readOnly = false,
+}: ITextEditorProps) {
+  const quillRef = useRef<HTMLDivElement | null>(null);
+  const [quill, setQuill] = useState<Quill | null>(null);
+  const [length, setLength] = useState(0);
 
   useEffect(() => {
-    if (!isReady.current) {
-      const editor = new EditorJS({
-        holder: 'editorjs',
-        // @ts-ignore
-        tools,
-        data: value && JSON.parse(value),
-        onChange: (api, e) => {
-          api.saver.save().then((outputData: any) => {
-            onChange(JSON.stringify(outputData));
-          });
+    if (quillRef.current && !quill) {
+      const editor = document.createElement('div');
+      quillRef.current.appendChild(editor);
+
+      const quillInstance = new Quill(editor, {
+        theme: 'snow', // or 'bubble'
+        placeholder,
+        readOnly,
+        modules: {
+          toolbar: {
+            container: [
+              [{ header: [1, 2, 3, 4, 5, false] }],
+              ['bold', 'italic', 'underline'],
+              [
+                {
+                  color: [
+                    '#000000', // Black
+                    '#212121', // Dark Gray (Primary Text)
+                    '#757575', // Medium Gray (Secondary Text)
+                    '#FFFFFF', // White
+                    '#FF0000', // Red
+                    '#D32F2F', // Error Red
+                    '#008000', // Green
+                    '#388E3C', // Success Green
+                    '#0000FF', // Blue
+                    '#1976D2', // Info Blue
+                    '#FFFF00', // Yellow
+                    '#F57C00', // Warning Orange
+                    '#800080', // Purple
+                    '#9333EA', // Purple-600
+                    '#FFA500', // Orange
+                    '#4682B4', // Steel Blue
+                    '#008080', // Teal
+                    '#000080', // Navy
+                  ],
+                },
+                {
+                  background: [
+                    '#FFFFFF', // White
+                    '#EEEEEE', // Gray
+                    '#FFCDD2', // Red - stronger
+                    '#C8E6C9', // Green - stronger
+                    '#BBDEFB', // Blue - stronger
+                    '#FFE0B2', // Orange/Amber - stronger
+                    '#E1BEE7', // Purple - stronger
+                    '#FFF9C4', // Yellow - stronger
+                    '#D7CCC8', // Brown - light
+                    '#B3E5FC', // Light Blue - stronger
+                    '#F0F4C3', // Lime - stronger
+                  ],
+                },
+              ],
+              ['link', 'image'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['clean'], // remove formatting
+            ],
+          },
         },
       });
-      isReady.current = true;
-      setEditor(editor);
+
+      // Custom image upload handler
+      (quillInstance.getModule('toolbar') as any).addHandler('image', () => {
+        handleImageUpload(quillInstance); // Pass quillInstance directly
+      });
+
+      quillInstance.clipboard.dangerouslyPasteHTML(value);
+      setLength(quillInstance.getLength() - 1);
+
+      quillInstance.on('text-change', (delta) => {
+        onChange(quillInstance.root.innerHTML);
+        setLength(quillInstance.getLength() - 1);
+      });
+      setQuill(quillInstance);
+
+      return () => {
+        quillRef.current = document.createElement('div');
+      };
     }
-  }, []);
+  }, [quillRef, quill, onChange]);
 
-  return <div id='editorjs' className='border rounded mt-2'></div>;
+  // Custom image handler for Cloudinary
+  const handleImageUpload = (quill: Quill) => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('name', 'img');
+    input.setAttribute('accept', 'image/*');
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null;
+      if (file) {
+        try {
+          const range = quill.getSelection();
+          const placeholderUrl = '/assets/loading.svg'; // Replace with your placeholder image URL
+
+          // Save the placeholder position to replace it later
+          const placeholderIndex = range?.index || 0;
+
+          // Insert placeholder image at the current selection
+          quill.insertEmbed(placeholderIndex, 'image', placeholderUrl);
+
+          const formData = new FormData();
+          formData.append('img', file);
+          formData.append('folder', 'blog');
+
+          const res = await fetch('/api/images/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          const data = await res.json();
+
+          quill.deleteText(placeholderIndex, 1); // Remove placeholder
+
+          // const altText = prompt('Enter alt text for the image:');
+          const img = `<p><img src="${data.file.url}"/></p>`;
+
+          quill.clipboard.dangerouslyPasteHTML(range?.index || 0, img);
+        } catch (error) {
+          console.error('Image upload failed:', error);
+        }
+      }
+    };
+
+    input.click();
+  };
+
+  return (
+    <div
+      id='quill-container'
+      className={`quill-container flex flex-col h-full ${className}`}
+    >
+      <div className='overflow-y-auto flex-1 flex flex-col' ref={quillRef} />
+
+      <input type='hidden' name={name} value={value} />
+
+      <div className='border border-zinc-300 text-sm py-2 flex justify-between items-center px-4'>
+        <span className='controls-right'>{length} ký tự</span>
+      </div>
+    </div>
+  );
 }
-
-const tools = {
-  list: {
-    class: List,
-    inlineToolbar: true,
-  },
-  header: {
-    class: Header,
-    tunes: ['textAlign'],
-  },
-  paragraph: {
-    class: Paragraph,
-    tunes: ['textAlign'],
-  },
-  image: {
-    class: Image,
-    config: {
-      endpoints: {
-        byFile: '/api/images/upload', // Your backend file uploader endpoint
-        byUrl: '/api/images/fetchUrl', // Your endpoint that provides uploading by Url
-      },
-      field: 'img',
-    },
-  },
-  linkTool: {
-    class: Link,
-    config: {
-      endpoint: '/api/fetchUrl', // Your backend endpoint for url data fetching,
-    },
-  },
-  html: Raw,
-  embed: Embed,
-  table: {
-    class: Table,
-    inlineToolbar: true,
-    config: {
-      maxRows: 5,
-      maxCols: 5,
-    },
-  },
-  quote: Quote,
-  marker: Marker,
-  warning: Warning,
-  underline: Underline,
-  delimiter: Delimiter,
-  textAlign: {
-    class: AlignmentTuneTool,
-    config: {
-      default: 'left',
-    },
-  },
-};

@@ -10,19 +10,22 @@ router.post('/:id/views', PageController.increasePageViews);
 
 router.get(
   '/all',
+  authenticationV2,
   hasPermission('page', 'readAny'),
   PageController.getAllPages
 );
+
+router.get(
+  '/unpublished',
+  authenticationV2,
+  hasPermission('page', 'readAny'),
+  PageController.getUnpublishedPages
+);
+
 router.get('/:id', PageController.getPage);
 router.get('/', PageController.getPublishedPages);
 
 router.use(authenticationV2);
-
-router.get(
-  '/unpublished',
-  hasPermission('page', 'readAny'),
-  PageController.getUnpublishedPages
-);
 
 router.put(
   '/:id',

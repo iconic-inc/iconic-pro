@@ -102,7 +102,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
                               }
                               alt={`${user?.usr_firstName} ${user?.usr_lastName}`}
                             />
-                            <AvatarFallback>
+                            <AvatarFallback className='bg-gray-500 text-white'>
                               {user?.usr_firstName?.charAt(0).toUpperCase() ||
                                 user?.usr_lastName?.charAt(0).toUpperCase() ||
                                 'U'}

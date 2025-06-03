@@ -5,6 +5,7 @@ import { AuthController } from '../../controllers/auth.controller';
 
 const authRouter = express.Router();
 
+authRouter.post('/social-login', AuthController.socialLogin);
 authRouter.post('/signup', AuthController.signUp);
 authRouter.post('/signin', AuthController.signIn);
 authRouter.post('/refresh-token', AuthController.refreshToken);

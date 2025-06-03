@@ -105,7 +105,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return data(
           {
             success: true,
-            message: `Đã xóa ${spaIds.length} chủ spa thành công`,
+            message: `Đã xóa ${spaIds.length} spa thành công`,
           },
           { headers },
         );

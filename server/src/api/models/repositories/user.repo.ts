@@ -19,13 +19,19 @@ const findUserById = async (id: string) => {
     return await UserModel.findOne({
       _id: id,
       usr_status: 'active',
-    }).populate('usr_role', 'name slug');
+    })
+      .populate('usr_role', 'name slug')
+      .populate('usr_avatar', 'name url')
+      .lean();
   }
 
   return await UserModel.findOne({
     $or: [{ usr_email: id }, { usr_username: id }],
     usr_status: 'active',
-  }).populate('usr_role', 'name slug');
+  })
+    .populate('usr_role', 'name slug')
+    .populate('usr_avatar', 'name url')
+    .lean();
 };
 
 export { getAllUsers, createUser, findUserByEmail, findUserById };
