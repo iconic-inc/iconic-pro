@@ -21,17 +21,9 @@ export const links: LinksFunction = () => {
 export default function BlogTemplate() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Header shadow />
-      </Suspense>
-
       <main className='mt-20 md:mt-0'>
         <Outlet />
       </main>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <Footer />
-      </Suspense>
     </>
   );
 }

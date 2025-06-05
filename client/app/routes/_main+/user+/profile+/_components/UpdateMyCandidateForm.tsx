@@ -63,7 +63,7 @@ export default function UpdateMyCandidateForm({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.addEventListener('beforeunload', (e) => {
+      const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
         if (
           confirm(
             'Bạn có chắc muốn rời khỏi trang này? Thông tin đã thay đổi sẽ không được lưu.',
@@ -72,9 +72,11 @@ export default function UpdateMyCandidateForm({
           return true;
         }
         e.preventDefault();
-      });
+      };
+      window.addEventListener('beforeunload', beforeUnloadHandler);
+
       return () => {
-        window.removeEventListener('beforeunload', () => {});
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
       };
     }
   }, []);
@@ -91,7 +93,7 @@ export default function UpdateMyCandidateForm({
       <Card className='col-span-12 shadow-md hover:shadow-lg transition-all'>
         <CardContent className='flex justify-between p-4 sm:p-6'>
           <div className='flex-1 flex flex-col items-start gap-4'>
-            <div className='relative flex items-start justify-between w-full gap-4 sm:gap-6'>
+            <div className='relative flex flex-col-reverse md:flex-row items-center md:items-start justify-between w-full gap-4 sm:gap-6'>
               <div className='w-60'>
                 <ImageInput
                   value={avatar}
@@ -190,7 +192,7 @@ export default function UpdateMyCandidateForm({
                     className='mt-2'
                     defaultValue={candidate.can_summary}
                     placeholder='Nhập tóm tắt giới thiệu về bản thân.'
-                    rows={5}
+                    rows={8}
                   />
                 </Label>
               </div>
@@ -273,7 +275,7 @@ export default function UpdateMyCandidateForm({
                       className='text-gray-600'
                       defaultValue={
                         user.usr_birthdate
-                          ? formatDate(user.usr_birthdate, 'yyyy-MM-dd')
+                          ? formatDate(user.usr_birthdate, 'YYYY-MM-DD')
                           : ''
                       }
                     />

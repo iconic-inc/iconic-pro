@@ -52,7 +52,9 @@ export default function Index() {
                 bởi Gakken - Tập đoàn giáo dục hàng đầu Nhật Bản
               </p>
 
-              <SearchBox />
+              <div className='w-2/3'>
+                <SearchBox />
+              </div>
             </div>
           </div>
         </div>

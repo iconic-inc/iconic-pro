@@ -167,4 +167,23 @@ export class JobApplicationController {
       ),
     });
   }
+
+  /**
+   * Get a candidate's application for a specific job post
+   * Throws NotFoundError if application doesn't exist
+   */
+  static async getJobApplication(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    return OK({
+      res,
+      message: 'Job application details',
+      metadata: await JobApplicationService.getJobApplication(
+        req.user.userId,
+        req.params.jobPostId
+      ),
+    });
+  }
 }

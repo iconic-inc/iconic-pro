@@ -334,7 +334,7 @@ export class JobApplicationService {
     const apps = await JobApplicationModel.find({
       jap_candidate: candidate.id,
     })
-      .populate('jap_jobPost', 'jpo_title')
+      .populate('jap_jobPost', 'jpo_title jpo_salaryFrom jpo_salaryTo')
       .skip(((query.page || 1) - 1) * (query.limit || 20))
       .limit(query.limit || 20);
     const total = await JobApplicationModel.countDocuments({
@@ -359,7 +359,7 @@ export class JobApplicationService {
     const app = await JobApplicationModel.findOne({
       _id: appId,
       jap_candidate: candidate.id,
-    }).populate('jap_jobPost', 'jpo_title jpo_spa');
+    }).populate('jap_jobPost');
     if (!app) throw new NotFoundError('Application not found');
 
     return getReturnData(app);
@@ -376,5 +376,26 @@ export class JobApplicationService {
     if (!deleted) throw new NotFoundError('Application not found');
 
     return getReturnData({ id: appId });
+  }
+
+  /**
+   * Get a candidate's application for a specific job post
+   * GET /client/job-applications/jobs/:jobPostId/application
+   * Throws NotFoundError if application doesn't exist
+   */
+  static async getJobApplication(userId: string, jobPostId: string) {
+    if (!userId) throw new BadRequestError('User ID is required');
+
+    const candidate = await CandidateModel.findOne({ can_user: userId });
+    if (!candidate) throw new NotFoundError('Candidate profile not found');
+
+    const application = await JobApplicationModel.findOne({
+      jap_jobPost: jobPostId,
+      jap_candidate: candidate.id,
+    });
+
+    if (!application) throw new NotFoundError('Application not found');
+
+    return getReturnData(application);
   }
 }

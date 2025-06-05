@@ -1,4 +1,4 @@
-import SearchBox from '../SearchBox';
+import SearchBox from '~/components/website/SearchBox';
 
 export default function SearchBar() {
   return (

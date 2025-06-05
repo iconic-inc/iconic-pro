@@ -1,26 +1,20 @@
 import { Outlet } from '@remix-run/react';
 import { useState } from 'react';
-import SearchHeader from '~/components/website/SearchHeader';
+import SearchHeader from '../_components/SearchHeader';
 import SearchFilter from '~/widgets/SearchFilter';
-import { LoaderFunctionArgs } from '@remix-run/node';
-import { SCHOOL } from '~/constants/school.constant';
 import HandsomeError from '~/components/HandsomeError';
+import { LoaderFunctionArgs } from '@remix-run/node';
+import { Card, CardContent } from '~/components/ui/card';
+import { Button } from '~/components/ui/button';
 
-export const loader = ({ request, params }: LoaderFunctionArgs) => {
-  const schoolModel = params.schoolModel;
-
-  // if (
-  //   !schoolModel ||
-  //   !Object.values(SCHOOL.MODEL)
-  //     .reduce((p, model) => [...p, model.slug], [] as string[])
-  //     .includes(schoolModel)
-  // ) {
-  //   throw new Response(null, {
-  //     status: 404,
-  //   });
-  // }
-
-  return { schoolModel };
+export const loader = ({ params, request }: LoaderFunctionArgs) => {
+  const url = new URL(request.url);
+  const { type: jobPostType } = params;
+  const keyword = url.searchParams.get('q') || '';
+  return {
+    jobPostType,
+    keyword,
+  };
 };
 
 export default function SearchPage() {
@@ -39,6 +33,18 @@ export default function SearchPage() {
         />
 
         <div className='col-span-12 lg:col-span-9 flex flex-col gap-6'>
+          <div className='flex items-center justify-end lg:hidden'>
+            <Button
+              variant='outline'
+              className='w-fit bg-white'
+              onClick={() => setOpenFilter(!openFilter)}
+            >
+              <span className='material-symbols-outlined'>
+                {openFilter ? 'close' : 'filter_list'}
+              </span>
+            </Button>
+          </div>
+
           <Outlet />
         </div>
       </div>

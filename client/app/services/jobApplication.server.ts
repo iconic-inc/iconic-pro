@@ -94,7 +94,7 @@ const deleteJobApplication = async (
 };
 
 /**
- * Owner services for job posts
+ * Owner services for job applications
  */
 // List all job posts for spas owned by the current owner
 const listMyJobApplications = async (
@@ -165,6 +165,97 @@ const deleteMyJobApplication = async (
   }
 };
 
+// CLIENT ROUTES
+
+/**
+ * Candidate services for job applications
+ */
+// List all job applications for the current candidate
+const listMyJobApplicationsAsCandidate = async (
+  query: any = {},
+  options: IPaginationOptions = {},
+  request: ISessionUser,
+) => {
+  const { page = 1, limit = 10, sortBy, sortOrder } = options;
+  const searchParams = new URLSearchParams(query);
+  if (sortBy) searchParams.set('sortBy', sortBy);
+  if (sortOrder) searchParams.set('sortOrder', sortOrder);
+  searchParams.set('page', String(page));
+  searchParams.set('limit', String(limit));
+
+  const response = await fetcher(
+    `/candidates/me/job-applications?${searchParams.toString()}`,
+    {
+      request,
+    },
+  );
+  return response as IResponseList<IJobApplicationDetails>;
+};
+
+// Get job application by ID (for candidate)
+const getMyJobApplicationByIdAsCandidate = async (
+  id: string,
+  request: ISessionUser,
+) => {
+  const response = await fetcher(`/candidates/me/job-applications/${id}`, {
+    request,
+  });
+  return response as IJobApplicationDetails;
+};
+
+// Apply to a job (for candidate)
+const applyToJob = async (
+  jobPostId: string,
+  message: string,
+  request: ISessionUser,
+) => {
+  try {
+    const response = await fetcher(
+      `/candidates/me/job-applications/jobs/${jobPostId}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ message }),
+        request,
+      },
+    );
+    return response as IJobApplication;
+  } catch (error) {
+    console.error('Error applying to job:', error);
+    throw error;
+  }
+};
+
+// Withdraw application (for candidate)
+const withdrawJobApplication = async (
+  applicationId: string,
+  request: ISessionUser,
+) => {
+  try {
+    const response = await fetcher(
+      `/candidates/me/job-applications/${applicationId}`,
+      {
+        method: 'DELETE',
+        request,
+      },
+    );
+    return response as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Error withdrawing application:', error);
+    throw error;
+  }
+};
+
+// Get a candidate's application for a specific job post
+const getAppliedJobApp = async (jobPostId: string, request: ISessionUser) => {
+  const response = await fetcher(
+    `/candidates/me/job-applications/jobs/${jobPostId}`,
+    {
+      request,
+    },
+  );
+  return response as IJobApplication;
+};
+
 export {
   // Admin services
   listJobApplications,
@@ -178,4 +269,11 @@ export {
   getMyJobApplicationById,
   updateMyJobApplication,
   deleteMyJobApplication,
+
+  // Candidate services
+  listMyJobApplicationsAsCandidate,
+  getMyJobApplicationByIdAsCandidate,
+  applyToJob,
+  withdrawJobApplication,
+  getAppliedJobApp,
 };

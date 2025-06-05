@@ -27,6 +27,27 @@ export default function ProfileIndex() {
   const { candidateProfile } = useLoaderData<typeof loader>();
   const [isUpdate, setIsUpdate] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+        if (!isUpdate) return;
+        if (
+          confirm(
+            'Bạn có chắc muốn rời khỏi trang này? Thông tin đã thay đổi sẽ không được lưu.',
+          )
+        ) {
+          return true;
+        }
+        e.preventDefault();
+      };
+      window.addEventListener('beforeunload', beforeUnloadHandler);
+
+      return () => {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+      };
+    }
+  }, []);
+
   return (
     <div className='container py-10'>
       <Defer<ICandidateDetails> resolve={candidateProfile}>

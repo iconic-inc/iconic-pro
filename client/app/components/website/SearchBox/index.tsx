@@ -3,7 +3,7 @@ import { Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import pkg from 'vn-provinces';
 import SearchSelect from '~/components/website/SearchSelect';
-import { SCHOOL } from '~/constants/school.constant';
+import { JOB_POST } from '~/constants/jobPost.constant';
 
 interface IProvince {
   code: string;
@@ -23,61 +23,61 @@ interface IDistrict {
 
 const { getProvinces, getDistrictsByProvinceCode, getProvinceByCode } = pkg;
 const provinces = getProvinces() as Array<IProvince>;
-const schoolModels = Object.values(SCHOOL.MODEL) as Array<{
+const jobPostTypes = Object.values(JOB_POST.TYPE) as Array<{
   name: string;
   slug: string;
-  link: string;
 }>;
 
 export default function SearchBox({
   className,
   sketch,
-  defaultSchoolModel,
+  defaultJobPostType,
   defaultProvince,
   defaultDistrict,
 }: {
   className?: string;
   sketch?: boolean;
-  defaultSchoolModel?: string;
+  defaultJobPostType?: string;
   defaultProvince?: string;
   defaultDistrict?: string;
 }) {
-  const [schoolModel, setSchoolModel] = useState(
-    schoolModels.find((sm) => sm.slug === defaultSchoolModel) ||
-      schoolModels[0],
-  );
+  // const [jobPostType, setJobPostType] = useState(
+  //   jobPostTypes.find((sm) => sm.slug === defaultJobPostType) ||
+  //     jobPostTypes[0],
+  // );
   const [query, setQuery] = useState('');
-  const [province, setProvince] = useState<IProvince>({} as any); // Hồ Chí Minh
-  const [districts, setDistricts] = useState<Array<IDistrict>>([]);
-  const [district, setDistrict] = useState<IDistrict>({} as any);
+  // const [province, setProvince] = useState<IProvince>({} as any); // Hồ Chí Minh
+  // const [districts, setDistricts] = useState<Array<IDistrict>>([]);
+  // const [district, setDistrict] = useState<IDistrict>({} as any);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const districts =
-      getDistrictsByProvinceCode(province.code) || ([] as Array<IDistrict>);
+  // useEffect(() => {
+  //   const districts =
+  //     getDistrictsByProvinceCode(province.code) || ([] as Array<IDistrict>);
 
-    setDistricts(districts);
-    setDistrict(districts[0] || ({} as any));
-  }, [province.slug]);
+  //   setDistricts(districts);
+  //   setDistrict(districts[0] || ({} as any));
+  // }, [province.slug]);
 
   return (
-    <div className='col-span-12 flex justify-center'>
+    <div className='w-full col-span-12 flex justify-center'>
       <Form
         className='w-full'
-        action={
-          `/${schoolModel.slug}` +
-          (province.slug
-            ? `/${province.slug}` + (district.slug ? `/${district.slug}` : '')
-            : '')
-        }
+        action={`/viec-lam`}
+        // action={
+        //   `/viec-lam/${jobPostType.slug}` +
+        //   (province.slug
+        //     ? `/${province.slug}` + (district.slug ? `/${district.slug}` : '')
+        //     : '')
+        // }
         method='GET'
       >
         <div
-          className={`h-full w-full flex items-center bg-white rounded-lg overflow-hidden p-2 justify-between text-[--sub1-text-color] lg:divide-x divide-zinc-200 ${
+          className={`h-full w-full flex items-center bg-white rounded-lg overflow-hidden p-2 justify-between text-[--sub1-text] lg:divide-x divide-zinc-200 ${
             sketch ? 'gap-8' : 'gap-4'
           } ${className || ''}`}
         >
-          <div
+          {/* <div
             className={`fixed lg:static inset-0 w-full lg:w-fit bg-black/50 lg:bg-transparent z-50 lg:z-0 max-lg:transition-all duration-300 max-lg:-translate-x-full ${
               isMenuOpen ? 'max-lg:translate-x-0' : ''
             }`}
@@ -108,13 +108,13 @@ export default function SearchBox({
               >
                 <SearchSelect
                   sketch={sketch}
-                  label='Trường, trung tâm'
-                  options={schoolModels}
+                  label='Loại công việc'
+                  options={jobPostTypes}
                   className='col-span-1'
-                  value={schoolModel}
+                  value={jobPostType}
                   onChange={(e) => {
-                    setSchoolModel(
-                      schoolModels.find((st) => st.slug === e.target.value) ||
+                    setJobPostType(
+                      jobPostTypes.find((st) => st.slug === e.target.value) ||
                         ({} as any),
                     );
                   }}
@@ -159,21 +159,21 @@ export default function SearchBox({
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div
-            className={`w-full max-w-80 relative h-full flex items-center ${
+            className={`w-full max-w-50 relative h-full flex items-center ${
               sketch ? 'grow' : ''
             }`}
           >
-            <Search
+            {/* <Search
               className='absolute left-2 top-1/2 -translate-y-1/2 block lg:hidden'
               size={16}
-            />
+            /> */}
             <input
-              className={`text-base text-[--sub1-text-color] flex-grow outline-none p-2 pl-8 lg:pl-4 w-full`}
+              className={`text-base text-[--sub1-text] flex-grow outline-none p-2 lg:pl-4 w-full`}
               type='text'
-              placeholder='Nhập tên trường, khu vực'
+              placeholder='Nhập vị trí, kỹ năng, công việc bạn muốn tìm kiếm...'
               name='q'
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -189,19 +189,19 @@ export default function SearchBox({
 
           <div className='h-full w-max border-none'>
             <button
-              className='hidden lg:block bg-[--sub4-color] text-white text-base rounded-lg px-6 py-2 h-full w-max'
+              className='block bg-[--sub4-color] text-white text-base rounded-lg px-6 py-2 h-full w-max'
               type='submit'
             >
               Tìm kiếm
             </button>
 
-            <button
+            {/* <button
               className='lg:hidden bg-[--main-color] text-white text-base rounded-lg px-6 py-2 h-full w-max'
               type='button'
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               Tìm kiếm
-            </button>
+            </button> */}
           </div>
         </div>
       </Form>

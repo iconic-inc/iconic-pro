@@ -15,7 +15,7 @@
     }
 
     .overview {
-      color: var(--sub1-text-color);
+      color: var(--sub1-text);
 
       .key {
         margin-top: 12px;

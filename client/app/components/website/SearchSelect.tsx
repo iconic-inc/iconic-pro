@@ -29,7 +29,7 @@ export default function SearchSelect({
       <p
         className={`${
           sketch ? 'lg:hidden' : ''
-        } text-xs absolute left-4 top-1 z-0 text-[--sub2-text-color]`}
+        } text-xs absolute left-4 top-1 z-0 text-[--sub1-text]`}
       >
         {label}
       </p>
@@ -37,7 +37,7 @@ export default function SearchSelect({
       <select
         className={`${
           sketch ? 'w-full lg:w-48 max-lg:pt-6 py-2' : 'pt-6'
-        } pl-4 max-lg:pb-2 outline-none bg-inherit font-semibold text-[--sub1-text-color] h-full w-full relative z-10 cursor-pointer`}
+        } pl-4 max-lg:pb-2 outline-none bg-inherit font-semibold text-[--sub5-text] h-full w-full relative z-10 cursor-pointer`}
         name={name}
         style={{
           WebkitAppearance: 'none',

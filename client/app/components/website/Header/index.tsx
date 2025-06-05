@@ -3,7 +3,6 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import Defer from '~/components/Defer';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +25,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
     <header
       className={`${
         shadow ? 'shadow-lg' : ''
-      } fixed top-0 w-full bg-white flex z-40 `}
+      } fixed top-0 w-full bg-white flex z-50`}
     >
       <div className='container flex items-center justify-between'>
         <Defer resolve={appSettings} fallback={<div className='logo' />}>
@@ -41,7 +40,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
               </Link>
 
               <nav
-                className={`${
+                className={`z-[100] ${
                   isMenuOpen ? 'left-0' : 'left-full'
                 } lg:ml-4 max-lg:fixed lg:block transition-all duration-300 inset-0 w-full h-full bg-black/50 lg:bg-inherit flex justify-end`}
                 onClick={() => setIsMenuOpen(false)}
@@ -168,7 +167,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
           </AuthConsumer>
 
           <button
-            className='lg:hidden'
+            className='lg:hidden text-[--sub1-text]'
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <Menu />

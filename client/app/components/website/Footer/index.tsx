@@ -25,7 +25,7 @@ export default function Footer() {
                     src={app.app_logo?.img_url}
                     alt={app_title}
                   />
-                  <p className='md:text-center text-[--sub1-text-color] mt-2'>
+                  <p className='md:text-center text-[--sub1-text] mt-2'>
                     {app_title}
                   </p>
                 </div>
@@ -40,7 +40,7 @@ export default function Footer() {
 
                   <Link
                     to='/login'
-                    className='inline-flex items-center gap-2 rounded border border-[--sub1-color] bg-[--sub1-color] px-4 py-2 text-sm font-semibold text-[--sub3-text-color] transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
+                    className='inline-flex items-center gap-2 rounded border border-[--sub1-color] bg-[--sub1-color] px-4 py-2 text-sm font-semibold text-[--sub3-text] transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
                   >
                     Đăng ký tài khoản
                   </Link>
@@ -161,7 +161,7 @@ export default function Footer() {
                 <div className='col-span-12'>
                   <h4 className='text-center'>KẾT NỐI VỚI CHÚNG TÔI</h4>
 
-                  <ul className='text-[--sub2-text-color] flex flex-wrap gap-4 items-center justify-center'>
+                  <ul className='text-[--sub2-text] flex flex-wrap gap-4 items-center justify-center'>
                     <li className='hover:text-[--main-color]'>
                       <Link to={social.facebook}>
                         <Facebook />

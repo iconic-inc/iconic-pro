@@ -1,4 +1,5 @@
 import { Document, Model, Types } from 'mongoose';
+import { IUserResponseData } from './user.interface';
 
 export interface IRawSpaOwner {
   spo_user: Types.ObjectId; // ref User
@@ -37,4 +38,15 @@ export interface ISpaOwner extends Document {
 
 export interface ISpaOwnerModel extends Model<ISpaOwner> {
   build(attrs: ISpaOwner): Promise<ISpaOwner>;
+}
+
+export interface ISpaOwnerResponse {
+  id: string;
+  spo_user: IUserResponseData;
+  spo_level: 'owner' | 'manager';
+  spo_plan: string;
+  spo_planExpireAt?: string;
+  spo_status: 'active' | 'suspended';
+  createdAt: string;
+  updatedAt: string;
 }
