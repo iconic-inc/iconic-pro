@@ -3,7 +3,7 @@ import { HydratedDocument, Model, ObjectId } from 'mongoose';
 export interface IRawCategory {
   id: string;
   cat_name: string;
-  cat_page: ObjectId;
+  cat_url: string;
   cat_parent: ObjectId;
   cat_order: number;
   createdAt: Date;
@@ -12,7 +12,7 @@ export interface IRawCategory {
 
 export interface ICategoryAttrs {
   name: string;
-  page: string;
+  string: string;
   parent: string;
   order: number;
 }

@@ -2,7 +2,7 @@ import { Link } from '@remix-run/react';
 
 export default function Post({ post }: { post: any }) {
   return (
-    <article className='bg-[--sub1-color] lg:grid grid-cols-2 rounded-xl overflow-hidden mt-4 text-sm flex flex-col items-center'>
+    <article className='bg-[--sub2-color] lg:grid grid-cols-2 rounded-xl overflow-hidden mt-4 text-sm flex flex-col items-center'>
       <figure className='col-span-1 w-full'>
         <img src={post.thumbnail} alt={post.title} />
       </figure>

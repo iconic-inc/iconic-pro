@@ -2,12 +2,10 @@ import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 import { Link, Outlet, useFetcher, useLoaderData } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import LoadingOverlay from '~/components/LoadingOverlay';
 import TextInput from '~/components/TextInput';
 import { isAuthenticated } from '~/services/auth.server';
 import { parseAuthCookie } from '~/services/cookie.server';
 import { createCategory, getCategories } from '~/services/category.server';
-import { getPages } from '~/services/page.server';
 import {
   getLayer1Categories,
   getLayer2Categories,
@@ -27,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const name = body.get('name');
       const order = body.get('order');
       const parent = body.get('parent');
-      const page = body.get('page');
+      const url = body.get('url');
 
       if (!name) {
         return data(
@@ -48,17 +46,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           { headers },
         );
       }
-      if (!page) {
+      if (!url) {
         return data(
           {
-            toast: { message: 'Chưa chọn trang', type: 'error' },
+            toast: { message: 'Chưa nhập URL danh mục', type: 'error' },
           },
           { headers },
         );
       }
 
       // Add category to database
-      await createCategory({ name, order, parent, page }, session);
+      await createCategory({ name, order, parent, url }, session);
 
       return data(
         {
@@ -87,20 +85,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const categories = await getCategories();
-  const pages = await getPages({ isPublished: true, user: auth });
 
-  return { categories, pages };
+  return { categories };
 };
 
 export default function ManageCategories() {
-  const { categories, pages } = useLoaderData<typeof loader>();
+  const { categories } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const toastIdRef = useRef<any>(null);
 
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [order, setOrder] = useState('');
-  const [page, setPage] = useState('');
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     if (fetcher.state === 'submitting') {
@@ -164,6 +161,16 @@ export default function ManageCategories() {
           name='name'
           value={name}
           onChange={setName}
+          placeholder='Nhập tên danh mục'
+          required
+        />
+
+        <TextInput
+          label='URL danh mục'
+          name='url'
+          value={url}
+          onChange={setUrl}
+          placeholder='Nhập URL danh mục (ví dụ: /danh-muc/san-pham)'
           required
         />
 
@@ -194,27 +201,11 @@ export default function ManageCategories() {
           ))}
         </Select>
 
-        <Select
-          label='Chọn trang'
-          name='page'
-          className='w-full'
-          required
-          value={page}
-          onChange={(e) => setPage(e.target.value)}
-        >
-          <option value=''>Không có</option>
-          {pages.map((page, i) => (
-            <option key={i} value={page.id}>
-              {page.pst_title}
-            </option>
-          ))}
-        </Select>
-
         <div className='flex w-full justify-end'>
           <button
             className='center rounded-lg bg-blue-500 py-2 px-3 font-sans font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg enable:active:bg-blue-500/80 disabled:opacity-60'
             type='submit'
-            disabled={loading || !name || !order || !page}
+            disabled={loading || !name || !order || !url}
           >
             Thêm danh mục
           </button>

@@ -96,7 +96,14 @@ export async function action({ request }: ActionFunctionArgs) {
   const redicrectUrl = url.searchParams.get('redirect') || '/user/profile';
   try {
     const auth = await authenticator.authenticate('user-pass', request);
-
+    if (auth.user.usr_role.slug === 'spa-owner') {
+      // If the user is a spa owner, redirect to the spa owner dashboard
+      return redirect('/owner', {
+        headers: {
+          'Set-Cookie': await serializeAuthCookie(auth),
+        },
+      });
+    }
     return redirect(redicrectUrl, {
       headers: {
         'Set-Cookie': await serializeAuthCookie(auth),
@@ -203,7 +210,8 @@ const Login = () => {
             Đăng ký / Đăng nhập
           </CardTitle>
           <CardDescription className='text-gray-600 text-sm pt-1'>
-            Liên kết tài khoản của bạn để tiếp tục sử dụng dịch vụ của TopDev
+            Liên kết tài khoản của bạn để tiếp tục sử dụng dịch vụ của ICONIC
+            PRO
           </CardDescription>
         </CardHeader>
 
@@ -212,7 +220,7 @@ const Login = () => {
             <TabsList className='grid w-full grid-cols-2 mb-6 bg-transparent p-0 border-b border-gray-200 rounded-none'>
               <TabsTrigger
                 value='ungvien'
-                className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-red-500 rounded-none'
+                className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-[--main-color] data-[state=active]:text-[--main-color] rounded-none'
                 onClick={() => setActiveTab('ungvien')}
               >
                 <User size={18} className='mr-2' /> Ứng viên
@@ -220,7 +228,7 @@ const Login = () => {
 
               <TabsTrigger
                 value='chuspa'
-                className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-red-500 rounded-none'
+                className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-[--main-color] rounded-none'
                 onClick={() => setActiveTab('chuspa')}
               >
                 <Briefcase size={18} className='mr-2' /> Nhà tuyển dụng
@@ -310,14 +318,14 @@ const Login = () => {
 
           <p className='text-xs text-gray-500 mt-8 text-center'>
             Bằng việc tiếp tục, bạn đồng ý với{' '}
-            <a href='#' className='text-red-500 hover:underline'>
+            <a href='#' className='text-[--main-color] hover:underline'>
               Điều Khoản Sử Dụng
             </a>{' '}
             và{' '}
-            <a href='#' className='text-red-500 hover:underline'>
+            <a href='#' className='text-[--main-color] hover:underline'>
               Chính Sách Bảo Mật
             </a>{' '}
-            của TopDev.
+            của Iconic PRO.
           </p>
         </CardContent>
       </Card>
@@ -327,17 +335,17 @@ const Login = () => {
         <div className='text-center md:text-left'>
           <p className='text-gray-700 text-lg'>Chào mừng bạn đến với</p>
           <h2 className='text-3xl sm:text-4xl font-bold mb-1'>
-            <span className='text-red-500'>
-              T<span className='text-gray-800'>OP</span>D
-              <span className='text-gray-800'>ev</span>
+            <span className='text-[--main-color]'>
+              <span className='text-gray-800'>Iconic</span>
+              Pro
             </span>
-            <span className='text-gray-800'> | Việc Làm IT Hàng Đầu</span>
+            <span className='text-gray-800'> | Việc Làm Thẩm mỹ Hàng Đầu</span>
           </h2>
         </div>
 
-        <div className='mt-6 flex justify-center md:justify-start'>
+        <div className='mt-6 flex justify-center'>
           <img
-            src='https://placehold.co/450x280/E0E7FF/4F46E5?text=Illustration+(Dev+at+Desk)'
+            src='https://placehold.co/450x280/f2e6d6/f582a8?text=Illustration+(Beauty)'
             alt='Developer working at desk illustration'
             className='rounded-lg shadow-md max-w-md w-full h-auto'
           />
@@ -346,18 +354,17 @@ const Login = () => {
         <Card className='mt-8 bg-white shadow-lg'>
           <CardContent className='p-6'>
             <p className='text-gray-700 mb-4 text-sm sm:text-base'>
-              Đăng nhập ngay để tận dụng tối đa các công cụ của TopDev và gia
-              tăng cơ hội tiếp cận công việc IT hot nhất
+              Đăng nhập ngay để tận dụng tối đa các công cụ của Iconic PRO và
+              gia tăng cơ hội tiếp cận công việc Thẩm Mỹ hot nhất
             </p>
             <ul className='space-y-2 text-gray-600 text-sm sm:text-base list-inside'>
               {[
-                'Tạo CV chuẩn Developer',
-                'Ứng tuyển nhanh chóng hơn với hồ sơ đã được lưu',
-                'Quản lý hồ sơ ứng tuyển và theo dõi cập nhật trạng thái ứng tuyển',
-                'Xem được mức lương cho mỗi vị trí',
+                'Tạo CV chuẩn và chuyên nghiệp chỉ trong vài phút',
+                'Tìm kiếm việc làm Thẩm Mỹ phù hợp với kỹ năng và sở thích',
+                'Nhận thông báo việc làm mới nhất từ các nhà tuyển dụng hàng đầu',
               ].map((benefit) => (
                 <li key={benefit} className='flex items-start'>
-                  <span className='text-red-500 mr-2 mt-1'>&#8226;</span>{' '}
+                  <span className='text-[--main-color] mr-2 mt-1'>&#8226;</span>{' '}
                   {/* Bullet point */}
                   {benefit}
                 </li>

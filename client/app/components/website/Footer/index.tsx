@@ -4,9 +4,12 @@ import style from './index.module.css';
 import { Facebook, Youtube } from 'lucide-react';
 import { useMainLoaderData } from '~/lib/useMainLoaderData';
 import Defer from '../../Defer';
+import { useAuthContext } from '~/context/auth.context';
+import { toAddressString } from '~/utils/address.util';
 
 export default function Footer() {
-  const { appSettings } = useMainLoaderData();
+  const { appSettings, branches } = useMainLoaderData();
+  const { isLoggedIn } = useAuthContext();
 
   return (
     <footer
@@ -30,21 +33,25 @@ export default function Footer() {
                   </p>
                 </div>
 
-                <div className='col-span-3 col-start-10'>
-                  <Link
-                    to='/login'
-                    className='inline-flex items-center gap-2 rounded border border-[--sub1-color] px-4 py-2 text-sm font-semibold text-[--sub1-color] transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none mr-4'
-                  >
-                    Đăng nhập
-                  </Link>
+                {isLoggedIn || (
+                  <div className='col-span-3 col-start-10 flex items-center justify-center gap-4 font-bold'>
+                    <Link
+                      to='/login?tab=chuspa'
+                      className='inline-flex items-center gap-2 rounded border border-[--sub4-color] bg-[--sub4-color] px-4 py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none text-[--sub4-text] text-[--sub4-color]'
+                    >
+                      Chủ Spa
+                    </Link>
 
-                  <Link
-                    to='/login'
-                    className='inline-flex items-center gap-2 rounded border border-[--sub1-color] bg-[--sub1-color] px-4 py-2 text-sm font-semibold text-[--sub3-text] transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
-                  >
-                    Đăng ký tài khoản
-                  </Link>
-                </div>
+                    <Link
+                      to='/login'
+                      className='inline-flex items-center gap-2 rounded border border-[--sub4-color] px-4 
+            py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none 
+            disabled:opacity-50 disabled:shadow-none hidden sm:inline-block text-[--sub4-color]'
+                    >
+                      Đăng nhập
+                    </Link>
+                  </div>
+                )}
               </section>
               <section className='border-b border-black pb-4'>
                 <div className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
@@ -54,29 +61,6 @@ export default function Footer() {
                     <li className={style.item}>
                       <Link to='/'> Xem 4 bước chọn trường mầm non</Link>
                     </li>
-                    <li>
-                      <Link to='/'>Trường mầm non tại TP HCM</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Trường mầm non tại Hà Nội</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Tìm trường mầm non</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Cộng đồng review mầm non Hà Nội</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>
-                        Review trường mầm non tại HCM, Bình Dương, Biên Hòa
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Đồ chơi giáo dục cho bé từ 0-6 tuổi</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Thuốc 5 sao</Link>
-                    </li>
                   </ul>
                 </div>
 
@@ -87,15 +71,6 @@ export default function Footer() {
                     <li className={style.item}>
                       <Link to='/'> Xem 4 bước chọn trường mầm non</Link>
                     </li>
-                    <li>
-                      <Link to='/'>Trường mầm non tại TP HCM</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Trường mầm non tại Hà Nội</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Tìm trường mầm non</Link>
-                    </li>
                   </ul>
                 </div>
 
@@ -105,46 +80,57 @@ export default function Footer() {
                   <ul className={style.list}>
                     <li className={style.item}>
                       <Link to='/'> Xem 4 bước chọn trường mầm non</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Trường mầm non tại TP HCM</Link>
-                    </li>
-                    <li>
-                      <Link to='/'>Trường mầm non tại Hà Nội</Link>
                     </li>
                   </ul>
                 </div>
               </section>
               <section>
                 <div className='col-span-12 md:col-span-9'>
-                  <p>Copyright © 2020 {app_title}</p>
+                  <p>Copyright © 2025 {app_title}</p>
                   <p>
-                    Công ty cổ phần công nghệ giáo dục KiddiHub - Mã số thuế:{' '}
-                    <strong>{app.app_taxCode}</strong> cấp ngày: 10/06/2020 tại
-                    Sở Kế hoạch và Đầu tư thành phố Hà Nội - Đại diện: Ông VŨ
-                    VĂN TÙNG
+                    Iconic PRO -<br />
+                    <strong>Mã số thuế:</strong> {app.app_taxCode} <br />
+                    <b>Cấp ngày:</b> 10/06/2020 tại Sở Kế hoạch và Đầu tư thành
+                    phố Hồ Chí Minh
+                    <br />
+                    <b>Đại diện:</b> Ông
                   </p>
-                  {/* <p>Địa chỉ: {contact.address}</p> */}
-                  <p>
-                    Email:{' '}
-                    <a
-                      className='hover:text-[--main-color]'
-                      // href={`mailto:${contact.email}`}
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      {/* {contact.email} */}
-                    </a>
-                  </p>
-                  <p>
-                    Hotline:{' '}
-                    {/* <a
-                className='hover:text-[--main-color]'
-                href={`tel:${contact.phone}`}
-              >
-                {contact.phone}
-              </a> */}
-                  </p>
+                  <Defer resolve={branches}>
+                    {(branches) => {
+                      const mainBranch = branches.find(
+                        (branch) => branch.bra_isMain,
+                      );
+                      if (!mainBranch) return null;
+
+                      return (
+                        <>
+                          <p>
+                            Địa chỉ: {toAddressString(mainBranch.bra_address)}
+                          </p>
+                          <p>
+                            <b>Email:</b>{' '}
+                            <a
+                              className='underline hover:text-[--main-color]'
+                              href={`mailto:${mainBranch.bra_email}`}
+                              target='_blank'
+                              rel='noreferrer'
+                            >
+                              {mainBranch.bra_email}
+                            </a>
+                          </p>
+                          <p>
+                            <b>Hotline:</b>{' '}
+                            <a
+                              className='underline hover:text-[--main-color]'
+                              href={`tel:${mainBranch.bra_msisdn}`}
+                            >
+                              {mainBranch.bra_msisdn}
+                            </a>
+                          </p>
+                        </>
+                      );
+                    }}
+                  </Defer>
                 </div>
 
                 <div className='col-span-6 md:col-span-3'>
@@ -162,17 +148,39 @@ export default function Footer() {
                   <h4 className='text-center'>KẾT NỐI VỚI CHÚNG TÔI</h4>
 
                   <ul className='text-[--sub2-text] flex flex-wrap gap-4 items-center justify-center'>
-                    <li className='hover:text-[--main-color]'>
-                      <Link to={social.facebook}>
-                        <Facebook />
-                      </Link>
-                    </li>
-                    {/* @ts-ignore */}
+                    {social.facebook && (
+                      <li className='hover:text-[--main-color]'>
+                        <Link to={social.facebook}>
+                          <Facebook />
+                        </Link>
+                      </li>
+                    )}
                     {social.youtube && (
                       <li className='hover:text-[--main-color]'>
-                        {/* @ts-ignore */}
                         <Link to={social.youtube}>
                           <Youtube />
+                        </Link>
+                      </li>
+                    )}
+                    {social.tiktok && (
+                      <li className='hover:text-[--main-color]'>
+                        <Link to={social.tiktok}>
+                          <img
+                            src='/assets/tiktok.svg'
+                            alt='TikTok'
+                            className='w-6 h-6'
+                          />
+                        </Link>
+                      </li>
+                    )}
+                    {social.zalo && (
+                      <li className='hover:text-[--main-color]'>
+                        <Link to={social.zalo}>
+                          <img
+                            src='/assets/zalo.svg'
+                            alt='Zalo'
+                            className='w-6 h-6'
+                          />
                         </Link>
                       </li>
                     )}

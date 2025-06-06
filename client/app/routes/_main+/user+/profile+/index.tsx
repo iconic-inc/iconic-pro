@@ -15,7 +15,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const candidateProfile = getMyProfile(auth!).catch(async (err) => {
     console.error('Error fetching candidate profile:', err);
-    console.log(await err.text());
     // You have no candidate profile yet
     return { success: false, message: 'Lỗi khi lấy thông tin ứng viên.' };
   });

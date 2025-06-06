@@ -22,8 +22,8 @@ export default function CategoryDetail({
 }) {
   const [order, setOrder] = useState(category.cat_order);
   const [name, setName] = useState(category.cat_name);
-  const [parent, setParent] = useState(category.cat_parent?._id || '');
-  const [page, setPage] = useState(category.cat_page._id || '');
+  const [parent, setParent] = useState(category.cat_parent?.id || '');
+  const [url, setUrl] = useState(category.cat_url);
 
   return (
     <div
@@ -53,6 +53,16 @@ export default function CategoryDetail({
           }}
         />
 
+        <TextInput
+          label='URL danh mục'
+          name='url'
+          value={url}
+          onChange={(value) => {
+            setUrl(value);
+          }}
+          placeholder='Nhập URL danh mục (ví dụ: /danh-muc/san-pham)'
+        />
+
         <Select
           label='Danh mục cha'
           name='parent'
@@ -69,24 +79,6 @@ export default function CategoryDetail({
           ].map((cat, i) => (
             <option key={i} value={cat.id}>
               {cat.cat_name}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label='Chọn trang'
-          name='page'
-          className='w-full'
-          required
-          value={page}
-          onChange={(e) => {
-            setPage(e.target.value);
-          }}
-        >
-          <option value=''>Không có</option>
-          {pages.map((page, i) => (
-            <option key={i} value={page.id}>
-              {page.pst_title}
             </option>
           ))}
         </Select>
@@ -112,7 +104,6 @@ export default function CategoryDetail({
               try {
                 await fetch(`/cmsdesk/categories/${category.id}/edit`, {
                   method: 'DELETE',
-                  body: JSON.stringify({ name, order, parent, page }),
                 });
               } catch (error) {
                 console.error('Error setting viewed category:', error);
@@ -132,7 +123,7 @@ export default function CategoryDetail({
               try {
                 await fetch(`/cmsdesk/categories/${category.id}/edit`, {
                   method: 'PUT',
-                  body: JSON.stringify({ name, order, parent, page }),
+                  body: JSON.stringify({ name, order, parent, url }),
                 });
               } catch (error) {
                 console.error('Error setting viewed category:', error);

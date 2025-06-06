@@ -119,7 +119,7 @@ export default function CmsDesk() {
   return (
     <div className=''>
       <h2 className='text-3xl font-extrabold text-gray-900 mb-8'>
-        Beauty Map Dashboard
+        Iconic Pro Dashboard
       </h2>
 
       <Card className='p-6 lg:p-8 shadow-2xl rounded-xl bg-white'>

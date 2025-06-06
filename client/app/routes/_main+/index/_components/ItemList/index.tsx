@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react';
 import { Link } from '@remix-run/react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
-export default function ItemList({ items }: { items: any[] }) {
+export default function ItemList({
+  items,
+}: {
+  items: {
+    slug: string;
+    thumbnail: string;
+    title: string;
+    count: string | number;
+  }[];
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [itemsToShow, setItemsToShow] = useState(items.slice(0, 4));
 
@@ -37,13 +46,13 @@ export default function ItemList({ items }: { items: any[] }) {
                 {item.title}
               </h3>
 
-              <p className='text-xs text-[--sub2-text] text-center w-full overflow-hidden text-ellipsis whitespace-nowrap'>{`${item.count} ${item.title}`}</p>
+              <p className='text-xs text-[--sub2-text] text-center w-full overflow-hidden text-ellipsis whitespace-nowrap'>{`${item.count} việc ${item.title}`}</p>
             </Link>
           </li>
         ))}
       </ul>
 
-      <div className='mt-6 text-[--sub3-color]'>
+      {/* <div className='mt-6 text-[--sub3-color]'>
         {isExpanded ? (
           <button
             className='inline-flex items-center rounded border border-current px-4 py-2 text-sm font-semibold transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
@@ -63,7 +72,7 @@ export default function ItemList({ items }: { items: any[] }) {
             Xem thêm <ChevronDown />
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

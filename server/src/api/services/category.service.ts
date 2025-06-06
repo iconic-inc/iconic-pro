@@ -14,11 +14,7 @@ const getCategories = async () => {
     .lean() // If you need plain JS objects
     .populate({
       path: 'cat_parent',
-      select: 'cat_name cat_page cat_parent',
-    })
-    .populate({
-      path: 'cat_page',
-      select: 'pst_title pst_slug id',
+      select: 'cat_name cat_url cat_parent',
     })
     .exec();
   return getReturnList(categories);
@@ -29,11 +25,7 @@ const getCategory = async (id: string) => {
     .lean() // If you need plain JS objects
     .populate({
       path: 'cat_parent',
-      select: 'cat_name cat_page',
-    })
-    .populate({
-      path: 'cat_page',
-      select: 'pst_title pst_slug id',
+      select: 'cat_name cat_url',
     })
     .exec();
   if (!category) {

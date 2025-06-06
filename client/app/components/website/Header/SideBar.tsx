@@ -2,7 +2,6 @@ import { Link } from '@remix-run/react';
 import { ChevronDown, X } from 'lucide-react';
 import { useState } from 'react';
 import Defer from '~/components/Defer';
-import { SUB_CATEGORIES } from '~/constants/app.constant';
 import { useMainLoaderData } from '~/lib/useMainLoaderData';
 
 export default function SideBar({
@@ -50,18 +49,18 @@ export default function SideBar({
                   </div>
                 </div>
 
-                <div
+                {/* <div
                   className={`w-[220px] rounded-lg z-20 ${showingCategory === i ? 'h-full' : 'h-0'} 
                 overflow-hidden transition-all duration-300`}
                 >
                   <ul className='p-2'>
-                    {SUB_CATEGORIES[cat.cat_page.pst_slug].map((sub, i) => (
+                    {SUB_CATEGORIES[cat.cat_url].map((sub, i) => (
                       <li
                         key={i}
                         className='py-2 px-3 hover:bg-gray-200 cursor-pointer'
                       >
                         <Link
-                          to={`/${cat.cat_page.pst_slug}/#${sub.slug}`}
+                          to={`/${cat.cat_url}/#${sub.slug}`}
                           onClick={onClose}
                         >
                           {sub.title}
@@ -69,7 +68,7 @@ export default function SideBar({
                       </li>
                     ))}
                   </ul>
-                </div>
+                </div> */}
               </div>
             ))
           }

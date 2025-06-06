@@ -29,7 +29,7 @@ export default function HighlightPageBox({
         <div className='flex justify-between w-full overflow-hidden'>
           <h2 className='font-bold text-xl'>
             <Link
-              to={`/danh-muc/${category.cat_page.pst_slug}`}
+              to={`/danh-muc/${category.cat_url}`}
               className='flex items-center hover:text-white/80'
             >
               <Film size={20} className='mr-2' />
@@ -39,7 +39,7 @@ export default function HighlightPageBox({
 
           <Link
             className='text-sm hover:text-white/80'
-            to={`/danh-muc/${category.cat_page.pst_slug}`}
+            to={`/danh-muc/${category.cat_url}`}
           >
             Xem thêm
             <ArrowRight className='inline-block' />

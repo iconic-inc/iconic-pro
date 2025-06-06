@@ -61,12 +61,9 @@ export default function Header({ shadow }: { shadow?: boolean }) {
                       cats.map((item, index) => (
                         <li
                           key={index}
-                          className='mx-2 hover:text-[--sub4-color] font-semibold'
+                          className='mx-2 hover:text-[--main-color] font-semibold'
                         >
-                          <NavLink
-                            className='p-2'
-                            to={`/${item.cat_page.pst_slug}`}
-                          >
+                          <NavLink className='p-2' to={`${item.cat_url}`}>
                             {item.cat_name}
                           </NavLink>
                         </li>
@@ -148,7 +145,7 @@ export default function Header({ shadow }: { shadow?: boolean }) {
                 <>
                   <Link
                     to='/login?tab=chuspa'
-                    className='inline-flex items-center gap-2 rounded border bg-[--sub4-color] px-4 py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
+                    className='inline-flex items-center gap-2 rounded border border-[--sub4-color] bg-[--sub4-color] px-4 py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
                   >
                     Chủ Spa
                   </Link>
