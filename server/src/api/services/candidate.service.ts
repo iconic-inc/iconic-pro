@@ -29,7 +29,6 @@ import mongoose, { ClientSession } from 'mongoose';
 import bcrypt from 'bcrypt';
 import slugify from 'slugify';
 import { CANDIDATE, USER } from '../constants';
-import { ICandidateDetails } from '../../../../client/app/interfaces/candidate.interface';
 
 export class CandidateService {
   /* ──────────────── ADMIN METHODS ──────────────── */
@@ -93,7 +92,7 @@ export class CandidateService {
     const total = await CandidateModel.countDocuments(filter);
 
     return {
-      data: getReturnList(docs) as ICandidateDetails[],
+      data: getReturnList(docs) as ICandidateResponse[],
       pagination: {
         total,
         page: +page,
