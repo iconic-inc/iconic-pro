@@ -85,6 +85,6 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ secrets.SERVER_PATH }}
             git pull origin master
-            npm install --production
-            pm2 restart api
+            /home/phannd/.nvm/versions/node/v22.14.0/bin/npm install --production
+            /home/phannd/.nvm/versions/node/v22.14.0/bin/pm2 restart iconic-pro
           EOF
