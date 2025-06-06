@@ -52,20 +52,9 @@ jobs:
             server/dist
             server/package.json
             server/package-lock.json
-
-  setup-ssh:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install SSH client
-        run: sudo apt-get install -y openssh-client
-
   deploy:
     # needs: docker-build
-    needs: [build-and-test, setup-ssh]
+    needs: build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
@@ -85,6 +74,8 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ secrets.SERVER_PATH }}
             git pull origin master
+            source ~/.nvm/nvm.sh
+            nvm use 22
             /home/phannd/.nvm/versions/node/v22.14.0/bin/npm install --production
             /home/phannd/.nvm/versions/node/v22.14.0/bin/pm2 restart iconic-pro
           EOF
