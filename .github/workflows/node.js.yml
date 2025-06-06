@@ -71,14 +71,14 @@ jobs:
 
   deploy:
     # needs: docker-build
-    needs: build-and-test
+    needs: [build-and-test, setup-ssh]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
     steps:
       - name: Deploy to production
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ secrets.SERVER_PATH }}
             git pull origin master
             npm install --production
