@@ -11,7 +11,7 @@
     "gen:metadata": "ts-node src/scripts/genMetadata.ts",
     "gen:resource": "ts-node src/scripts/genResource.ts",
     "gen:role": "ts-node src/scripts/genRole.ts",
-    "build": "tsc && tsc-alias"
+    "build": "tsc && tsc-alias ."
   },
   "keywords": [],
   "author": "",
