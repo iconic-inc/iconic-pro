@@ -1,30 +1,18 @@
 const env = process.env;
 
 interface MongodbConfig {
-  dbHost: string;
-  dbPort: string;
+  connectionStr?: string;
   dbName: string;
-  dbUser: string;
-  dbPwd: string;
-  dbAppName: string;
 }
 
 const mongodbConfigEnv: Record<'development' | 'production', MongodbConfig> = {
   development: {
-    dbHost: env.DEV_DB_HOST as string,
-    dbPort: env.DEV_DB_PORT as string,
-    dbName: env.DEV_DB_NAME as string,
-    dbUser: env.DEV_DB_USER as string,
-    dbPwd: env.DEV_DB_PWD as string,
-    dbAppName: env.DEV_DB_APP_NAME as string,
+    connectionStr: env.DEV_DB_CONNECTION_STRING,
+    dbName: env.DEV_DB_NAME || 'dev_db',
   },
   production: {
-    dbHost: env.PRO_DB_HOST as string,
-    dbPort: env.PRO_DB_PORT as string,
-    dbName: env.PRO_DB_NAME as string,
-    dbUser: env.PRO_DB_USER as string,
-    dbPwd: env.PRO_DB_PWD as string,
-    dbAppName: env.PRO_DB_APP_NAME as string,
+    connectionStr: env.PRO_DB_CONNECTION_STRING,
+    dbName: env.PRO_DB_NAME || 'prod_db',
   },
 };
 
