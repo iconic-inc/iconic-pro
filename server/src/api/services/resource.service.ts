@@ -5,68 +5,48 @@ import { getReturnData, getReturnList } from '@utils/index';
 import { isValidObjectId } from 'mongoose';
 
 const getResources = async (query: any = {}) => {
-  try {
-    const resources = await ResourceModel.find(
-      query,
-      'name slug description'
-    ).sort({ createdAt: -1 });
-    return getReturnList(resources);
-  } catch (error) {
-    throw error;
-  }
+  const resources = await ResourceModel.find(
+    query,
+    'name slug description'
+  ).sort({ createdAt: -1 });
+  return getReturnList(resources);
 };
 
 const createResource = async (resourceData: IResourceInput) => {
-  try {
-    // Tạo instance mới
-    const newResource = new ResourceModel(resourceData);
-    // Lưu vào database
-    const savedResource = await newResource.save();
-    return getReturnData(savedResource);
-  } catch (error) {
-    throw error;
-  }
+  // Tạo instance mới
+  const newResource = new ResourceModel(resourceData);
+  // Lưu vào database
+  const savedResource = await newResource.save();
+  return getReturnData(savedResource);
 };
 
 const getResourceById = async (resourceId: string) => {
-  try {
-    let resource;
-    if (isValidObjectId(resourceId))
-      resource = await ResourceModel.findById(resourceId);
-    else resource = await ResourceModel.findOne({ slug: resourceId });
+  let resource;
+  if (isValidObjectId(resourceId))
+    resource = await ResourceModel.findById(resourceId);
+  else resource = await ResourceModel.findOne({ slug: resourceId });
 
-    if (!resource) throw new NotFoundError('Resource not found');
-    return getReturnData(resource);
-  } catch (error) {
-    throw error;
-  }
+  if (!resource) throw new NotFoundError('Resource not found');
+  return getReturnData(resource);
 };
 
 const updateResource = async (
   resourceId: string,
   resourceData: Partial<IResourceInput>
 ) => {
-  try {
-    const resource = await ResourceModel.findByIdAndUpdate(
-      resourceId,
-      resourceData,
-      { new: true }
-    );
-    if (!resource) throw new NotFoundError('Resource not found');
-    return getReturnData(resource);
-  } catch (error) {
-    throw error;
-  }
+  const resource = await ResourceModel.findByIdAndUpdate(
+    resourceId,
+    resourceData,
+    { new: true }
+  );
+  if (!resource) throw new NotFoundError('Resource not found');
+  return getReturnData(resource);
 };
 
 const deleteResource = async (resourceId: string) => {
-  try {
-    const resource = await ResourceModel.findByIdAndDelete(resourceId);
-    if (!resource) throw new NotFoundError('Resource not found');
-    return getReturnData(resource);
-  } catch (error) {
-    throw error;
-  }
+  const resource = await ResourceModel.findByIdAndDelete(resourceId);
+  if (!resource) throw new NotFoundError('Resource not found');
+  return getReturnData(resource);
 };
 
 export {

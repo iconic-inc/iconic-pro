@@ -130,7 +130,7 @@ function flattenObj(
   res: { [key: string]: any } = {}
 ) {
   (Object.keys(obj) as Array<keyof typeof obj>).forEach((key) => {
-    let propName = parent ? parent + '.' + key : key;
+    const propName = parent ? parent + '.' + key : key;
     if (isObj(obj[key])) {
       flattenObj(obj[key], propName, res);
     } else {

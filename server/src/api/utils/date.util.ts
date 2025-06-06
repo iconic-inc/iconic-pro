@@ -8,7 +8,7 @@ declare global {
 }
 
 const getDates = (startDate: Date, endDate: Date) => {
-  let dateArray = new Array();
+  const dateArray = [] as string[];
   let currentDate = startDate;
 
   while (currentDate <= endDate) {
@@ -72,17 +72,17 @@ export function getDateObject(dateStr: string) {
 }
 
 Date.prototype.getWeek = function (dowOffset = 0) {
-  var newYear = new Date(this.getFullYear(), 0, 1);
-  var day = newYear.getDay() - dowOffset; //the day of week the year begins on
+  let newYear = new Date(this.getFullYear(), 0, 1);
+  let day = newYear.getDay() - dowOffset; //the day of week the year begins on
   day = day >= 0 ? day : day + 7;
-  var daynum =
+  const daynum =
     Math.floor(
       (this.getTime() -
         newYear.getTime() -
         (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) /
         86400000
     ) + 1;
-  var weeknum;
+  let weeknum;
   //if the year starts before the middle of a week
   if (day < 4) {
     weeknum = Math.floor((daynum + day - 1) / 7) + 1;
@@ -101,7 +101,7 @@ Date.prototype.getWeek = function (dowOffset = 0) {
 };
 
 Date.prototype.addDays = function (days) {
-  var date = new Date(this.valueOf());
+  const date = new Date(this.valueOf());
   date.setDate(date.getDate() + days);
   return date;
 };
