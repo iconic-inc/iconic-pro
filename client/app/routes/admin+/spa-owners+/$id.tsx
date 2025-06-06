@@ -2,15 +2,16 @@ import { Link, useLoaderData, useNavigate } from '@remix-run/react';
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import { getSpaOwnerById } from '~/services/spaOwner.server';
 import { formatDate, calculateAge } from '~/utils';
 import CustomButton from '~/widgets/CustomButton';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 // Loader function to fetch data from API
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   // Xác thực người dùng trước khi tiếp tục
-  const auth = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
   if (!auth) {
     return redirect('/admin/login');
   }

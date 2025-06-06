@@ -1,5 +1,4 @@
 import { ISessionUser } from '~/interfaces/auth.interface';
-import { pushLog2Discord } from '~/loggers/discord.log';
 
 const API_URL = process.env.API_URL || 'http://localhost:3000';
 
@@ -8,12 +7,12 @@ const headers = {
   credentials: 'include',
 };
 
-const fetcher = async (
+const fetcher = async <T = any>(
   path: string,
   options?: RequestInit & {
     request?: ISessionUser;
   },
-) => {
+): Promise<T> => {
   const response = await fetch(`${API_URL}/api/v1${path}`, {
     method: 'GET',
     ...options,
@@ -30,30 +29,14 @@ const fetcher = async (
   }).catch((error) => {
     console.log('fetch error');
     console.error(error);
-    pushLog2Discord({
-      method: options?.method || 'GET',
-      host: API_URL,
-      path: `/api/v1${path}`,
-      body: options?.body,
-      response: { errors: { message: error.message } },
-    });
-    throw new Response('Lỗi hệ thống', {
-      status: 500,
-    });
+
+    throw new Error('Lỗi hệ thống');
   });
   if (!response) {
     console.log('fetch error');
     console.error('No response');
-    pushLog2Discord({
-      method: options?.method || 'GET',
-      host: API_URL,
-      path: `/api/v1${path}`,
-      body: options?.body,
-      response: { errors: { message: 'No response' } },
-    });
-    throw new Response('Lỗi hệ thống', {
-      status: 500,
-    });
+
+    throw new Error('Lỗi hệ thống');
   }
 
   const data = (await response.json()) as {
@@ -81,14 +64,9 @@ const fetcher = async (
   }
 
   if (data.errors) {
-    pushLog2Discord({
-      method: options?.method || 'GET',
-      host: API_URL,
-      path: `/api/v1${path}`,
-      body: options?.body,
-      response: data,
-    });
-    throw new Error(data.errors.message || response.statusText);
+    throw new Error(
+      `${data.errors.status || 500} - ${data.errors.message || 'Unknown error'}`,
+    );
   }
   return data.metadata;
 };

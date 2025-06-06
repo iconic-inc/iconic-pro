@@ -247,6 +247,30 @@ const updateMyJobPostStatus = async (
   }
 };
 
+// Get public job posts
+const listJobPostsPublic = async (
+  query: any = {},
+  options: IPaginationOptions = {},
+) => {
+  const { page = 1, limit = 10, sortBy, sortOrder } = options;
+  const searchParams = new URLSearchParams(query);
+  if (sortBy) searchParams.set('sortBy', sortBy);
+  if (sortOrder) searchParams.set('sortOrder', sortOrder);
+  searchParams.set('page', String(page));
+  searchParams.set('limit', String(limit));
+
+  const response = await fetcher<IResponseList<IJobPostDetails>>(
+    `/job-posts/public?${searchParams.toString()}`,
+  );
+  return response;
+};
+
+// Get public job post by ID
+const getJobPostPublicById = async (id: string) => {
+  const response = await fetcher<IJobPostDetails>(`/job-posts/public/${id}`);
+  return response;
+};
+
 export {
   // Admin services
   listJobPosts,
@@ -265,4 +289,8 @@ export {
   updateMyJobPost,
   deleteMyJobPost,
   updateMyJobPostStatus,
+
+  // Public services
+  listJobPostsPublic,
+  getJobPostPublicById,
 };

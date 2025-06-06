@@ -1,11 +1,12 @@
 import { useLoaderData } from '@remix-run/react';
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import { getSpaOwnerById, updateSpaOwner } from '~/services/spaOwner.server';
 import SpaOwnerEditForm from './components/SpaOwnerEditForm';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 type ActionData = {
   success: boolean;
@@ -14,20 +15,20 @@ type ActionData = {
   redirectTo?: string;
 };
 
-export const action = async ({
-  request,
-  params,
-}: ActionFunctionArgs): Promise<ActionData> => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   try {
     // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      return { success: false, message: 'Unauthorized' };
+    const { session, headers } = await isAuthenticated(request);
+    if (!session) {
+      return data({ success: false, message: 'Unauthorized' }, { headers });
     }
 
     const { id } = params;
     if (!id) {
-      return { success: false, message: 'SpaOwner ID is required' };
+      return data(
+        { success: false, message: 'SpaOwner ID is required' },
+        { headers },
+      );
     }
 
     switch (request.method) {
@@ -58,43 +59,58 @@ export const action = async ({
 
         // Kiểm tra dữ liệu bắt buộc
         if (!spaOwnerData.firstName) {
-          return { success: false, message: 'Tên chủ spa là bắt buộc' };
+          return data(
+            { success: false, message: 'Tên chủ spa là bắt buộc' },
+            { headers },
+          );
         }
 
         // Gọi API tạo chủ spa cùng case service
-        const response = await updateSpaOwner(id, spaOwnerData, auth);
+        const response = await updateSpaOwner(id, spaOwnerData, session);
 
         if (!response) {
-          return {
-            success: false,
-            message: 'Lỗi khi cập nhật chủ spa',
-          };
+          return data(
+            {
+              success: false,
+              message: 'Lỗi khi cập nhật chủ spa',
+            },
+            { headers },
+          );
         }
 
-        return {
-          success: true,
-          message: 'Cập nhật chủ spa thành công',
-          spaOwner: response,
-          redirectTo: '/admin/spa-owners',
-        };
+        return data(
+          {
+            success: true,
+            message: 'Cập nhật chủ spa thành công',
+            spaOwner: response,
+            redirectTo: '/admin/spa-owners',
+          },
+          { headers },
+        );
 
       default:
-        return {
-          success: false,
-          message: 'Phương thức không hợp lệ',
-        };
+        return data(
+          {
+            success: false,
+            message: 'Phương thức không hợp lệ',
+          },
+          { headers },
+        );
     }
   } catch (error: any) {
     console.error('Lỗi cập nhật chủ spa:', error);
-    return {
-      success: false,
-      message: error.message || 'Đã xảy ra lỗi không xác định',
-    };
+    return data(
+      {
+        success: false,
+        message: error.message || 'Đã xảy ra lỗi không xác định',
+      },
+      {},
+    );
   }
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const auth = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
   if (!auth) {
     throw new Response('Unauthorized', { status: 401 });
   }

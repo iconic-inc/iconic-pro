@@ -13,6 +13,13 @@ clientJobAppRouter.post(
   JobApplicationController.applyJob
 );
 
+/* Get application for a specific job post */
+clientJobAppRouter.get(
+  '/jobs/:jobPostId',
+  hasPermission('jobApplication', 'readOwn'),
+  JobApplicationController.getJobApplication
+);
+
 /* List my applications */
 clientJobAppRouter.get(
   '/',

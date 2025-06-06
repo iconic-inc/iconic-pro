@@ -48,3 +48,12 @@ export interface IResponseList<T> {
     totalPages: number;
   };
 }
+
+export interface ITextEditorProps {
+  value: string;
+  name: string;
+  onChange: (value: string) => any;
+  placeholder?: string;
+  readOnly?: boolean;
+  className?: string;
+}

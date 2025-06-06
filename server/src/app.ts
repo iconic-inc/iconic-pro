@@ -6,6 +6,7 @@ import 'express-async-errors';
 import { v4 as uuid } from 'uuid';
 import path from 'path';
 import cors from 'cors';
+import { standardLimiter } from '@middlewares/rateLimiter.middleware';
 
 import '@utils/interface';
 import { logger } from '@loggers/logger.log';
@@ -82,6 +83,9 @@ app.use(
     },
   })
 );
+
+// Apply rate limiting middleware to all routes
+app.use(standardLimiter);
 
 // init routers
 app.use(express.Router().use('/api/v1', require('./api/routers')));

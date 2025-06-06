@@ -5,59 +5,62 @@ import { JobPostController } from '../../controllers/jobPost.controller';
 import { authenticationV2 } from '@middlewares/authentication';
 import { hasPermission } from '@middlewares/authorization';
 
-const adminJobPostRouter = Router();
+const jobPostRouter = Router();
+
+jobPostRouter.get('/public', JobPostController.listJobPostsPublic);
+jobPostRouter.get('/public/:jobPostId', JobPostController.getJobPostPublicById);
 
 /* 🔐 Require JWT for every admin job‑post route */
-adminJobPostRouter.use(authenticationV2);
+jobPostRouter.use(authenticationV2);
 
 /* CRUD  (resource = "jobPost", action = *Any) */
-adminJobPostRouter.get(
-  '/',
-  hasPermission('jobPost', 'readAny'),
-  JobPostController.listJobPosts
-);
-
-adminJobPostRouter.post(
-  '/',
-  hasPermission('jobPost', 'createAny'),
-  JobPostController.createJobPost
-);
-
-adminJobPostRouter.get(
+jobPostRouter.get(
   '/:jobPostId',
   hasPermission('jobPost', 'readAny'),
   JobPostController.getJobPostById
 );
 
-adminJobPostRouter.put(
+jobPostRouter.get(
+  '/',
+  hasPermission('jobPost', 'readAny'),
+  JobPostController.listJobPosts
+);
+
+jobPostRouter.post(
+  '/',
+  hasPermission('jobPost', 'createAny'),
+  JobPostController.createJobPost
+);
+
+jobPostRouter.put(
   '/:jobPostId',
   hasPermission('jobPost', 'updateAny'),
   JobPostController.updateJobPost
 );
 
-adminJobPostRouter.delete(
-  '/bulk',
-  hasPermission('jobPost', 'deleteAny'),
-  JobPostController.bulkDeleteJobPosts
-);
-
-adminJobPostRouter.delete(
+jobPostRouter.delete(
   '/bulk/hard',
   hasPermission('jobPost', 'deleteAny'),
   JobPostController.bulkHardDeleteJobPosts
 );
 
-adminJobPostRouter.delete(
+jobPostRouter.delete(
+  '/bulk',
+  hasPermission('jobPost', 'deleteAny'),
+  JobPostController.bulkDeleteJobPosts
+);
+
+jobPostRouter.delete(
   '/:jobPostId',
   hasPermission('jobPost', 'deleteAny'),
   JobPostController.deleteJobPost
 );
 
 /* Approve / close / reopen */
-adminJobPostRouter.patch(
+jobPostRouter.patch(
   '/:jobPostId/status',
   hasPermission('jobPost', 'updateAny'),
   JobPostController.updateJobPostStatus
 );
 
-module.exports = adminJobPostRouter;
+module.exports = jobPostRouter;

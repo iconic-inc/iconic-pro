@@ -19,6 +19,9 @@ export interface IUser {
   updatedAt: string;
 }
 
+export interface IUserBrief
+  extends Pick<IUser, 'id' | 'usr_firstName' | 'usr_lastName' | 'usr_avatar'> {}
+
 export interface IUserAttrs {
   username: string;
   email: string;
@@ -33,4 +36,35 @@ export interface IUserAttrs {
   avatar?: string;
   role?: string;
   password: string;
+}
+
+export interface IGoogleProfile {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+  given_name: string;
+  family_name: string;
+}
+
+export interface IFacebookProfile {
+  id: string;
+  name: string;
+  email: string;
+  picture: {
+    data: {
+      url: string;
+      width: number;
+      height: number;
+    };
+  };
+}
+
+export interface IUserSocialLogin {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  avatar: string;
 }

@@ -1,9 +1,9 @@
 import { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { Suspense, useEffect } from 'react';
-import Footer from '~/components/Footer';
+import Footer from '~/components/website/Footer';
 import HandsomeError from '~/components/HandsomeError';
-import Header from '~/components/Header';
+import Header from '~/components/website/Header';
 
 export const links: LinksFunction = () => {
   return [
@@ -21,17 +21,9 @@ export const links: LinksFunction = () => {
 export default function BlogTemplate() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Header shadow />
-      </Suspense>
-
       <main className='mt-20 md:mt-0'>
         <Outlet />
       </main>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <Footer />
-      </Suspense>
     </>
   );
 }

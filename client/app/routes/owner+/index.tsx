@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from '@remix-run/node';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {

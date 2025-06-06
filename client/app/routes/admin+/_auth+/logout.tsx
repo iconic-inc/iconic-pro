@@ -1,10 +1,10 @@
 import { ActionFunctionArgs, redirect } from '@remix-run/node';
 import { isAuthenticated, logout } from '~/services/auth.server';
-import { deleteAuthCookie } from '~/services/cookie.server';
+import { deleteAuthCookie, parseAuthCookie } from '~/services/cookie.server';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const auth = await isAuthenticated(request);
-  if (!auth) {
+  const session = await parseAuthCookie(request);
+  if (!session) {
     return null;
   }
 
@@ -13,7 +13,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   try {
     // delete keyToken in database
-    await logout(auth).catch((error) => {
+    await logout(session).catch((error) => {
       console.error('Logout error:', error);
     });
 

@@ -14,7 +14,7 @@ export default function UpdateButtons({
     <div className='col-span-12 flex text-xs justify-between fixed top-0 right-0 w-10/12 bg-white px-8 py-4 z-10'>
       <div className='flex gap-x-2'>
         <button
-          className='center rounded-lg bg-red py-2 px-3 font-sans font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg enable:active:bg-red-500/80 disabled:opacity-60'
+          className='center rounded-lg bg-red-500 py-2 px-3 font-sans font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg enable:active:bg-red-500/80 disabled:opacity-60'
           type='button'
           disabled={loading}
           onClick={async () => {

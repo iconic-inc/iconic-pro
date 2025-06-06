@@ -3,8 +3,8 @@ import { Form, useLoaderData, useLocation } from '@remix-run/react';
 import SideBar from '~/routes/blog+/components/SideBar';
 import { getPosts } from '~/services/page.server';
 import { LoaderFunctionArgs } from '@remix-run/node';
-import { RiSearch2Line } from '@remixicon/react';
-import PostList from '~/components/PostList';
+import { Search } from 'lucide-react';
+import PostList from '~/components/website/PostList';
 import Defer from '~/components/Defer';
 import { clientFetch } from '~/lib';
 import { IPage } from '~/interfaces/page.interface';
@@ -54,7 +54,7 @@ export default function SearchPage() {
             title='Tìm kiếm'
             type='submit'
           >
-            <RiSearch2Line className={`text-[--main-color]`} />
+            <Search className={`text-[--main-color]`} />
           </button>
         </Form>
 

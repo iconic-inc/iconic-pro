@@ -1,20 +1,17 @@
-import { useLoaderData, useNavigate } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
+import { LoaderFunctionArgs } from '@remix-run/node';
 
-import { isAuthenticated } from '~/services/auth.server';
-import {
-  listJobApplications,
-  listMyJobApplications,
-} from '~/services/jobApplication.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import { listMyJobApplications } from '~/services/jobApplication.server';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import JobApplicationList from './components/JobApplicationList';
 import { IJobApplicationDetails } from '~/interfaces/jobApplication.interface';
 import JobApplicationToolbar from './components/JobApplicationToolbar';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
-    const auth = await isAuthenticated(request);
+    const auth = await parseAuthCookie(request);
     if (!auth) {
       throw new Error('Unauthorized');
     }
@@ -70,28 +67,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 };
 
-// Action function để xử lý xóa chủ jobApp
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const auth = await isAuthenticated(request);
-  if (!auth) {
-    return { success: false, error: 'Unauthorized' };
-  }
-  const formData = await request.formData();
-
-  try {
-    switch (request.method) {
-      default:
-        return { success: false, error: 'Method not allowed' };
-    }
-  } catch (error: any) {
-    console.error('Action error:', error);
-    return {
-      success: false,
-      error: error.message || 'Có lỗi xảy ra khi thực hiện hành động',
-    };
-  }
-};
-
 export default function JobApplicationIndex() {
   const { jobAppsPromise } = useLoaderData<typeof loader>();
 
@@ -108,8 +83,6 @@ export default function JobApplicationIndex() {
       status: true,
     },
   );
-
-  const navigate = useNavigate();
 
   return (
     <>

@@ -45,7 +45,7 @@ const createImage = async (files?: Express.Multer.File[]) => {
 };
 
 const updateImage = async (id: string, image: IImageAttrs) => {
-  let updatedImage = await ImageModel.findOneAndUpdate(
+  const updatedImage = await ImageModel.findOneAndUpdate(
     { $or: [{ _id: isValidObjectId(id) ? id : null }, { img_name: id }] },
     {
       ...formatAttributeName(removeNestedNullish(image), IMAGE.PREFIX),

@@ -1,12 +1,30 @@
 export const JOB_POST = {
   TYPE: {
-    FULL_TIME: 'full-time',
-    PART_TIME: 'part-time',
-    INTERN: 'intern',
+    FULL_TIME: {
+      slug: 'full-time',
+      name: 'Toàn thời gian',
+    },
+    PART_TIME: {
+      slug: 'part-time',
+      name: 'Bán thời gian',
+    },
+    INTERN: {
+      slug: 'intern',
+      name: 'Thực tập',
+    },
   },
   STATUS: {
-    DRAFT: 'draft',
-    ACTIVE: 'active',
-    CLOSED: 'closed',
+    DRAFT: {
+      slug: 'draft',
+      name: 'Nháp',
+    },
+    ACTIVE: {
+      slug: 'active',
+      name: 'Đang hoạt động',
+    },
+    CLOSED: {
+      slug: 'closed',
+      name: 'Đã đóng',
+    },
   },
 } as const;

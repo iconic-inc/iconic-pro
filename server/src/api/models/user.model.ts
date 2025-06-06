@@ -1,4 +1,4 @@
-import { model, Schema, Types, Model, ClientSession, models } from 'mongoose';
+import { model, Schema, Types, } from 'mongoose';
 import { IMAGE, ROLE, USER } from '../constants';
 import { IUser, IUserModel } from '../interfaces/user.interface';
 import { formatAttributeName } from '@utils/index';

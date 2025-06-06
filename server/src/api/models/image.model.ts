@@ -1,7 +1,7 @@
 import { Schema, Types, model, models } from 'mongoose';
 import { IImage, IImageModel } from '../interfaces/image.interface';
 import { formatAttributeName } from '../utils';
-import { IMAGE } from '../constants';
+import { IMAGE, USER } from '../constants';
 
 const sliderSchema = new Schema<IImage, IImageModel>(
   {
@@ -12,6 +12,11 @@ const sliderSchema = new Schema<IImage, IImageModel>(
     img_link: { type: String },
     img_url: { type: String, required: true },
     img_isPublic: { type: Boolean, required: true, default: true },
+    // img_uploadedBy: {
+    //   type: Types.ObjectId,
+    //   ref: USER.DOCUMENT_NAME,
+    //   required: true,
+    // },
   },
   {
     timestamps: true,

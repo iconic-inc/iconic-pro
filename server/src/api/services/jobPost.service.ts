@@ -8,12 +8,15 @@ import { SpaOwnerModel } from '../models/spaOwner.model';
 import { BadRequestError, NotFoundError, ForbiddenError } from '../core/errors';
 import { formatAttributeName, getReturnData, getReturnList } from '../utils';
 import { IResponseList } from '../interfaces/response.interface';
-import { IJobPost, IJobPostAttrs } from '../interfaces/jobPost.interface';
+import {
+  IJobPost,
+  IJobPostAttrs,
+  IJobPostResponse,
+} from '../interfaces/jobPost.interface';
 import { SpaOwnerService } from './spaOwner.service';
 import { SpaService } from './spa.service';
 import mongoose, { isValidObjectId, Types } from 'mongoose';
 import { JOB_POST, SPA, SPA_OWNER, USER } from '../constants';
-import { IJobPostDetails } from '../../../../client/app/interfaces/jobPost.interface';
 
 const VALID_STATUS = ['draft', 'active', 'closed'];
 
@@ -27,6 +30,9 @@ export class JobPostService {
     spaId?: string;
     keyword?: string;
     ownerId?: string;
+    type?: string;
+    salaryFrom?: string | number;
+    salaryTo?: string | number;
   }): Promise<IResponseList<IJobPost>> {
     const { page = 1, limit = 20, status, spaId, keyword, ownerId } = query;
     const filter: any = {};
@@ -35,6 +41,24 @@ export class JobPostService {
     if (keyword) filter.$text = { $search: keyword };
     if (ownerId && isValidObjectId(ownerId))
       filter.jpo_owner = new Types.ObjectId(ownerId);
+    if (query.type) {
+      const type = decodeURIComponent(query.type as string);
+      const validTypes = Object.values(JOB_POST.TYPE);
+      // type query is an string separated by commas or 'all'
+      if (type === 'all') {
+        filter.jpo_type = { $in: validTypes }; // assuming 'spa' and 'job' are valid types
+      } else if (type.includes(',')) {
+        filter.jpo_type = {
+          $in: type.split(',').map((t: string) => t.trim()),
+        };
+      } else if (validTypes.includes(type as any)) filter.jpo_type = type;
+    }
+    if (query.salaryFrom || query.salaryTo) {
+      filter.jpo_salaryFrom = { $gte: +(query.salaryFrom || 0) };
+      filter.jpo_salaryTo = {
+        $lte: +(query.salaryTo || Number.MAX_SAFE_INTEGER),
+      };
+    }
 
     const docs = await JobPostModel.aggregate([
       {
@@ -96,6 +120,9 @@ export class JobPostService {
               usr_msisdn: '$jpo_owner.spo_user.usr_msisdn',
             },
           },
+          jpo_salaryFrom: 1,
+          jpo_salaryTo: 1,
+          jpo_type: 1,
           createdAt: 1,
           updatedAt: 1,
         },
@@ -137,7 +164,7 @@ export class JobPostService {
         },
       });
     if (!post) throw new NotFoundError('Job post not found');
-    return getReturnData(post) as any as IJobPostDetails;
+    return getReturnData(post) as any as IJobPostResponse;
   }
 
   static async updateJobPost(id: string, body: any) {

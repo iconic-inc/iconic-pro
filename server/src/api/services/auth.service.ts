@@ -2,9 +2,13 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 
 import { USER } from '../constants';
-import { getReturnData } from '../utils';
+import { formatAttributeName, getReturnData } from '../utils';
 import { createTokenPair, generateKeyPair } from '../auth/authUtils';
-import { IUserAttrs } from '../interfaces/user.interface';
+import {
+  IGoogleOAuthProfile,
+  IUserAttrs,
+  IUserSocialLogin,
+} from '../interfaces/user.interface';
 import { IKeyTokenAttrs } from '../interfaces/keyToken.interface';
 import {
   BadRequestError,
@@ -23,6 +27,8 @@ import { sendVerificationEmail, sendTempPassEmail } from './email.service';
 import { deleteOTPByEmail, getOTPByToken } from './otp.service';
 import { getRoles } from './role.service';
 import { parseJwt, verifyJwt } from '../helpers/jwt.helper';
+import { ImageModel } from '@models/image.model';
+import { CandidateService } from '@services/candidate.service';
 
 export class AuthService {
   static async signIn({
@@ -51,13 +57,17 @@ export class AuthService {
     const { privateKey, publicKey } = generateKeyPair();
 
     const tokens = createTokenPair({
-      payload: { userId: foundUser.id, email: foundUser.usr_email!, browserId },
+      payload: {
+        userId: foundUser._id.toString(),
+        email: foundUser.usr_email!,
+        browserId,
+      },
       privateKey,
       publicKey,
     });
 
     const keyTokenAttrs: IKeyTokenAttrs = {
-      user: foundUser.id,
+      user: foundUser._id.toString(),
       browserId,
       privateKey,
       publicKey,
@@ -74,6 +84,95 @@ export class AuthService {
       }),
       tokens,
     };
+  }
+
+  static async socialLogin({
+    provider,
+    profile,
+    browserId,
+  }: {
+    provider: 'google' | 'facebook';
+    profile: IUserSocialLogin;
+    browserId: string;
+  }) {
+    if (!['google', 'facebook'].includes(provider)) {
+      throw new BadRequestError('Unsupported social login provider');
+    }
+
+    const { email } = profile;
+
+    if (!email) {
+      throw new BadRequestError('Email is required for social login');
+    }
+
+    const foundUser = await findUserById(email);
+
+    if (foundUser) {
+      const { privateKey, publicKey } = generateKeyPair();
+      const tokens = createTokenPair({
+        payload: { userId: foundUser._id.toString(), email, browserId },
+        privateKey,
+        publicKey,
+      });
+
+      const keyTokenAttrs: IKeyTokenAttrs = {
+        user: foundUser._id.toString(),
+        browserId,
+        privateKey,
+        publicKey,
+        refreshToken: tokens.refreshToken,
+      };
+
+      await createKeyToken(keyTokenAttrs);
+
+      return {
+        user: getReturnData(foundUser, {
+          fields: ['id', 'usr_email', 'usr_role'],
+        }),
+        tokens,
+      };
+    }
+
+    try {
+      const userAvatar = await ImageModel.build({
+        url: profile.avatar || '',
+        name: `${Date.now()}-avatar-${profile.email.split('@')[0]}`,
+        type: 'avatar',
+        title: profile.name || '',
+        isPublic: true,
+        description: `Avatar for ${profile.name || 'user'}`,
+      });
+
+      const tempPass = randomBytes(8).toString('hex');
+
+      const candidate = await CandidateService.createCandidate({
+        email: profile.email,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        status: USER.STATUS.ACTIVE,
+        avatar: userAvatar.id,
+        password: tempPass,
+        username: profile.email, // default is email
+        slug: '', // will be set as slugified firstName within create candidate
+        role: '' as any, // default role will be set in create candidate
+        user: '', // new user will be created within create candidate
+      });
+
+      await sendTempPassEmail(email, { username: email, password: tempPass });
+
+      const auth = await this.signIn({
+        username: candidate.can_user.usr_username,
+        password: tempPass,
+        browserId,
+        refreshToken: null,
+      });
+
+      return auth;
+    } catch (error) {
+      // Handle transaction rollback if needed
+      console.error('Error during social login:', error);
+      throw error;
+    }
   }
 
   static async signUp({ email }: IUserAttrs) {

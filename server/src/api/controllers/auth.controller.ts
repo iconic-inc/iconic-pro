@@ -31,6 +31,18 @@ export class AuthController {
     });
   }
 
+  static async socialLogin(req: Request, res: Response, next: NextFunction) {
+    OK({
+      res,
+      message: 'Social Login Success!',
+      metadata: await AuthService.socialLogin(req.body),
+      link: {
+        signOut: { href: '/api/v1/signout', method: 'POST' },
+        createProduct: { href: '/api/v1/products', method: 'POST' },
+      },
+    });
+  }
+
   static async signOut(req: Request, res: Response, next: NextFunction) {
     OK({
       res,

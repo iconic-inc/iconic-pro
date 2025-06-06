@@ -22,13 +22,13 @@ const toAgeString = ({ from, to }: { from: string; to: string }) => {
   return `${fromAge} ${getUnit(fromAgeUnit)} - ${toAge} ${getUnit(toAgeUnit)}`;
 };
 
-const abbCurrency = ['Đ', 'K', 'Tr', 'T'];
+const abbCurrency = ['Đồng', 'Nghìn', 'Triệu', 'Tỷ'];
 const shortenNumber = (money: number, stack = 0) => {
   if (Math.abs(+money) < 1_000 || stack >= abbCurrency.length - 1) {
     if (stack < 2) return `${+money.toFixed(2)}${abbCurrency[stack]}`;
 
     const [int, dec] = money.toFixed(2).split('.');
-    return `${int}${abbCurrency[stack]}${dec.replace(/0+$/, '')}`;
+    return `${int} ${abbCurrency[stack]}${dec.replaceAll('0', '') ? ` ${dec.toString().padEnd(3, '0')} ${abbCurrency[stack - 1]}` : ''}`;
   }
 
   return shortenNumber(+(+money / 1_000).toFixed(2), ++stack);
@@ -65,6 +65,25 @@ const calHourDiff = (start: string, end: string) => {
   const endDate = new Date(end);
 
   return Math.abs((endDate.getTime() - startDate.getTime()) / 36e5).toFixed(2);
+};
+
+const calTimeDiff = (start: string, end: string) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  return endDate.getTime() - startDate.getTime();
+};
+
+const shortenPeriod = (period: number) => {
+  const units = ['phút', 'giờ', 'ngày', 'tuần', 'tháng'];
+  const thresholds = [60000, 60, 24, 7, 30]; // seconds in each unit
+  let unitIndex = 0;
+  let value = period;
+  while (unitIndex < thresholds.length && value >= thresholds[unitIndex]) {
+    value /= thresholds[unitIndex];
+    unitIndex++;
+  }
+  return `${Math.round(value)} ${units[unitIndex - 1]}`;
 };
 
 const parseJwt = <U>(token: string) => {
@@ -165,6 +184,7 @@ export {
   toVnDateString,
   toVnDateTimeString,
   calHourDiff,
+  calTimeDiff,
   shortenNumber,
   getUnit,
   parseJwt,
@@ -175,4 +195,5 @@ export {
   formatCurrency,
   calculateAge,
   getValueByPath,
+  shortenPeriod,
 };

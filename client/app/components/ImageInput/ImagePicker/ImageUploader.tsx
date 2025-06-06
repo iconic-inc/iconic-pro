@@ -1,4 +1,4 @@
-import { RiUploadCloud2Line } from '@remixicon/react';
+import { UploadCloud } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { IImage } from '~/interfaces/image.interface';
 import { uploadImages } from '~/services/image.client';
@@ -14,7 +14,7 @@ export default function ImageUploader({
   return (
     <div className={`flex gap-4 items-center justify-center h-full`}>
       <label className='cursor-pointer flex-col w-1/2 items-center rounded-xl border-2 border-dashed border-blue-400 bg-white p-6 text-center'>
-        <RiUploadCloud2Line className='w-6 h-6 text-blue-400 m-auto' />
+        <UploadCloud className='w-6 h-6 text-blue-400 m-auto' />
 
         <h2 className='text-xl mt-2 font-medium text-gray-700 tracking-wide'>
           Upload Image
@@ -35,25 +35,25 @@ export default function ImageUploader({
             if (!e.target.files || e.target.files.length === 0) {
               toast.update(toastId, {
                 type: 'error',
-                data: 'No image selected',
+                render: 'No image selected',
               });
               return;
             }
 
             try {
               const res = await uploadImages(e.target.files);
-
+              console.log('update image response', res);
               if (res.success !== 1) {
                 toast.update(toastId, {
                   type: 'error',
-                  data: res.toast.message,
+                  render: res.toast.message,
                 });
                 return;
               }
 
               toast.update(toastId, {
                 type: 'success',
-                data: res.toast.message,
+                render: res.toast.message,
                 autoClose: 3000,
                 isLoading: false,
               });

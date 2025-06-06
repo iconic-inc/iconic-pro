@@ -1,21 +1,21 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 import { ISpaAttrs } from '~/interfaces/spa.interface';
 import { isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import { createSpa4Admin } from '~/services/spa.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import SpaCreateForm from './components/SpaCreateForm';
-import { listSpaOwners4Admin } from '~/services/spaOwner.server';
+import { listSpaOwners } from '~/services/spaOwner.server';
 import { useLoaderData } from '@remix-run/react';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  try {
-    // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      throw new Error('Unauthorized');
-    }
+  const auth = await parseAuthCookie(request);
+  if (!auth) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
 
-    const ownersPromise = listSpaOwners4Admin(
+  try {
+    const ownersPromise = listSpaOwners(
       { status: 'active' },
       { page: 1, limit: 1000 },
       auth,
@@ -46,14 +46,12 @@ export default function NewSpa() {
   );
 }
 
-export const action = async ({
-  request,
-}: ActionFunctionArgs): Promise<ActionData> => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      return { success: false, message: 'Unauthorized' };
+    const { session, headers } = await isAuthenticated(request);
+    if (!session) {
+      return data({ success: false, message: 'Unauthorized' }, { headers });
     }
 
     const formData = await request.formData();
@@ -89,27 +87,36 @@ export const action = async ({
     };
 
     // Gọi API tạo spa cùng case service
-    const spa = await createSpa4Admin(spaData, auth);
+    const spa = await createSpa4Admin(spaData, session);
 
     if (!spa) {
-      return {
-        success: false,
-        message: 'Lỗi khi tạo spa',
-      };
+      return data(
+        {
+          success: false,
+          message: 'Lỗi khi tạo spa',
+        },
+        { headers },
+      );
     }
 
-    return {
-      success: true,
-      message: 'Thêm mới spa thành công!',
-      spa,
-      redirectTo: `/admin/spas/${spa.id}`,
-    };
+    return data(
+      {
+        success: true,
+        message: 'Thêm mới spa thành công!',
+        spa,
+        redirectTo: `/admin/spas/${spa.id}`,
+      },
+      { headers },
+    );
   } catch (error: any) {
     console.error('Lỗi tạo spa:', error);
-    return {
-      success: false,
-      message: error.message || 'Đã xảy ra lỗi không xác định',
-    };
+    return data(
+      {
+        success: false,
+        message: error.message || 'Đã xảy ra lỗi không xác định',
+      },
+      {},
+    );
   }
 };
 

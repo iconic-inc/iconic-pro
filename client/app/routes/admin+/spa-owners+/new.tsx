@@ -1,9 +1,9 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, data } from '@remix-run/node';
 import { ISpaOwnerAttrs } from '~/interfaces/spaOwner.interface';
 import { isAuthenticated } from '~/services/auth.server';
 import { createSpaOwner } from '~/services/spaOwner.server';
 import SpaOwnerCreateForm from './components/SpaOwnerCreateForm';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 
 type ActionData = {
   success: boolean;
@@ -12,14 +12,12 @@ type ActionData = {
   redirectTo?: string;
 };
 
-export const action = async ({
-  request,
-}: ActionFunctionArgs): Promise<ActionData> => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      return { success: false, message: 'Unauthorized' };
+    const { session, headers } = await isAuthenticated(request);
+    if (!session) {
+      return data({ success: false, message: 'Unauthorized' }, { headers });
     }
 
     const formData = await request.formData();
@@ -47,27 +45,36 @@ export const action = async ({
     };
 
     // Gọi API tạo chủ spa cùng case service
-    const spaOwner = await createSpaOwner(spaOwnerData, auth);
+    const spaOwner = await createSpaOwner(spaOwnerData, session);
 
     if (!spaOwner) {
-      return {
-        success: false,
-        message: 'Lỗi khi tạo chủ spa',
-      };
+      return data(
+        {
+          success: false,
+          message: 'Lỗi khi tạo chủ spa',
+        },
+        { headers },
+      );
     }
 
-    return {
-      success: true,
-      message: 'Thêm mới chủ spa thành công!',
-      spaOwner,
-      redirectTo: `/admin/spa-owners/${spaOwner.id}`,
-    };
+    return data(
+      {
+        success: true,
+        message: 'Thêm mới chủ spa thành công!',
+        spaOwner,
+        redirectTo: `/admin/spa-owners/${spaOwner.id}`,
+      },
+      { headers },
+    );
   } catch (error: any) {
     console.error('Lỗi tạo chủ spa:', error);
-    return {
-      success: false,
-      message: error.message || 'Đã xảy ra lỗi không xác định',
-    };
+    return data(
+      {
+        success: false,
+        message: error.message || 'Đã xảy ra lỗi không xác định',
+      },
+      {},
+    );
   }
 };
 

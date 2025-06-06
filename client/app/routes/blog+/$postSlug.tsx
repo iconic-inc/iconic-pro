@@ -9,10 +9,10 @@ import {
   getPostDetail,
   getPosts,
 } from '~/services/page.server';
-import PostDetail from '~/components/PostDetail';
+import PostDetail from '~/components/website/PostDetail';
 import Hydrated from '~/components/Hydrated';
 import ShareBox from '~/widgets/ShareBox';
-import ArticleList from '~/components/PostList';
+import ArticleList from '~/components/website/PostList';
 import { authenticator } from '~/services/auth.server';
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {

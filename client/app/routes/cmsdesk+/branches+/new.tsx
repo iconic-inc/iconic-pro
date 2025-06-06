@@ -1,4 +1,4 @@
-import { ActionFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, data } from '@remix-run/node';
 
 import { authenticator, isAuthenticated } from '~/services/auth.server';
 import BranchEditor from './components/BranchEditor';
@@ -6,7 +6,11 @@ import { createBranch } from '~/services/branch.server';
 import { getMapLink } from '~/utils';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const user = await isAuthenticated(request);
+  const { session, headers } = await isAuthenticated(request);
+  if (!session) {
+    return data({ success: false, message: 'Unauthorized' }, { headers });
+  }
+
   switch (request.method) {
     case 'POST':
       try {
@@ -32,13 +36,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           !district ||
           !street
         ) {
-          return {
-            toast: {
-              message: 'Vui lòng điền đầy đủ thông tin!',
-              type: 'error',
+          return data(
+            {
+              toast: {
+                message: 'Vui lòng điền đầy đủ thông tin!',
+                type: 'error',
+              },
+              page: null,
             },
-            page: null,
-          };
+            { headers },
+          );
         }
 
         // Save the page to the database
@@ -52,28 +59,40 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             isMain,
             address: { province, district, street },
           },
-          user!,
+          session,
         );
 
-        return {
-          toast: {
-            message: 'Chi nhánh được tạo thành công!',
-            type: 'success',
+        return data(
+          {
+            toast: {
+              message: 'Chi nhánh được tạo thành công!',
+              type: 'success',
+            },
+            branch,
           },
-          branch,
-        };
+          { headers },
+        );
       } catch (error: any) {
-        return {
-          toast: { message: error.statusText || error.message, type: 'error' },
-          page: null,
-        };
+        return data(
+          {
+            toast: {
+              message: error.statusText || error.message,
+              type: 'error',
+            },
+            page: null,
+          },
+          { headers },
+        );
       }
 
     default:
-      return {
-        toast: { message: 'Method not allowed', type: 'error' },
-        page: null,
-      };
+      return data(
+        {
+          toast: { message: 'Method not allowed', type: 'error' },
+          page: null,
+        },
+        { headers },
+      );
   }
 };
 

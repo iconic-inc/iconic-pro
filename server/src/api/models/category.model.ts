@@ -6,7 +6,7 @@ import { CATEGORY, PAGE } from '../constants';
 const categorySchema = new Schema<ICategory, ICategoryModel>(
   {
     cat_name: { type: String, required: true },
-    cat_page: { type: Types.ObjectId, required: true, ref: PAGE.DOCUMENT_NAME },
+    cat_url: { type: String, default: '#' },
     cat_parent: { type: Types.ObjectId, ref: CATEGORY.DOCUMENT_NAME },
     cat_order: { type: Number, default: 1 },
   },

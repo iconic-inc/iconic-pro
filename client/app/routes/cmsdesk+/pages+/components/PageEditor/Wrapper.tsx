@@ -6,6 +6,7 @@ import UpdateButtons from './UpdateButtons';
 import CreateButtons from './CreateButtons';
 import { action } from '~/routes/cmsdesk+/pages+/new';
 import { IPageDetail } from '~/interfaces/page.interface';
+import { Card, CardContent } from '~/components/ui/card';
 
 export default function Wrapper({
   page,
@@ -67,11 +68,15 @@ export default function Wrapper({
 
   return (
     <fetcher.Form
-      className='container grid grid-cols-12 gap-y-4 mt-8'
+      className='container mt-8'
       method={type === 'update' ? 'PUT' : 'POST'}
       encType='multipart/form-data'
     >
-      {children}
+      <Card className='col-span-12'>
+        <CardContent className='p-4 grid grid-cols-12 gap-6'>
+          {children}
+        </CardContent>
+      </Card>
 
       {type === 'update' && (
         <UpdateButtons

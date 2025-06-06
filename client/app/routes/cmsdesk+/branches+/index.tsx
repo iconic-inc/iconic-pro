@@ -2,7 +2,7 @@ import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
 import { getBranches } from '~/services/branch.server';
-import { RiAddLine } from '@remixicon/react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import LoadingOverlay from '~/components/LoadingOverlay';
@@ -37,7 +37,7 @@ export default function PageManager() {
             }
           }}
         >
-          <RiAddLine />
+          <Plus />
         </button>
       </div>
     );
@@ -65,7 +65,7 @@ export default function PageManager() {
           }
         }}
       >
-        <RiAddLine />
+        <Plus />
       </button>
     </div>
   );

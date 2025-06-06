@@ -95,11 +95,11 @@ export default function BookingList({
                   Tình trạng
                 </span>
                 {bok.bok_viewed ? (
-                  <p className='m-auto w-fit bg-green rounded px-2 py-1 text-xs font-bold text-white'>
+                  <p className='m-auto w-fit bg-green-500 rounded px-2 py-1 text-xs font-bold text-white'>
                     Đã xem
                   </p>
                 ) : (
-                  <p className='m-auto w-fit rounded bg-red px-2 py-1 text-xs font-bold text-white'>
+                  <p className='m-auto w-fit rounded bg-red-500 px-2 py-1 text-xs font-bold text-white'>
                     Chưa xem
                   </p>
                 )}

@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 import {
   Link,
   NavLink,
@@ -10,16 +10,16 @@ import {
   useNavigation,
 } from '@remix-run/react';
 import {
-  RiBookShelfLine,
-  RiCalendar2Line,
-  RiDashboard3Line,
-  RiFolderImageLine,
-  RiGitBranchLine,
-  RiLogoutBoxRLine,
-  RiNewspaperLine,
-} from '@remixicon/react';
-
+  LayoutDashboard,
+  Image,
+  List,
+  GitBranch,
+  FileText,
+  Calendar,
+  LogOut,
+} from 'lucide-react';
 import 'react-toastify/ReactToastify.css';
+
 import HandsomeError from '~/components/HandsomeError';
 import { updateAppSettings } from '~/services/app.server';
 import { authenticator, isAuthenticated } from '~/services/auth.server';
@@ -28,10 +28,21 @@ import { IUser } from '~/interfaces/user.interface';
 import { countUnseenBookings } from '~/services/booking.server';
 import LoadingOverlay from '~/components/LoadingOverlay';
 import { isExpired } from '~/utils';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
-    const user = await isAuthenticated(request);
+    const { session, headers } = await isAuthenticated(request);
+
+    if (!session) {
+      return data(
+        {
+          error: 'Unauthorized',
+          toast: { message: 'Unauthorized', type: 'error' },
+        },
+        { headers },
+      );
+    }
 
     let formData = await request.formData();
 
@@ -51,36 +62,35 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         headScripts: formData.get('headScripts') as string,
         bodyScripts: formData.get('bodyScripts') as string,
       },
-      user,
+      session,
     );
 
-    return {
-      ...res,
-      toast: { message: 'Cập nhật thông tin thành công!', type: 'success' },
-    };
+    return data(
+      {
+        ...res,
+        toast: { message: 'Cập nhật thông tin thành công!', type: 'success' },
+      },
+      { headers },
+    );
   } catch (error: any) {
     console.error('Error updating app settings:', error);
-    return {
-      error: 'Failed to update app settings',
-      toast: { message: error.message || error.statusText, type: 'error' },
-    };
+    return data(
+      {
+        error: 'Failed to update app settings',
+        toast: { message: error.message || error.statusText, type: 'error' },
+      },
+      {},
+    );
   }
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   try {
-    const auth = await isAuthenticated(request);
-
-    if (url.pathname === '/cmsdesk/login') {
-      return {
-        user: null,
-        unseenBookings: 0,
-      };
-    }
+    const auth = await parseAuthCookie(request);
 
     if (!auth) {
-      return redirect('/cmsdesk/login' + `?redirect=${url.pathname}`);
+      return redirect('/admin/login' + `?redirect=${url.pathname}`);
     }
 
     const { tokens } = auth;
@@ -88,7 +98,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (isExpired(tokens.accessToken)) {
       console.log('access token expired');
 
-      return redirect('/cmsdesk/login' + `?redirect=${url.pathname}`);
+      return redirect('/admin/login' + `?redirect=${url.pathname}`);
     }
 
     const unseenBookings = await countUnseenBookings(auth!);
@@ -106,26 +116,20 @@ export function ErrorBoundary() {
 
 export default function CmsDesk() {
   const { user, unseenBookings } = useLoaderData<typeof loader>();
-  const location = useLocation();
-  const isLoginPage = location.pathname === '/cmsdesk/login';
   const navigation = useNavigation();
 
   return (
-    <main className='app_content text-[--sub7-text] select-auto'>
-      {isLoginPage ? (
-        <Outlet />
-      ) : (
-        <div className='flex flex-wrap bg-gray-100 w-full h-screen overflow-hidden'>
-          <SideBar user={user!} unseenBookings={unseenBookings} />
+    <div className='flex min-h-screen bg-gray-100 font-sans antialiased'>
+      {/* <div className='flex flex-wrap bg-gray-100 w-full h-screen overflow-hidden'> */}
+      <SideBar user={user!} unseenBookings={unseenBookings} />
 
-          <div className='w-10/12 h-full p-8 overflow-y-auto'>
-            <Outlet />
-          </div>
-        </div>
-      )}
+      <main className='flex-1 ml-64 p-8 lg:p-12 overflow-y-auto'>
+        <Outlet />
+      </main>
+      {/* </div> */}
 
       {navigation.state === 'loading' && <LoadingOverlay />}
-    </main>
+    </div>
   );
 }
 
@@ -140,23 +144,23 @@ const SideBar = ({
   const navigate = useNavigate();
 
   const navLinks = [
-    { to: '/cmsdesk', label: 'Dashboard', icon: <RiDashboard3Line /> },
-    { to: '/cmsdesk/images', label: 'Hình ảnh', icon: <RiFolderImageLine /> },
-    { to: '/cmsdesk/categories', label: 'Danh mục', icon: <RiBookShelfLine /> },
+    { to: '/cmsdesk', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/cmsdesk/images', label: 'Hình ảnh', icon: Image },
+    { to: '/cmsdesk/categories', label: 'Danh mục', icon: List },
     {
       to: '/cmsdesk/branches',
       label: 'Chi nhánh',
-      icon: <RiGitBranchLine />,
+      icon: GitBranch,
     },
-    { to: '/cmsdesk/pages', label: 'Trang', icon: <RiNewspaperLine /> },
+    { to: '/cmsdesk/pages', label: 'Trang', icon: FileText },
     {
       to: '/cmsdesk/bookings',
       label: 'Đặt lịch',
-      icon: <RiCalendar2Line />,
+      icon: Calendar,
       badge: !!unseenBookings && (
         <div
           className={`absolute top-2 right-2 inline-block select-none whitespace-nowrap rounded-full 
-    py-1 px-2 align-baseline font-sans text-xs font-medium capitalize leading-none bg-red
+    py-1 px-2 align-baseline font-sans text-xs font-medium capitalize leading-none bg-red-500
     tracking-wide text-white`}
         >
           <div className='mt-px'>
@@ -168,55 +172,56 @@ const SideBar = ({
   ];
 
   return (
-    <div className='w-2/12 bg-white rounded p-3 shadow-lg'>
-      <UserBrief user={user} />
+    <aside className='fixed top-0 left-0 h-full w-64 bg-white p-6 shadow-xl rounded-r-xl flex flex-col justify-between'>
+      <div>
+        <UserBrief user={user} />
 
-      <ul className='space-y-2 text-sm'>
-        {navLinks.map((nav, i) => (
-          <li key={i}>
-            <NavLink
-              to={nav.to}
-              className={({ isPending }) => `${
-                (
-                  nav.to.replace('/cmsdesk', '')
-                    ? location.pathname.includes(nav.to)
-                    : location.pathname === nav.to
-                )
-                  ? 'text-orange-500'
-                  : ''
-              } flex items-center space-x-3 text-gray-700 p-2 rounded-md hover:text-blue-500 
-        font-medium hover:bg-zinc-100 focus:shadow-outline hover:underline relative`}
-            >
-              <span className='text-gray-600'>{nav.icon}</span>
-              <span>{nav.label}</span>
+        <nav className='space-y-2'>
+          {navLinks.map(({ icon: Icon, ...nav }, i) => (
+            <div key={i}>
+              <NavLink
+                to={nav.to}
+                className={({}) =>
+                  `${
+                    (
+                      nav.to.replace('/cmsdesk', '')
+                        ? location.pathname.includes(nav.to)
+                        : location.pathname === nav.to
+                    )
+                      ? 'bg-orange-100 text-orange-500 shadow-sm'
+                      : ''
+                  } flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-orange-500 relative`
+                }
+              >
+                {nav.badge}
+                <Icon className='w-5 h-5' />
+                <span className='font-medium'>{nav.label}</span>
+              </NavLink>
+            </div>
+          ))}
+        </nav>
+      </div>
 
-              {nav?.badge && nav.badge}
-            </NavLink>
-          </li>
-        ))}
+      <div className='mt-auto pt-4 border-t border-gray-200'>
+        <NavLink
+          to='/admin/logout'
+          className='flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 hover:bg-gray-100'
+          onClick={async (e) => {
+            e.preventDefault();
 
-        <li>
-          <NavLink
-            to='/cmsdesk/logout'
-            className='flex items-center space-x-3 text-gray-700 p-2 rounded-md hover:text-blue-500 
-        font-medium hover:bg-zinc-100 focus:shadow-outline hover:underline relative'
-            onClick={async (e) => {
-              e.preventDefault();
-
-              if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                fetch('/cmsdesk/logout', { method: 'POST' });
-                navigate('/cmsdesk/login');
-              }
-            }}
-          >
-            <span className='text-gray-600'>
-              <RiLogoutBoxRLine />
-            </span>
-            <span>Đăng xuất</span>
-          </NavLink>
-        </li>
-      </ul>
-    </div>
+            if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+              await fetch('/admin/logout', { method: 'POST' });
+              navigate(`/admin/login?redirect=${location.pathname}`, {
+                replace: true,
+              });
+            }
+          }}
+        >
+          <LogOut className='w-5 h-5' />
+          <span>Đăng xuất</span>
+        </NavLink>
+      </div>
+    </aside>
   );
 };
 
@@ -224,39 +229,20 @@ const UserBrief = ({ user }: { user: IUser }) => {
   const fullName = `${user.usr_firstName} ${user.usr_lastName}`;
 
   return (
-    <Link to='/cmsdesk/account' className='flex items-center gap-x-4 p-2 mb-5'>
-      <div className='h-12 min-w-12 rounded-full overflow-hidden aspect-square border border-zinc-200'>
-        <img
-          className='object-contain object-center h-full w-full'
-          src={user.usr_avatar?.img_url}
-          alt={fullName}
-        />
-      </div>
+    <div className='flex items-center mb-10 pb-4 border-b border-gray-200'>
+      <img
+        className='w-10 h-10 rounded-full mr-3 shadow-md'
+        src={user.usr_avatar?.img_url || '/assets/user-avatar-placeholder.jpg'}
+        alt={fullName}
+      />
 
-      <div className='overflow-hidden'>
-        <div>
-          <h4 className='font-semibold text-lg text-gray-700 capitalize font-poppins tracking-wide truncate'>
-            {fullName}
-          </h4>
-          <span className='text-sm tracking-wide flex items-center space-x-1 text-green'>
-            <svg
-              className='h-4 text-green-500'
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                d='M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
-              />
-            </svg>
-            <span className='text-gray-600'>Verified</span>
-          </span>
+      <div>
+        <h1 className='text-xl font-bold text-gray-800'>{fullName}</h1>
+        <div className='flex items-center text-green-500 text-sm'>
+          <span className='w-2 h-2 bg-green-500 rounded-full mr-1'></span>{' '}
+          Verified
         </div>
       </div>
-    </Link>
+    </div>
   );
 };

@@ -1,7 +1,8 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import { authenticator, isAuthenticated } from '~/services/auth.server';
+import { isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import { deletePage, getPostDetail, updatePage } from '~/services/page.server';
 import PageEditor from './components/PageEditor';
 
@@ -14,7 +15,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     });
   }
 
-  const user = await isAuthenticated(request);
+  const { session, headers } = await isAuthenticated(request);
+  if (!session) {
+    return data(
+      { success: false, toast: { type: 'error', message: 'Unauthorized' } },
+      { headers },
+    );
+  }
 
   switch (request.method) {
     case 'PUT':
@@ -34,53 +41,74 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         const page = await updatePage(
           id,
           { title, content, thumbnail, category, template, isPublished },
-          user!,
+          session,
         );
 
-        // return redirect('/cmsdesk/pages');
-        return {
-          page,
-          toast: { message: 'Cập nhật bài viết thành công!', type: 'success' },
-        };
+        return data(
+          {
+            page,
+            toast: {
+              message: 'Cập nhật bài viết thành công!',
+              type: 'success',
+            },
+          },
+          { headers },
+        );
       } catch (error: any) {
         console.error(error);
-        return {
-          toast: { message: error.message, type: 'error' },
-        };
+        return data(
+          {
+            toast: { message: error.message, type: 'error' },
+          },
+          { headers },
+        );
       }
 
     case 'DELETE':
       try {
         // Delete the page from the database
-        const res = await deletePage(id, user!);
-        return {
-          res,
-          toast: { message: 'Xóa bài viết thành công!', type: 'success' },
-        };
+        const res = await deletePage(id, session);
+        return data(
+          {
+            res,
+            toast: { message: 'Xóa bài viết thành công!', type: 'success' },
+          },
+          { headers },
+        );
       } catch (error: any) {
         console.error(error);
-        return {
-          toast: { message: error.message, type: 'error' },
-        };
+        return data(
+          {
+            toast: { message: error.message, type: 'error' },
+          },
+          { headers },
+        );
       }
 
     default:
-      return {
-        error: 'Method not allowed',
-        toast: { message: 'Có lỗi xảy ra!', type: 'error' },
-      };
+      return data(
+        {
+          error: 'Method not allowed',
+          toast: { message: 'Có lỗi xảy ra!', type: 'error' },
+        },
+        { headers },
+      );
   }
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const id = params.id;
   if (!id) {
-    throw new Error('Page not found');
+    throw new Response('Page not found', { status: 404 });
   }
 
-  const user = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
+  if (!auth) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
+
   // Fetch the page from the database
-  const page = await getPostDetail(id, user!);
+  const page = await getPostDetail(id, auth);
 
   return { page };
 };
