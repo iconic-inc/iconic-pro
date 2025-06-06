@@ -83,11 +83,11 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
 
               <p>{img.img_isPublic}</p>
               {img.img_isPublic ? (
-                <p className='m-auto w-fit bg-green rounded px-2 py-1 text-xs font-bold text-[--sub6-text]'>
+                <p className='m-auto w-fit bg-green-500 rounded px-2 py-1 text-xs font-bold text-[--sub6-text]'>
                   Công khai
                 </p>
               ) : (
-                <p className='m-auto w-fit rounded bg-red px-2 py-1 text-xs font-bold text-[--sub6-text]'>
+                <p className='m-auto w-fit rounded bg-red-500 px-2 py-1 text-xs font-bold text-[--sub6-text]'>
                   Ẩn
                 </p>
               )}

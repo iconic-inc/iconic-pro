@@ -12,14 +12,9 @@ candidateRouter.use(authenticationV2);
 
 /* Each client manages only **own** candidate profile */
 candidateRouter.use(
-  '/me',
+  '/me/job-applications',
   restrictToRoles('admin', 'client'),
   require('../jobApplication/client')
-);
-candidateRouter.post(
-  '/me',
-  hasPermission('candidate', 'createOwn'),
-  CandidateController.createMyProfile
 );
 
 candidateRouter.get(
@@ -34,17 +29,8 @@ candidateRouter.put(
   CandidateController.updateMyProfile
 );
 
-candidateRouter.delete(
-  '/me',
-  hasPermission('candidate', 'deleteOwn'),
-  CandidateController.deleteMyProfile
-);
-
 /* 2 ▸ ADMIN ROUTES  –  src/routes/candidate.route.ts
    ------------------------------------------------------- */
-/* Require JWT for every admin‑candidate route */
-candidateRouter.use(authenticationV2);
-
 /* CRUD : resource = "candidate" (read / create / update / delete ANY) */
 candidateRouter.get(
   '/',

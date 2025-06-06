@@ -2,16 +2,16 @@ import { useLoaderData, useNavigate } from '@remix-run/react';
 import { useState } from 'react';
 import { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
-import { isAuthenticated } from '~/services/auth.server';
 import { listJobApplications } from '~/services/jobApplication.server';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
 import JobApplicationList from './components/JobApplicationList';
 import { IJobApplicationDetails } from '~/interfaces/jobApplication.interface';
 import JobApplicationToolbar from './components/JobApplicationToolbar';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
-    const auth = await isAuthenticated(request);
+    const auth = await parseAuthCookie(request);
     if (!auth) {
       throw new Error('Unauthorized');
     }
@@ -63,28 +63,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         data: [],
         pagination: { total: 0, page: 1, limit: 10, totalPages: 0 },
       }),
-    };
-  }
-};
-
-// Action function để xử lý xóa chủ jobApp
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const auth = await isAuthenticated(request);
-  if (!auth) {
-    return { success: false, error: 'Unauthorized' };
-  }
-  const formData = await request.formData();
-
-  try {
-    switch (request.method) {
-      default:
-        return { success: false, error: 'Method not allowed' };
-    }
-  } catch (error: any) {
-    console.error('Action error:', error);
-    return {
-      success: false,
-      error: error.message || 'Có lỗi xảy ra khi thực hiện hành động',
     };
   }
 };

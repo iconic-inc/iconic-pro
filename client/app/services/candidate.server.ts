@@ -120,6 +120,69 @@ const bulkHardDeleteCandidates = async (
   }
 };
 
+/* ───────────── CLIENT (SELF‑SERVICE) METHODS ─────────────── */
+
+// Create own candidate profile (for logged-in users)
+const createMyProfile = async (
+  profileData: ICandidateAttrs,
+  request: ISessionUser,
+) => {
+  try {
+    const response = await fetcher('/candidates/me', {
+      method: 'POST',
+      body: JSON.stringify(profileData),
+      request,
+    });
+    return response as ICandidate;
+  } catch (error) {
+    console.error('Error creating own candidate profile:', error);
+    throw error;
+  }
+};
+
+// Get own candidate profile (for logged-in users)
+const getMyProfile = async (request: ISessionUser) => {
+  try {
+    const response = await fetcher('/candidates/me', { request });
+    return response as ICandidateDetails;
+  } catch (error) {
+    console.error('Error fetching own candidate profile:', error);
+    throw error;
+  }
+};
+
+// Update own candidate profile (for logged-in users)
+const updateMyProfile = async (
+  profileData: ICandidateAttrs,
+  request: ISessionUser,
+) => {
+  try {
+    const response = await fetcher('/candidates/me', {
+      method: 'PUT',
+      body: JSON.stringify(profileData),
+      request,
+    });
+    return response as ICandidate;
+  } catch (error) {
+    console.error('Error updating own candidate profile:', error);
+    throw error;
+  }
+};
+
+// Delete own candidate profile (for logged-in users)
+const deleteMyProfile = async (request: ISessionUser) => {
+  try {
+    const response = await fetcher('/candidates/me', {
+      method: 'DELETE',
+      request,
+    });
+    return response as { success: boolean; message: string };
+  } catch (error) {
+    console.error('Error deleting own candidate profile:', error);
+    throw error;
+  }
+};
+
 export {
   listCandidates,
   getCandidateById,
@@ -128,4 +191,9 @@ export {
   deleteCandidate,
   bulkDeleteCandidates,
   bulkHardDeleteCandidates,
+  // Client self-service methods
+  createMyProfile,
+  getMyProfile,
+  updateMyProfile,
+  deleteMyProfile,
 };

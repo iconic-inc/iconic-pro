@@ -17,8 +17,11 @@ import {
   isEmptyObj,
   removeNestedNullish,
 } from '../utils';
-import { IResponseList } from '../interfaces/response.interface';
-import { ICandidate, ICandidateAttrs } from '../interfaces/candidate.interface';
+import {
+  ICandidate,
+  ICandidateAttrs,
+  ICandidateResponse,
+} from '../interfaces/candidate.interface';
 import { IUserAttrs } from '../interfaces/user.interface';
 import { UserModel } from '@models/user.model';
 import { RoleModel } from '@models/role.model';
@@ -152,7 +155,7 @@ export class CandidateService {
       );
 
       /* b. Create candidate */
-      const candidate = await CandidateModel.create(
+      const [candidate] = await CandidateModel.create(
         [
           formatAttributeName<ICandidateAttrs>(
             {
@@ -167,17 +170,20 @@ export class CandidateService {
         ],
         { session }
       );
+      if (!candidate) {
+        throw new InternalServerError('Failed to create candidate');
+      }
 
-      const createdCandidate = await candidate[0].populate([
+      const createdCandidate = await candidate.populate([
         {
           path: 'can_user',
-          select: 'usr_email usr_firstName',
+          select: 'usr_email usr_firstName usr_username',
           options: { session },
         },
       ]);
       await session.commitTransaction();
 
-      return getReturnData(createdCandidate);
+      return getReturnData(createdCandidate) as any as ICandidateResponse;
     } catch (err) {
       await session.abortTransaction();
       throw err;
@@ -191,6 +197,20 @@ export class CandidateService {
       'can_user',
       'usr_email usr_firstName usr_lastName usr_avatar usr_slug usr_address usr_msisdn usr_birthdate usr_sex usr_username'
     );
+    if (!cv) throw new NotFoundError('Candidate profile not found');
+    return getReturnData(cv);
+  }
+
+  static async getCandidateByUserId(userId: string) {
+    const cv = await CandidateModel.findOne({ can_user: userId }).populate({
+      path: 'can_user',
+      select:
+        'usr_email usr_firstName usr_lastName usr_avatar usr_slug usr_address usr_msisdn usr_birthdate usr_sex usr_username',
+      populate: {
+        path: 'usr_avatar',
+        select: 'img_url img_name',
+      },
+    });
     if (!cv) throw new NotFoundError('Candidate profile not found');
     return getReturnData(cv);
   }
@@ -481,38 +501,198 @@ export class CandidateService {
 
   /* ───────────── CLIENT (SELF‑SERVICE) ─────────────── */
 
-  static async createMyProfile(userId: string, body: any) {
+  static getMyProfile(userId: string) {
+    return this.getCandidateByUserId(userId);
+  }
+
+  static async updateMyProfile(
+    userId: string,
+    body: ICandidateAttrs & IUserAttrs
+  ) {
+    let session;
+    try {
+      // Find candidate by userId
+      const candidate = await CandidateModel.findOne({ can_user: userId });
+      if (!candidate) {
+        throw new NotFoundError('Candidate profile not found');
+      }
+
+      // Check for duplicate email if email is being updated
+      if (body.email) {
+        const existingUser = await UserModel.findOne({
+          _id: { $ne: userId },
+          usr_email: body.email,
+        });
+
+        if (existingUser) {
+          throw new BadRequestError('Email already exists in the system');
+        }
+      }
+
+      // Start transaction
+      session = await mongoose.startSession();
+      session.startTransaction();
+
+      // Update candidate data
+      const candidateUpdateData = removeNestedNullish<ICandidateAttrs>(
+        getReturnData(body, {
+          fields: ['cvFile', 'summary', 'experience', 'skills', 'status'],
+        })
+      );
+
+      // Update candidate if there are fields to update
+      if (!isEmptyObj(candidateUpdateData)) {
+        const updatedCandidate = await CandidateModel.findByIdAndUpdate(
+          candidate._id,
+          { $set: formatAttributeName(candidateUpdateData, CANDIDATE.PREFIX) },
+          { new: true, session }
+        );
+
+        if (!updatedCandidate) {
+          throw new NotFoundError('Failed to update candidate profile');
+        }
+      }
+
+      // Update user data
+      const userUpdateData = removeNestedNullish<IUserAttrs>(
+        getReturnData(body, {
+          fields: [
+            'firstName',
+            'lastName',
+            'email',
+            'msisdn',
+            'avatar',
+            'address',
+            'username',
+            'birthdate',
+            'sex',
+          ],
+        })
+      );
+
+      // Handle password update if provided
+      if (body.password) {
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassword = await bcrypt.hash(body.password, salt);
+
+        userUpdateData.password = hashPassword;
+        // @ts-ignore
+        userUpdateData.salt = salt;
+      }
+
+      // Update user if there are fields to update
+      if (!isEmptyObj(userUpdateData)) {
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          userId,
+          {
+            $set: {
+              ...formatAttributeName(userUpdateData, USER.PREFIX),
+              ...(body.email && {
+                usr_slug: body.email.split('@')[0],
+              }),
+            },
+          },
+          { new: true, session }
+        );
+
+        if (!updatedUser) {
+          throw new NotFoundError('User not found');
+        }
+      }
+
+      // Commit transaction
+      await session.commitTransaction();
+      session = null;
+
+      // Get the updated candidate with user information
+      const updatedCandidateWithUser = await CandidateModel.findOne({
+        can_user: userId,
+      }).populate({
+        path: 'can_user',
+        select:
+          'usr_email usr_firstName usr_lastName usr_avatar usr_slug usr_address usr_msisdn usr_birthdate usr_sex usr_username',
+        populate: {
+          path: 'usr_avatar',
+          select: 'img_url img_name',
+        },
+      });
+
+      if (!updatedCandidateWithUser) {
+        throw new NotFoundError('Candidate profile not found after update');
+      }
+
+      return getReturnData(updatedCandidateWithUser);
+    } catch (error) {
+      // Rollback transaction if there's an error
+      if (session) {
+        try {
+          await session.abortTransaction();
+        } catch (abortError) {
+          console.error('Error aborting transaction:', abortError);
+        }
+      }
+      throw error;
+    } finally {
+      // Ensure session always ends
+      if (session) {
+        try {
+          await session.endSession();
+        } catch (endError) {
+          console.error('Error ending session:', endError);
+        }
+      }
+    }
+  }
+
+  static async createMyProfile(userId: string, body: ICandidateAttrs) {
     const exists = await CandidateModel.findOne({ can_user: userId });
-    if (exists)
+    if (exists) {
       throw new BadRequestError('Profile already exists – update instead');
+    }
 
-    const cv = await CandidateModel.create({ ...body, can_user: userId });
-    return getReturnData(cv);
-  }
-
-  static async getMyProfile(userId: string) {
-    const cv = await CandidateModel.findOne({ can_user: userId });
-    if (!cv) throw new NotFoundError('You have no candidate profile yet');
-    return getReturnData(cv);
-  }
-
-  static async updateMyProfile(userId: string, body: any) {
-    const updated = await CandidateModel.findOneAndUpdate(
-      { can_user: userId },
-      body,
-      { new: true, runValidators: true }
+    const candidateData = formatAttributeName<ICandidateAttrs>(
+      {
+        ...body,
+        user: userId,
+        status: CANDIDATE.STATUS.ACTIVE,
+      },
+      CANDIDATE.PREFIX
     );
-    if (!updated) throw new NotFoundError('Profile not found');
-    return getReturnData(updated);
+
+    const candidate = await CandidateModel.create(candidateData);
+
+    const populatedCandidate = await candidate.populate({
+      path: 'can_user',
+      select:
+        'usr_email usr_firstName usr_lastName usr_avatar usr_slug usr_address usr_msisdn usr_birthdate usr_sex usr_username',
+      populate: {
+        path: 'usr_avatar',
+        select: 'img_url img_name',
+      },
+    });
+
+    return getReturnData(populatedCandidate);
   }
 
   static async deleteMyProfile(userId: string) {
-    const deleted = await CandidateModel.findOneAndUpdate(
-      { can_user: userId },
-      { can_status: 'hidden' },
+    const candidate = await CandidateModel.findOne({ can_user: userId });
+    if (!candidate) {
+      throw new NotFoundError('Profile not found');
+    }
+
+    const updated = await CandidateModel.findByIdAndUpdate(
+      candidate._id,
+      { can_status: CANDIDATE.STATUS.INACTIVE },
       { new: true }
     );
-    if (!deleted) throw new NotFoundError('Profile not found');
-    return getReturnData(deleted);
+
+    if (!updated) {
+      throw new NotFoundError('Failed to update profile status');
+    }
+
+    return {
+      success: true,
+      message: 'Candidate profile has been hidden successfully',
+    };
   }
 }

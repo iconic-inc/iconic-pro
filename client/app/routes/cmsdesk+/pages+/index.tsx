@@ -1,18 +1,21 @@
-import { LoaderFunctionArgs } from '@remix-run/node';
+import { LoaderFunctionArgs, data } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
 import { getPages } from '~/services/page.server';
-import PostCard from '~/components/PostCard';
-import { RiAddLine } from '@remixicon/react';
+import PostCard from '~/components/website/PostCard';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import LoadingOverlay from '~/components/LoadingOverlay';
-import { authenticator, isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
+  if (!auth) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
 
-  const pages = await getPages({ user: user! });
+  const pages = await getPages({ user: auth });
 
   return { pages };
 };
@@ -40,7 +43,7 @@ export default function PageManager() {
             }
           }}
         >
-          <RiAddLine />
+          <Plus />
         </button>
       </div>
     );
@@ -68,7 +71,7 @@ export default function PageManager() {
           }
         }}
       >
-        <RiAddLine />
+        <Plus />
       </button>
     </div>
   );

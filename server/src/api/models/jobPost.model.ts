@@ -42,6 +42,8 @@ const jobPostSchema = new Schema<IJobPost, IJobPostModel>(
   { timestamps: true, collection: JOB_POST.COLLECTION_NAME }
 );
 
+jobPostSchema.index({ jpo_title: 'text', jpo_description: 'text' });
+
 jobPostSchema.statics.build = (attrs: IJobPost) =>
   JobPostModel.create(formatAttributeName(attrs, JOB_POST.PREFIX));
 

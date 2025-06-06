@@ -55,16 +55,35 @@ export interface IUserJWTPayload {
 
 export interface IUserResponseData {
   id: string;
-  username: string;
+  usr_username: string;
+  usr_email: string;
+  usr_firstName: string;
+  usr_lastName: string;
+  usr_slug: string;
+  usr_avatar?: string;
+  usr_address?: string;
+  usr_birthdate?: Date;
+  usr_msisdn?: string;
+  usr_sex?: string;
+  usr_status: string;
+  usr_role: IRole;
+}
+
+export interface IGoogleOAuthProfile {
+  id: string; // Google user ID
+  email: string; // User's email address
+  name: string; // User's full name
+  given_name: string; // User's first name
+  family_name: string; // User's last name
+  picture: string; // URL to the user's profile picture
+  verified_email: boolean; // Whether the email is verified
+}
+
+export interface IUserSocialLogin {
+  id: string;
   email: string;
+  avatar: string;
   firstName: string;
   lastName: string;
-  slug: string;
-  avatar?: string;
-  address?: string;
-  birthdate?: Date;
-  msisdn?: string;
-  sex?: string;
-  status: string;
-  role: IRole;
+  name: string;
 }

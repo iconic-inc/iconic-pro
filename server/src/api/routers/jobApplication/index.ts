@@ -8,15 +8,15 @@ adminJobAppRouter.use(authenticationV2); // 🔐 JWT required
 
 /* ── CRUD ANY (resource = "jobApplication") ── */
 adminJobAppRouter.get(
-  '/',
-  hasPermission('jobApplication', 'readAny'),
-  JobApplicationController.listApplications
-);
-
-adminJobAppRouter.get(
   '/:applicationId',
   hasPermission('jobApplication', 'readAny'),
   JobApplicationController.getApplicationById
+);
+
+adminJobAppRouter.get(
+  '/',
+  hasPermission('jobApplication', 'readAny'),
+  JobApplicationController.listApplications
 );
 
 /* Update status (shortlisted, interview, hired, rejected) */

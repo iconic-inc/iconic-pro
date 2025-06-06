@@ -4,6 +4,7 @@ import { checkApiKey, checkPermission } from '../auth/checkApiKey';
 import { pushLog2Discord } from '../middlewares/logger.middleware';
 import CheckController from '@controllers/check.controller';
 import { AuthController } from '@controllers/auth.controller';
+import { strictLimiter } from '../middlewares/rateLimiter.middleware';
 
 const router = express.Router();
 
@@ -12,7 +13,12 @@ router.use(pushLog2Discord);
 
 router.get('/check-status', CheckController.checkStatus);
 
-router.get('/auth/verify-email', AuthController.verifyEmailToken);
+// Apply strict rate limiting to email verification
+router.get(
+  '/auth/verify-email',
+  strictLimiter,
+  AuthController.verifyEmailToken
+);
 
 router.use(checkApiKey);
 //check api key's permission

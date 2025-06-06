@@ -1,6 +1,7 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, data } from '@remix-run/node';
 
 import { authenticator, isAuthenticated } from '~/services/auth.server';
+import { parseAuthCookie } from '~/services/cookie.server';
 import BranchEditor from './components/BranchEditor';
 import {
   createBranch,
@@ -12,13 +13,22 @@ import { useLoaderData } from '@remix-run/react';
 import { getMapLink } from '~/utils';
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const user = await isAuthenticated(request);
+  const { session, headers } = await isAuthenticated(request);
+  if (!session) {
+    return data({ success: false, message: 'Unauthorized' }, { headers });
+  }
+
   const id = params.id;
   if (!id) {
-    throw new Response(null, {
-      status: 404,
-      statusText: 'Branch not found',
-    });
+    return data(
+      {
+        toast: {
+          message: 'Branch not found',
+          type: 'error',
+        },
+      },
+      { headers, status: 404 },
+    );
   }
 
   switch (request.method) {
@@ -46,13 +56,16 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
           !district ||
           !street
         ) {
-          return {
-            toast: {
-              message: 'Vui lòng điền đầy đủ thông tin!',
-              type: 'error',
+          return data(
+            {
+              toast: {
+                message: 'Vui lòng điền đầy đủ thông tin!',
+                type: 'error',
+              },
+              branch: null,
             },
-            branch: null,
-          };
+            { headers },
+          );
         }
 
         // Save the branch to the database
@@ -67,60 +80,85 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
             isMain,
             address: { province, district, street },
           },
-          user!,
+          session,
         );
 
-        return {
-          toast: {
-            message: 'Chi nhánh được tạo thành công!',
-            type: 'success',
+        return data(
+          {
+            toast: {
+              message: 'Chi nhánh được cập nhật thành công!',
+              type: 'success',
+            },
+            branch,
           },
-          branch,
-        };
+          { headers },
+        );
       } catch (error: any) {
-        return {
-          toast: { message: error.statusText || error.message, type: 'error' },
-          branch: null,
-        };
+        return data(
+          {
+            toast: {
+              message: error.statusText || error.message,
+              type: 'error',
+            },
+            branch: null,
+          },
+          { headers },
+        );
       }
 
     case 'DELETE':
       try {
         // Delete the page from the database
-        const res = await deleteBranch(id, user!);
-        return {
-          res,
-          toast: { message: 'Xóa bài viết thành công!', type: 'success' },
-        };
+        const res = await deleteBranch(id, session);
+        return data(
+          {
+            res,
+            toast: { message: 'Xóa chi nhánh thành công!', type: 'success' },
+          },
+          { headers },
+        );
       } catch (error: any) {
         console.error(error);
-        return {
-          toast: { message: error.message, type: 'error' },
-        };
+        return data(
+          {
+            toast: { message: error.message, type: 'error' },
+          },
+          { headers },
+        );
       }
 
     default:
-      return {
-        toast: { message: 'Method not allowed', type: 'error' },
-        branch: null,
-      };
+      return data(
+        {
+          toast: { message: 'Method not allowed', type: 'error' },
+          branch: null,
+        },
+        { headers },
+      );
   }
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const id = params.id;
   if (!id) {
-    throw new Error('Chi nhánh không tồn tại');
+    throw new Response('Chi nhánh không tồn tại', { status: 404 });
   }
 
-  const user = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
+  if (!auth) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
+
   // Fetch the branch from the database
   const branch = await getBranchDetail(id);
+  if (!branch) {
+    throw new Response('Chi nhánh không tồn tại', { status: 404 });
+  }
 
   return { branch };
 };
 
-export default function UpdateBranch() {
+export default function BranchEdit() {
   const { branch } = useLoaderData<typeof loader>();
 
   return <BranchEditor branch={branch} type='update' />;

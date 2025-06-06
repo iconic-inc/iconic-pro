@@ -8,6 +8,7 @@ export interface IRawImage {
   img_link: string;
   img_url: string;
   img_isPublic: boolean;
+  // img_uploadedBy: string; // User ID
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,6 +20,7 @@ export interface IImageAttrs {
   description?: string;
   link?: string;
   url: string;
+  // uploadedBy: string; // User ID
   isPublic?: boolean;
 }
 

@@ -1,11 +1,12 @@
-import { useLoaderData } from '@remix-run/react';
+import { data, useLoaderData } from '@remix-run/react';
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 
 import { isAuthenticated } from '~/services/auth.server';
 import { getMyJobPostById, updateMyJobPost } from '~/services/jobPost.server';
 import JobPostEditForm from './components/JobPostEditForm';
 import { IJobPostAttrs } from '~/interfaces/jobPost.interface';
-import DashContentHeader from '~/components/DashContentHeader';
+import DashContentHeader from '~/components/admin/DashContentHeader';
+import { parseAuthCookie } from '~/services/cookie.server';
 
 type ActionData = {
   success: boolean;
@@ -14,20 +15,20 @@ type ActionData = {
   redirectTo?: string;
 };
 
-export const action = async ({
-  request,
-  params,
-}: ActionFunctionArgs): Promise<ActionData> => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  // Xác thực người dùng
+  const { session, headers } = await isAuthenticated(request);
   try {
-    // Xác thực người dùng
-    const auth = await isAuthenticated(request);
-    if (!auth) {
-      return { success: false, message: 'Unauthorized' };
+    if (!session) {
+      return data({ success: false, message: 'Unauthorized' }, { headers });
     }
 
     const { id } = params;
     if (!id) {
-      return { success: false, message: 'JobPost ID is required' };
+      return data(
+        { success: false, message: 'JobPost ID is required' },
+        { headers },
+      );
     }
 
     switch (request.method) {
@@ -53,46 +54,61 @@ export const action = async ({
 
         // Kiểm tra dữ liệu bắt buộc
         if (!jobPostData.title) {
-          return {
-            success: false,
-            message: 'Tiêu đề tin tuyển dụng là bắt buộc',
-          };
+          return data(
+            {
+              success: false,
+              message: 'Tiêu đề tin tuyển dụng là bắt buộc',
+            },
+            { headers },
+          );
         }
 
         // Gọi API tạo jobPost cùng case service
-        const response = await updateMyJobPost(id, jobPostData, auth);
+        const response = await updateMyJobPost(id, jobPostData, session);
 
         if (!response) {
-          return {
-            success: false,
-            message: 'Lỗi khi cập nhật tin tuyển dụng',
-          };
+          return data(
+            {
+              success: false,
+              message: 'Lỗi khi cập nhật tin tuyển dụng',
+            },
+            { headers },
+          );
         }
 
-        return {
-          success: true,
-          message: 'Cập nhật tin tuyển dụng thành công',
-          jobPost: response,
-          redirectTo: '/owner/job-posts',
-        };
+        return data(
+          {
+            success: true,
+            message: 'Cập nhật tin tuyển dụng thành công',
+            jobPost: response,
+            redirectTo: '/owner/job-posts',
+          },
+          { headers },
+        );
 
       default:
-        return {
-          success: false,
-          message: 'Phương thức không hợp lệ',
-        };
+        return data(
+          {
+            success: false,
+            message: 'Phương thức không hợp lệ',
+          },
+          { headers },
+        );
     }
   } catch (error: any) {
     console.error('Lỗi cập nhật tin tuyển dụng:', error);
-    return {
-      success: false,
-      message: error.message || 'Đã xảy ra lỗi không xác định',
-    };
+    return data(
+      {
+        success: false,
+        message: error.message || 'Đã xảy ra lỗi không xác định',
+      },
+      { headers },
+    );
   }
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const auth = await isAuthenticated(request);
+  const auth = await parseAuthCookie(request);
   if (!auth) {
     throw new Response('Unauthorized', { status: 401 });
   }

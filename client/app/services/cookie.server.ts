@@ -2,7 +2,7 @@ import { createCookie } from '@remix-run/node';
 import { ISessionUser } from '~/interfaces/auth.interface';
 
 const authCookie = createCookie('_auth', {
-  sameSite: 'strict', // this helps with CSRF
+  sameSite: 'lax', // this helps with CSRF
   path: '/', // remember to add this so the cookie will work in all routes
   httpOnly: true, // for security reasons, make this cookie http only
   secrets: [process.env.SESSION_SECRET || 's3cr3t'], // replace this with an actual secret
@@ -22,18 +22,11 @@ export const serializeAuthCookie = (data: ISessionUser) => {
 
 export const parseAuthCookie = async (request: Request) => {
   const cookieHeader = request.headers.get('Cookie');
-  if (!cookieHeader)
-    return {
-      user: null,
-      tokens: null,
-    };
+
+  if (!cookieHeader) return null;
 
   const cookie = await authCookie.parse(cookieHeader);
-  if (!cookie)
-    return {
-      user: null,
-      tokens: null,
-    };
+  if (!cookie) return null;
 
   return cookie as ISessionUser;
 };

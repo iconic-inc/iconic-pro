@@ -1,4 +1,5 @@
 import { HydratedDocument, Model, ObjectId } from 'mongoose';
+import { IUserResponseData } from './user.interface';
 
 export interface IRawCandidate {
   can_user: ObjectId;
@@ -28,7 +29,7 @@ export interface ICandidateModel extends Model<ICandidate> {
 
 export interface ICandidateResponse {
   id: string;
-  can_user: string;
+  can_user: IUserResponseData;
   can_summary?: string;
   can_experience?: string; // markdown / rich‑text
   can_skills?: string[]; // array of strings

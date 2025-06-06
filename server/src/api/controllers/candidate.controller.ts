@@ -67,21 +67,6 @@ export class CandidateController {
 
   /* ───────────── CLIENT (SELF‑SERVICE) HANDLERS ───────────── */
 
-  static async createMyProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    return OK({
-      res,
-      message: 'Your candidate profile created successfully',
-      metadata: await CandidateService.createMyProfile(
-        req.user.userId,
-        req.body
-      ),
-    });
-  }
-
   static async getMyProfile(req: Request, res: Response, next: NextFunction) {
     return OK({
       res,
@@ -102,18 +87,6 @@ export class CandidateController {
         req.user.userId,
         req.body
       ),
-    });
-  }
-
-  static async deleteMyProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    return OK({
-      res,
-      message: 'Your candidate profile deleted successfully',
-      metadata: await CandidateService.deleteMyProfile(req.user.userId),
     });
   }
 

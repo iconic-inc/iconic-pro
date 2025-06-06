@@ -11,8 +11,8 @@ export interface IJobPostAttrs {
   currency?: string;
   spa?: string;
   owner: string;
-  type?: Values<typeof JOB_POST.TYPE>;
-  status?: Values<typeof JOB_POST.STATUS>;
+  type?: Values<typeof JOB_POST.TYPE>['slug'];
+  status?: Values<typeof JOB_POST.STATUS>['slug'];
   deadline?: string;
   applicantCount?: number;
 }
@@ -27,8 +27,8 @@ export interface IJobPost {
   jpo_currency?: string;
   jpo_spa?: string;
   jpo_owner: string;
-  jpo_type?: Values<typeof JOB_POST.TYPE>;
-  jpo_status?: Values<typeof JOB_POST.STATUS>;
+  jpo_type?: Values<typeof JOB_POST.TYPE>['slug'];
+  jpo_status?: Values<typeof JOB_POST.STATUS>['slug'];
   jpo_deadline?: string;
   jpo_applicantCount?: number;
   createdAt: string;

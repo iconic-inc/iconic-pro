@@ -15,6 +15,14 @@ export default function Sidebar() {
       </div>
 
       <details className='lg:hidden mb-4'>
+        <NavLink
+          to='/cmsdesk'
+          className='flex items-center text-gray-500 hover:text-red-500 transition duration-200 p-2 hover:bg-gray-100 rounded-md'
+        >
+          <span className='mr-3 text-sm'>Quản lý Website</span>
+          <span className='material-symbols-outlined text-lg'>open_in_new</span>
+        </NavLink>
+
         <summary className='text-xs text-gray-500 font-semibold cursor-pointer flex items-center justify-between'>
           MENU
           <span className='material-symbols-outlined'>expand_more</span>
@@ -85,6 +93,15 @@ export default function Sidebar() {
       </details>
 
       <div className='hidden lg:block h-full'>
+        <NavLink
+          to='/cmsdesk'
+          target='_blank'
+          className='flex items-center text-gray-500 hover:text-red-500 transition duration-200 p-2 hover:bg-red-100 rounded-md mb-4'
+        >
+          <span className='mr-3 text-sm'>Quản lý Website</span>
+          <span className='material-symbols-outlined text-lg'>open_in_new</span>
+        </NavLink>
+
         <div className='text-xs text-gray-500 font-semibold mb-4'>MENU</div>
         <div className='space-y-4 flex-1'>
           {MENU.map((item, i) => (
@@ -111,7 +128,6 @@ export default function Sidebar() {
             </NavLink>
           ))}
         </div>
-
         <div className='mt-6'>
           <div className='text-xs text-gray-500 font-semibold mb-4'>
             ACCOUNT
