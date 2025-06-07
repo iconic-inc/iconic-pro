@@ -67,7 +67,7 @@ export default function JobApplicationList({
     {
       key: 'candidateName',
       title: 'Tên ứng viên',
-      sortField: 'jobApp.jap_candidate.can_user.usr_firstName',
+      sortField: 'jap_candidate.can_user.usr_firstName',
       visible: visibleColumns.candidateName,
       render: (jobApp: IJobApplicationDetails) => (
         <div className='text-sm text-gray-900'>
@@ -78,7 +78,7 @@ export default function JobApplicationList({
     {
       key: 'ownerName',
       title: 'Tên chủ spa',
-      sortField: 'jobApp.jap_postPost.jpo_owner.spo_user.usr_firstName',
+      sortField: 'jap_postPost.jpo_owner.spo_user.usr_firstName',
       visible: visibleColumns.ownerName,
       render: (jobApp: IJobApplicationDetails) => (
         <div className='text-sm text-gray-900'>

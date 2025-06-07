@@ -7,16 +7,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const body = new URLSearchParams(await request.text());
       const name = body.get('name');
       const msisdn = body.get('msisdn');
-      const childAge = body.get('childAge');
+      const spaName = body.get('spaName');
       const branch = body.get('branch');
+      const note = body.get('note') || '';
+      if (!name || !msisdn || !spaName || !branch) {
+        return {
+          toast: { message: 'Vui lòng điền đầy đủ thông tin!', type: 'error' },
+        };
+      }
 
       try {
         const res = await createBooking({
           name,
           msisdn,
-          childAge,
+          spaName,
           branch,
-          viewed: false,
+          note,
         });
 
         return { toast: { message: 'Đặt lịch thành công!', type: 'success' } };

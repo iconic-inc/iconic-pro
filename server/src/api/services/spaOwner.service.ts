@@ -49,11 +49,12 @@ export class SpaOwnerService {
     } = query;
     const filter: any = {};
 
-    if (status) filter.spo_status = status;
+    // Apply filters that don't depend on joined collections
     if (plan) filter.spo_plan = plan;
     if (keyword) filter.$text = { $search: keyword };
 
-    const owners = await SpaOwnerModel.aggregate([
+    // Build the aggregation pipeline
+    const pipeline: any[] = [
       {
         $match: filter,
       },
@@ -68,6 +69,19 @@ export class SpaOwnerService {
       {
         $unwind: '$spo_user',
       },
+    ];
+
+    // Add status filter after lookup if specified
+    if (status) {
+      pipeline.push({
+        $match: {
+          'spo_user.usr_status': status,
+        },
+      });
+    }
+
+    // Add sorting, pagination, and projection
+    pipeline.push(
       {
         $sort: {
           [sortBy || 'spo_user.usr_firstName']: sortOrder === 'asc' ? 1 : -1,
@@ -93,10 +107,46 @@ export class SpaOwnerService {
           spo_plan: 1,
           spo_planExpireAt: 1,
         },
-      },
-    ]);
+      }
+    );
 
-    const total = await SpaOwnerModel.countDocuments(filter);
+    // Execute the aggregation
+    const owners = await SpaOwnerModel.aggregate(pipeline);
+
+    // Count total documents for pagination
+    // We need a separate count pipeline that applies the same filters
+    const countPipeline = [
+      {
+        $match: filter,
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'spo_user',
+          foreignField: '_id',
+          as: 'spo_user',
+        },
+      },
+      {
+        $unwind: '$spo_user',
+      },
+    ] as any[];
+
+    if (status) {
+      countPipeline.push({
+        $match: {
+          'spo_user.usr_status': status,
+        },
+      });
+    }
+
+    countPipeline.push({
+      $count: 'total',
+    });
+
+    const totalResults = await SpaOwnerModel.aggregate(countPipeline);
+    const total = totalResults.length > 0 ? totalResults[0].total : 0;
+
     return {
       data: getReturnList(owners) as ISpaOwner[],
       pagination: {
@@ -242,7 +292,7 @@ export class SpaOwnerService {
 
       const ownerUpdateData = removeNestedNullish<ISpaOwnerAttrs & IUserAttrs>(
         getReturnData(body, {
-          fields: ['level', 'plan', 'planExpireAt', 'status'],
+          fields: ['level', 'plan', 'planExpireAt'],
         })
       );
 
@@ -418,20 +468,6 @@ export class SpaOwnerService {
     return getReturnData(spas);
   }
 
-  /* ▸ 7. UPDATE STATUS ▸──────────────────────────────────── */
-  static async updateOwnerStatus(
-    ownerId: string,
-    status: 'active' | 'suspended'
-  ) {
-    const spaOwner = await SpaOwnerModel.findByIdAndUpdate(
-      ownerId,
-      { spo_status: status },
-      { new: true }
-    );
-    if (!spaOwner) throw new NotFoundError('Spa owner not found');
-    return getReturnData(spaOwner);
-  }
-
   /* ▸ 8. CHANGE PLAN ▸────────────────────────────────────── */
   static async changeOwnerPlan(ownerId: string, plan: string, expireAt?: Date) {
     const spaOwner = await SpaOwnerModel.findByIdAndUpdate(
@@ -468,25 +504,20 @@ export class SpaOwnerService {
       }
       const userIds = owners.map((owner) => owner.spo_user);
 
-      const updatedOwner = await SpaOwnerModel.updateMany(
-        { _id: { $in: ownerIds } },
-        { spo_status: 'suspended' },
-        { session }
-      );
       const updatedUser = await UserModel.updateMany(
         { _id: { $in: userIds } },
         { usr_status: USER.STATUS.INACTIVE },
         { session }
       );
-      if (!updatedOwner || !updatedUser) {
-        throw new NotFoundError('Spa owner not found');
+      if (!updatedUser || !updatedUser) {
+        throw new NotFoundError('Không tìm thấy người dùng');
       }
-      if (updatedOwner.modifiedCount !== updatedUser.modifiedCount) {
-        throw new BadRequestError('Failed to update all owners');
+      if (updatedUser.modifiedCount !== updatedUser.modifiedCount) {
+        throw new BadRequestError('Có lỗi xảy ra khi xóa chủ spa.');
       }
 
       await session.commitTransaction();
-      return getReturnData({ deleted: updatedOwner.modifiedCount });
+      return getReturnData({ deleted: updatedUser.modifiedCount });
     } catch (error) {
       await session.abortTransaction();
       throw error;
@@ -507,7 +538,7 @@ export class SpaOwnerService {
         _id: { $in: ownerIds },
       });
       if (owners.length === 0) {
-        throw new NotFoundError('Spa owner not found');
+        throw new NotFoundError('Không tìm thấy chủ spa');
       }
       const userIds = owners.map((owner) => owner.spo_user);
 
@@ -520,10 +551,10 @@ export class SpaOwnerService {
         { session }
       );
       if (!deletedOwner || !deletedUser) {
-        throw new NotFoundError('Spa owner not found');
+        throw new NotFoundError('Có lỗi xảy ra khi xóa chủ spa.');
       }
       if (deletedOwner.deletedCount !== deletedUser.deletedCount) {
-        throw new BadRequestError('Failed to delete spa owners');
+        throw new BadRequestError('Có lỗi xảy ra khi xóa chủ spa.');
       }
 
       await session.commitTransaction();

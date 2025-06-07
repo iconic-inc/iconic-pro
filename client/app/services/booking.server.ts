@@ -1,6 +1,10 @@
 import { ISessionUser } from '~/interfaces/auth.interface';
 import { fetcher } from '.';
-import { IBooking, IBookingDetail } from '~/interfaces/booking.interface';
+import {
+  IBooking,
+  IBookingAttrs,
+  IBookingDetail,
+} from '~/interfaces/booking.interface';
 
 const getBookings = async (request: ISessionUser) => {
   const res = await fetcher(`/bookings`, { request });
@@ -17,7 +21,7 @@ const countUnseenBookings = async (request: ISessionUser) => {
   return res;
 };
 
-const createBooking = async (data: any) => {
+const createBooking = async (data: IBookingAttrs) => {
   const res = await fetcher(`/bookings`, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -27,8 +31,8 @@ const createBooking = async (data: any) => {
 
 const updateBooking = async (
   bookingId: string,
-  data: any,
-  request: ISessionUser
+  data: IBookingAttrs,
+  request: ISessionUser,
 ) => {
   const res = await fetcher(`/bookings/${bookingId}`, {
     method: 'PUT',
@@ -41,7 +45,7 @@ const updateBooking = async (
 const setViewedBooking = async (
   bookingId: string,
   viewed: boolean,
-  request: ISessionUser
+  request: ISessionUser,
 ) => {
   const res = await fetcher(`/bookings/${bookingId}`, {
     method: 'PUT',

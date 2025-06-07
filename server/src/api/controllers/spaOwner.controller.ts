@@ -89,21 +89,6 @@ export class SpaOwnerController {
     });
   }
 
-  static async updateOwnerStatus(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    return OK({
-      res,
-      message: 'Owner status updated successfully',
-      metadata: await SpaOwnerService.updateOwnerStatus(
-        req.params.ownerId,
-        req.body.status
-      ),
-    });
-  }
-
   static async changeOwnerPlan(
     req: Request,
     res: Response,

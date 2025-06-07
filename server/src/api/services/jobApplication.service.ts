@@ -36,8 +36,18 @@ export class JobApplicationService {
     status?: string;
     spaId?: string;
     ownerId?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }): Promise<IResponseList<IJobApp>> {
-    const { page = 1, limit = 20, status, spaId, ownerId } = query;
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      spaId,
+      ownerId,
+      sortBy,
+      sortOrder,
+    } = query;
     const filter: any = {};
     if (status) filter.jap_status = status;
     if (ownerId && isValidObjectId(ownerId))
@@ -46,6 +56,10 @@ export class JobApplicationService {
           jpo_owner: new Types.ObjectId(ownerId),
         }).distinct('_id'),
       };
+    const sort: any = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    }
 
     const apps = await JobApplicationModel.aggregate([
       {
@@ -109,6 +123,9 @@ export class JobApplicationService {
       },
       {
         $unwind: '$jap_candidate.can_user',
+      },
+      {
+        $sort: sort,
       },
       {
         $skip: (page - 1) * +limit,

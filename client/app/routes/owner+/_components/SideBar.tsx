@@ -70,8 +70,8 @@ export default function Sidebar() {
                 e.preventDefault();
 
                 if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                  await fetch('/admin/logout', { method: 'POST' });
-                  navigate(`/admin/login?redirect=${location.pathname}`, {
+                  await fetch('/logout', { method: 'POST' });
+                  navigate(`/login?redirect=${location.pathname}`, {
                     replace: true,
                   });
                 }
@@ -148,8 +148,8 @@ export default function Sidebar() {
                 e.preventDefault();
 
                 if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                  await fetch('/admin/logout', { method: 'POST' });
-                  navigate(`/admin/login?redirect=${location.pathname}`, {
+                  await fetch('/logout', { method: 'POST' });
+                  navigate(`/login?tab=chuspa&redirect=${location.pathname}`, {
                     replace: true,
                   });
                 }
