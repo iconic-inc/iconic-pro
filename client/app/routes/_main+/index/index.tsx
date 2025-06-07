@@ -8,11 +8,9 @@ import {
   UserCheck,
   UserCog,
 } from 'lucide-react';
-import { useState } from 'react';
 
 import ItemList from './_components/ItemList';
 import Post from './_components/Post';
-import Card from '~/widgets/Card';
 import Specifications from './_components/Specifications';
 import SearchBox from '~/components/website/SearchBox';
 import { getAppSettings } from '~/services/app.server';
@@ -71,7 +69,7 @@ export default function Index() {
                 <b className='text-[--main-color]'>#1</b> Việt Nam
               </p>
 
-              <div className='w-2/3'>
+              <div className='w-full md:w-2/3'>
                 <SearchBox />
               </div>
             </div>
@@ -102,36 +100,6 @@ export default function Index() {
         <h2 className='title col-span-12'>DÀNH CHO NGƯỜI TÌM VIỆC</h2>
 
         <section className='col-span-12'>
-          {/* <div className='my-6'>
-            <button
-              className={
-                'text-[--sub3-color] inline-flex items-center rounded border border-current px-4 py-2 text-sm font-semibold transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' +
-                (items[0].slug === schools[0].slug
-                  ? ' bg-[--sub3-color] text-white'
-                  : '')
-              }
-              onClick={() => {
-                setItems(jobTypes);
-              }}
-            >
-              Trường
-            </button>
-
-            <button
-              className={
-                'text-[--sub3-color] inline-flex items-center rounded border border-current px-4 py-2 text-sm font-semibold transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2' +
-                (items[0].slug === centers[0].slug
-                  ? ' bg-[--sub3-color] text-white'
-                  : '')
-              }
-              onClick={() => {
-                setItems(centers);
-              }}
-            >
-              Trung tâm
-            </button>
-          </div> */}
-
           <ItemList
             items={Object.values(JOB_POST.TYPE).map((t) => ({
               title: t.name,
@@ -378,7 +346,7 @@ const newspapers = [
 
 const services = [
   {
-    title: 'CÁC DỊCH VỤ TUYỂN SINH MẦM NON ĐA KÊNH CỦA ICONIC PRO',
+    title: 'CÁC DỊCH VỤ CỦA ICONIC PRO',
     link: '/',
   },
 ];

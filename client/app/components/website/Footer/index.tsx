@@ -134,13 +134,19 @@ export default function Footer() {
                 </div>
 
                 <div className='col-span-6 md:col-span-3'>
-                  <img
-                    data-v-101a839d=''
-                    data-v-728576c6=''
-                    alt='https://s3.kiddihub.site/prod/dadangkybocongthuong.png'
-                    className='aspect-[5/2] bg-white mx-auto object-scale-down lazyLoad isLoaded'
-                    src='https://s3.kiddihub.site/prod/dadangkybocongthuong.png'
-                  />
+                  <a
+                    href='http://online.gov.vn/Home/WebDetails/124317?AspxAutoDetectCookieSupport=1'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <img
+                      data-v-101a839d=''
+                      data-v-728576c6=''
+                      alt='Logo Chứng nhận dịch vụ công trực tuyến'
+                      className='aspect-[5/2] bg-white mx-auto object-scale-down lazyLoad isLoaded'
+                      src='http://online.gov.vn/Content/EndUser/LogoCCDVSaleNoti/logoSaleNoti.png'
+                    />
+                  </a>
                 </div>
               </section>
               <section>
