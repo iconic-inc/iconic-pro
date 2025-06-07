@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link } from '@remix-run/react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function ItemList({
   items,
@@ -32,7 +31,7 @@ export default function ItemList({
             className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'
           >
             <Link
-              to={`/${item.slug}`}
+              to={`/viec-lam?type=${item.slug}`}
               className='py-4 px-8 shadow-lg rounded-lg border border-zinc-200 bg-white flex flex-col items-center gap-4'
             >
               <img

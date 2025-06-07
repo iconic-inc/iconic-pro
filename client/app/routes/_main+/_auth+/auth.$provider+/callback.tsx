@@ -9,8 +9,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     throw new Response('Phương thức xác thực không hỗ trợ.', { status: 400 });
   }
 
+  const cookieHeader = request.headers.get('Cookie') || '';
+  const redirectUrl =
+    cookieHeader
+      .split('; ')
+      .find((cookie) => cookie.startsWith('redirect='))
+      ?.split('=')[1] || '/user';
+
   const clearFingerprint =
     'fp=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax';
+  const clearRedirect =
+    'redirect=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax';
 
   try {
     const res = await authenticator.authenticate(provider, request);
@@ -23,13 +32,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     // Redirect to the home page or wherever you want after successful login
     // and clear the fingerprint cookie
     headers.append('Set-Cookie', clearFingerprint);
+    headers.append('Set-Cookie', clearRedirect);
 
-    return redirect('/user', {
+    return redirect(redirectUrl, {
       headers,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Google authentication error:', error);
-    throw redirect('/login?error=authentication_failed', {
+    throw redirect(`/login?redirect=${redirectUrl}&err=${error.message}`, {
       headers: {
         'Set-Cookie': clearFingerprint,
       },

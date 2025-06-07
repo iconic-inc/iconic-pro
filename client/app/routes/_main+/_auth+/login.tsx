@@ -129,6 +129,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'ungvien';
+  const redirectUrl = searchParams.get('redirect') || '/user';
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   const fetcher = useFetcher<typeof action>();
@@ -238,10 +239,11 @@ const Login = () => {
             <TabsContent value='ungvien'>
               <div className='flex flex-col space-y-4'>
                 <Link
-                  to={`/auth/google?fp=${fingerprint}`}
+                  to={`/auth/google`}
                   onClick={(e) => {
                     e.preventDefault();
                     document.cookie = `fp=${fingerprint}; path=/; max-age=300; SameSite=Lax`;
+                    document.cookie = `redirect=${redirectUrl}; path=/; max-age=300; SameSite=Lax`;
                     window.location.href = '/auth/google';
                   }}
                 >
@@ -258,7 +260,7 @@ const Login = () => {
                   </Button>
                 </Link>
 
-                <Link
+                {/* <Link
                   to={`/auth/facebook?fp=${fingerprint}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -270,7 +272,7 @@ const Login = () => {
                     <Facebook size={20} className='mr-2' />
                     Tiếp tục với Facebook
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             </TabsContent>
 
