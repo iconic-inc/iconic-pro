@@ -66,7 +66,7 @@ export default function JobPostList({
     {
       key: 'ownerName',
       title: 'Tên người đăng',
-      sortField: 'jpo_owner.spo_user.usr_fistName',
+      sortField: 'jpo_owner.spo_user.usr_firstName',
       visible: visibleColumns.ownerName,
       render: (jobPost: IJobPostDetails) => (
         <div className='flex items-center'>

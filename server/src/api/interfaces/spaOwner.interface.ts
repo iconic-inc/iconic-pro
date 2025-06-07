@@ -29,7 +29,7 @@ export interface ISpaOwner extends Document {
   spo_planExpireAt?: Date;
 
   /* STATUS */
-  spo_status: 'active' | 'suspended';
+  // spo_status: 'active' | 'suspended';
 
   /* TIMESTAMPS */
   createdAt?: Date;
