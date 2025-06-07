@@ -40,11 +40,11 @@ const spaOwnerSchema = new Schema<ISpaOwner, ISpaOwnerModel>(
     },
 
     /* STATUS ------------------------------------------------------ */
-    spo_status: {
-      type: String,
-      enum: ['active', 'suspended'],
-      default: 'active',
-    },
+    // spo_status: {
+    //   type: String,
+    //   enum: ['active', 'suspended'],
+    //   default: 'active',
+    // },
   },
   {
     timestamps: true,

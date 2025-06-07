@@ -20,9 +20,8 @@ const createBooking = async (data: IBookingAttrs) => {
 
 const getBookings = async () => {
   const bookings = await BookingModel.find({}, '-__v')
-    .lean()
     .populate({ path: 'bok_branch', select: 'bra_name' })
-    .exec();
+    .lean();
 
   return getReturnList(bookings);
 };
@@ -33,9 +32,8 @@ const countUnseenBookings = async () => {
 
 const getBookingDetails = async (id: string) => {
   const booking = await BookingModel.findById(id, { __v: 0 })
-    .lean()
     .populate({ path: 'bok_branch', select: 'bra_name' })
-    .exec();
+    .lean();
 
   if (!booking) {
     throw new NotFoundError('Booking not found');
@@ -50,7 +48,7 @@ const updateBooking = async (id: string, data: IBookingAttrs) => {
     formatAttributeName(removeNestedNullish(data), BOOKING.PREFIX),
     {
       new: true,
-    },
+    }
   );
   if (!booking) {
     throw new NotFoundError('Booking not found');

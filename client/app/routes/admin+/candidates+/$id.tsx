@@ -6,6 +6,7 @@ import { formatDate, calculateAge } from '~/utils';
 import CustomButton from '~/widgets/CustomButton';
 import DashContentHeader from '~/components/admin/DashContentHeader';
 import { parseAuthCookie } from '~/services/cookie.server';
+import TextRenderer from '~/components/website/TextRenderer';
 
 // Loader function to fetch data from API
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -210,9 +211,8 @@ export default function EmpCandidateDetail() {
                   <span className='text-sm text-gray-500 font-medium'>
                     Kinh nghiệm làm việc
                   </span>
-                  <span className='text-gray-700'>
-                    {candidate.can_experience || 'N/A'}
-                  </span>
+
+                  <TextRenderer content={candidate.can_experience || 'N/A'} />
                 </div>
 
                 <div className='flex flex-col bg-gray-50 p-3 rounded-md'>

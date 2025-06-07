@@ -33,8 +33,19 @@ export class JobPostService {
     type?: string;
     salaryFrom?: string | number;
     salaryTo?: string | number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }): Promise<IResponseList<IJobPost>> {
-    const { page = 1, limit = 20, status, spaId, keyword, ownerId } = query;
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      spaId,
+      keyword,
+      ownerId,
+      sortBy,
+      sortOrder,
+    } = query;
     const filter: any = {};
     if (status) filter.jpo_status = status;
     if (spaId) filter.jpo_spa = spaId;
@@ -58,6 +69,13 @@ export class JobPostService {
       filter.jpo_salaryTo = {
         $lte: +(query.salaryTo || Number.MAX_SAFE_INTEGER),
       };
+    }
+    // sort by createdAt or updatedAt if sortBy is not provided
+    const sort: any = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    } else {
+      sort.createdAt = -1; // default sort by createdAt descending
     }
 
     const docs = await JobPostModel.aggregate([
@@ -103,6 +121,9 @@ export class JobPostService {
           jpo_description: { $ifNull: ['$jpo_description', ''] },
           jpo_status: { $ifNull: ['$jpo_status', ''] },
         },
+      },
+      {
+        $sort: sort,
       },
       {
         $project: {

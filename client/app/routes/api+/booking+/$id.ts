@@ -1,19 +1,20 @@
 import { ActionFunctionArgs } from '@remix-run/node';
 import { authenticator, isAuthenticated } from '~/services/auth.server';
-import { updateBooking } from '~/services/booking.server';
+import { setViewedBooking, updateBooking } from '~/services/booking.server';
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const user = await isAuthenticated(request);
+  const { session, headers } = await isAuthenticated(request);
 
   switch (request.method) {
     case 'POST': {
       const id = params.id || '';
 
-      const res = await updateBooking(id, { viewed: false }, user!);
+      const res = await setViewedBooking(id, false, session!);
       return new Response(null, {
         status: 200,
         headers: {
           'Content-Type': 'text/plain',
+          ...headers,
         },
       });
     }
@@ -23,6 +24,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         status: 405,
         headers: {
           'Content-Type': 'text/plain',
+          ...headers,
         },
       });
     }

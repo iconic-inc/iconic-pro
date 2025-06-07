@@ -4,9 +4,10 @@ export interface IRawBooking {
   id: string;
   bok_name: string;
   bok_msisdn: string;
-  bok_childAge: string;
+  bok_spaName: string;
   bok_branch: ObjectId;
   bok_viewed: boolean;
+  bok_note?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,8 +15,9 @@ export interface IRawBooking {
 export interface IBookingAttrs {
   name: string;
   msisdn: string;
-  childAge: string;
+  spaName: string;
   branch: ObjectId;
+  note?: string;
   viewed: boolean;
 }
 
