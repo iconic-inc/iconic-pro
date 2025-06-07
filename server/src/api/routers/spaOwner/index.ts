@@ -97,13 +97,6 @@ spaOwnerRouter.patch(
   SpaOwnerController.assignSpasToOwner
 );
 
-/* Suspend or activate owner account (body { status: 'active'|'suspended' }) */
-spaOwnerRouter.patch(
-  '/:ownerId/status',
-  hasPermission('spaOwner', 'updateAny'),
-  SpaOwnerController.updateOwnerStatus
-);
-
 /* Change subscription plan (body { plan: 'pro', expireAt: '...' }) */
 spaOwnerRouter.patch(
   '/:ownerId/plan',
