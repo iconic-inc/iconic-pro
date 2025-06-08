@@ -18,7 +18,7 @@ export const validateObjectId =
   (fieldName: string) => (req: any, res: any, next: any) => {
     const id = req.params[fieldName];
     if (!isValidObjectId(id)) {
-      throw new BadRequestError('Invalid request!');
+      throw new BadRequestError('Yêu cầu không hợp lệ.');
     }
     next();
   };

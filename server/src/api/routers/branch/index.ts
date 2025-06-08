@@ -2,11 +2,12 @@ import { BranchController } from '@controllers/branch.controller';
 import { authenticationV2 } from '@middlewares/authentication';
 import { hasPermission } from '@middlewares/authorization';
 import { Router } from 'express';
+import { validateObjectId } from 'src/api/schema';
 
 const router = Router();
 
 router.get('/main', BranchController.getMainBranch);
-router.get('/:id', BranchController.getBranchDetails);
+router.get('/:id', validateObjectId('id'), BranchController.getBranchDetails);
 router.get('/', BranchController.getBranches);
 
 router.use(authenticationV2);
@@ -18,11 +19,13 @@ router.post(
 );
 router.put(
   '/:id',
+  validateObjectId('id'),
   hasPermission('branch', 'updateAny'),
   BranchController.updateBranch
 );
 router.delete(
   '/:id',
+  validateObjectId('id'),
   hasPermission('branch', 'deleteAny'),
   BranchController.deleteBranch
 );
