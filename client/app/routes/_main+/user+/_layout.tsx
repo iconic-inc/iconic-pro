@@ -8,7 +8,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const url = new URL(request.url);
     return redirect(`/login?redirect=${encodeURIComponent(url.pathname)}`);
   }
-  return {};
+  switch (auth.user.usr_role.slug) {
+    case 'spa-owner':
+      return redirect('/owner');
+    case 'admin':
+      return redirect('/admin');
+    case 'client':
+    default:
+      return {};
+  }
 };
 
 export default function UserLayout() {

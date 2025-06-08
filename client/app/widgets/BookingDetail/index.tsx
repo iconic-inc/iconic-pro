@@ -18,7 +18,7 @@ export default function BookingDetail({
         onClick={(e) => e.stopPropagation()}
       >
         <p className=''>
-          <b>Tên phụ huynh: </b>
+          <b>Tên: </b>
           {booking.bok_name}
         </p>
 
@@ -28,8 +28,8 @@ export default function BookingDetail({
         </p>
 
         <p>
-          <b>Tuổi của bé: </b>
-          {booking.bok_childAge}
+          <b>Tên Spa: </b>
+          {booking.bok_spaName}
         </p>
 
         <p>

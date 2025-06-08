@@ -1,39 +1,47 @@
-import { ActionFunctionArgs } from '@remix-run/node';
+import { data } from '@remix-run/react';
+import { IBookingAttrs } from '~/interfaces/booking.interface';
+import { isAuthenticated } from '~/services/auth.server';
 import { createBooking } from '~/services/booking.server';
+import { getMainBranch } from '~/services/branch.server';
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  switch (request.method) {
-    case 'POST': {
-      const body = new URLSearchParams(await request.text());
-      const name = body.get('name');
-      const msisdn = body.get('msisdn');
-      const spaName = body.get('spaName');
-      const branch = body.get('branch');
-      const note = body.get('note') || '';
-      if (!name || !msisdn || !spaName || !branch) {
-        return {
-          toast: { message: 'Vui lòng điền đầy đủ thông tin!', type: 'error' },
-        };
-      }
+export const action = async ({ request }: { request: Request }) => {
+  const { headers } = await isAuthenticated(request);
 
-      try {
-        const res = await createBooking({
-          name,
-          msisdn,
-          spaName,
-          branch,
-          note,
-        });
+  const mainBranch = await getMainBranch();
+  if (!mainBranch) {
+    return data(
+      { success: false, message: 'Không tìm thấy chi nhánh chính.' },
+      { headers },
+    );
+  }
 
-        return { toast: { message: 'Đặt lịch thành công!', type: 'success' } };
-      } catch (e) {
-        console.error(e);
-        return { toast: { message: 'Đặt lịch thất bại!', type: 'error' } };
-      }
-    }
+  const formData = await request.formData();
+  const bookingData: IBookingAttrs = {
+    name: formData.get('name') as string,
+    msisdn: formData.get('msisdn') as string,
+    spaName: formData.get('spaName') as string,
+    note: formData.get('note') as string,
+    branch: mainBranch.id,
+  };
 
-    default: {
-      return { toast: { message: 'Method not allowed', type: 'error' } };
-    }
+  try {
+    await createBooking(bookingData);
+    return data(
+      {
+        success: true,
+        message: 'Đăng ký thành công!',
+      },
+      { headers },
+    );
+  } catch (error: any) {
+    console.error('Error creating booking:', error.message);
+    return data(
+      {
+        success: false,
+        message:
+          error.message || 'Đăng ký không thành công. Vui lòng thử lại sau.',
+      },
+      { headers },
+    );
   }
 };

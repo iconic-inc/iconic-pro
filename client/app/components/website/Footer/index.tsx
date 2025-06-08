@@ -8,7 +8,7 @@ import { useAuthContext } from '~/context/auth.context';
 import { toAddressString } from '~/utils/address.util';
 
 export default function Footer() {
-  const { appSettings, branches } = useMainLoaderData();
+  const { appSettings, mainBranch } = useMainLoaderData();
   const { isLoggedIn } = useAuthContext();
 
   return (
@@ -95,11 +95,8 @@ export default function Footer() {
                     <br />
                     <b>Đại diện:</b> Ông
                   </p>
-                  <Defer resolve={branches}>
-                    {(branches) => {
-                      const mainBranch = branches.find(
-                        (branch) => branch.bra_isMain,
-                      );
+                  <Defer resolve={mainBranch}>
+                    {(mainBranch) => {
                       if (!mainBranch) return null;
 
                       return (

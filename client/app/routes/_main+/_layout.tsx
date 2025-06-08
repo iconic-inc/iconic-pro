@@ -11,7 +11,7 @@ import {
 import Footer from '~/components/website/Footer';
 import HandsomeError from '~/components/HandsomeError';
 import Header from '~/components/website/Header';
-import { getBranches } from '~/services/branch.server';
+import { getBranches, getMainBranch } from '~/services/branch.server';
 import { getAppSettings } from '~/services/app.server';
 import mainStyle from '~/styles/main.scss?url';
 import { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
@@ -34,12 +34,9 @@ export const links: LinksFunction = () => [
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const auth = await parseAuthCookie(request);
-  const branches = getBranches().catch((err: any) => {
+  const mainBranch = getMainBranch().catch((err: any) => {
     console.error('Error fetching branches:', err);
-    return {
-      success: false,
-      message: 'Có lỗi xảy ra khi lấy danh sách chi nhánh.',
-    };
+    return null;
   });
   const appSettings = getAppSettings().catch((err) => {
     console.error('Error fetching app settings:', err);
@@ -60,7 +57,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return {
         auth: null,
         user: null,
-        branches,
+        mainBranch,
         appSettings,
         categories,
       };
@@ -86,7 +83,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return {
       auth,
       user,
-      branches,
+      mainBranch,
       appSettings,
       categories,
     };

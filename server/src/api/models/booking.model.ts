@@ -7,7 +7,7 @@ import { models } from 'mongoose';
 const bookingSchema = new Schema<IBooking, IBookingModel>(
   {
     bok_name: { type: String, required: true },
-    bok_msisdn: { type: String, required: true },
+    bok_msisdn: { type: String, required: true, unique: true },
     bok_spaName: { type: String, required: true },
     bok_branch: {
       type: Types.ObjectId,
