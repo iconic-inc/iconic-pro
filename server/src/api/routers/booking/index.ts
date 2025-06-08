@@ -2,10 +2,16 @@ import { BookingController } from '@controllers/booking.controller';
 import { authenticationV2 } from '@middlewares/authentication';
 import { hasPermission } from '@middlewares/authorization';
 import { Router } from 'express';
+import { validateObjectId, validateSchema } from 'src/api/schema';
+import { bookingCreateSchema } from 'src/api/schema/booking.schema';
 
 const bookingRouter = Router();
 
-bookingRouter.post('/', BookingController.createBooking);
+bookingRouter.post(
+  '/',
+  validateSchema(bookingCreateSchema),
+  BookingController.createBooking
+);
 
 bookingRouter.use(authenticationV2);
 
@@ -21,12 +27,14 @@ bookingRouter.get(
 );
 bookingRouter.get(
   '/:bookingId',
+  validateObjectId('bookingId'),
   hasPermission('booking', 'readAny'),
   BookingController.getBookingDetails
 );
 
 bookingRouter.put(
   '/:bookingId',
+  validateObjectId('bookingId'),
   hasPermission('booking', 'updateAny'),
   BookingController.updateBooking
 );
