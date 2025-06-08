@@ -30,6 +30,7 @@ import { Briefcase, Facebook, User } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import TextInput from '~/components/TextInput';
 import PasswordInput from '~/components/PasswordInput';
+import BookingForm from '~/components/website/BookingForm';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const auth = await parseAuthCookie(request);
@@ -204,63 +205,77 @@ const Login = () => {
 
   return (
     <div className='container py-16'>
-      {/* Left Column: Login/Register Form */}
-      <Card className='col-span-12 md:col-span-6 lg:col-span-5 bg-white p-0 md:p-0 shadow-xl'>
-        <CardHeader className='sm:p-8'>
-          <CardTitle className='text-2xl sm:text-3xl font-bold text-gray-800'>
-            Đăng ký / Đăng nhập
-          </CardTitle>
-          <CardDescription className='text-gray-600 text-sm pt-1'>
-            Liên kết tài khoản của bạn để tiếp tục sử dụng dịch vụ của ICONIC
-            PRO
-          </CardDescription>
-        </CardHeader>
+      <div className='col-span-12 text-center md:text-left'>
+        <p className='text-gray-700 text-lg text-center mb-2'>
+          Chào mừng bạn đến với
+        </p>
+        <h2 className='text-3xl sm:text-4xl font-bold mb-1 text-center'>
+          <span className='text-[--main-color]'>
+            <span className='text-gray-800'>Iconic</span>
+            Pro
+          </span>
+          <span className='text-gray-800'> | Việc Làm Thẩm mỹ Hàng Đầu</span>
+        </h2>
+      </div>
 
-        <CardContent className='p-6 sm:p-8 -mt-8'>
-          <Tabs value={activeTab} className='w-full'>
-            <TabsList className='grid w-full grid-cols-2 mb-6 bg-transparent p-0 border-b border-gray-200 rounded-none'>
-              <TabsTrigger
-                value='ungvien'
-                className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-[--main-color] data-[state=active]:text-[--main-color] rounded-none'
-                onClick={() => setActiveTab('ungvien')}
-              >
-                <User size={18} className='mr-2' /> Ứng viên
-              </TabsTrigger>
+      <div className='col-span-12 flex gap-8 items-center justify-between'>
+        {/* Left Column: Login/Register Form */}
+        <Card className='w-1/2 h-fit bg-white p-0 md:py-10 shadow-xl'>
+          <CardHeader className='sm:p-8'>
+            <CardTitle className='text-2xl sm:text-3xl font-bold text-gray-800'>
+              Đăng ký / Đăng nhập
+            </CardTitle>
+            <CardDescription className='text-gray-600 text-sm pt-1'>
+              Liên kết tài khoản của bạn để tiếp tục sử dụng dịch vụ của ICONIC
+              PRO
+            </CardDescription>
+          </CardHeader>
 
-              <TabsTrigger
-                value='chuspa'
-                className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-[--main-color] rounded-none'
-                onClick={() => setActiveTab('chuspa')}
-              >
-                <Briefcase size={18} className='mr-2' /> Nhà tuyển dụng
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value='ungvien'>
-              <div className='flex flex-col space-y-4'>
-                <Link
-                  to={`/auth/google`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.cookie = `fp=${fingerprint}; path=/; max-age=300; SameSite=Lax`;
-                    document.cookie = `redirect=${redirectUrl}; path=/; max-age=300; SameSite=Lax`;
-                    window.location.href = '/auth/google';
-                  }}
+          <CardContent className='p-6 sm:p-8 -mt-8'>
+            <Tabs value={activeTab} className='w-full'>
+              <TabsList className='grid w-full grid-cols-2 mb-6 bg-transparent p-0 border-b border-gray-200 rounded-none'>
+                <TabsTrigger
+                  value='ungvien'
+                  className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-[--main-color] data-[state=active]:text-[--main-color] rounded-none'
+                  onClick={() => setActiveTab('ungvien')}
                 >
-                  <Button
-                    variant='outline'
-                    className='w-full text-gray-700 border-gray-300 hover:bg-gray-50 py-3'
-                  >
-                    <img
-                      src='/assets/google.svg'
-                      className='mr-2 w-5 h-5 text-red-600'
-                    />
-                    {/* Using Chrome as a stand-in for Google logo */}
-                    Tiếp tục với Google
-                  </Button>
-                </Link>
+                  <User size={18} className='mr-2' /> Ứng viên
+                </TabsTrigger>
 
-                {/* <Link
+                <TabsTrigger
+                  value='chuspa'
+                  className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-[--main-color] rounded-none'
+                  onClick={() => setActiveTab('chuspa')}
+                >
+                  <Briefcase size={18} className='mr-2' /> Nhà tuyển dụng
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value='ungvien'>
+                <div className='flex flex-col space-y-4'>
+                  <Link
+                    to={`/auth/google`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.cookie = `fp=${fingerprint}; path=/; max-age=300; SameSite=Lax`;
+                      document.cookie = `redirect=${redirectUrl}; path=/; max-age=300; SameSite=Lax`;
+                      window.location.href = '/auth/google';
+                    }}
+                  >
+                    <Button
+                      variant='outline'
+                      className='w-full text-gray-700 border-gray-300 hover:bg-gray-50 py-3'
+                    >
+                      <img
+                        src='/assets/google.svg'
+                        className='mr-2 w-5 h-5 text-red-600'
+                      />
+                      {/* Using Chrome as a stand-in for Google logo */}
+                      Tiếp tục với Google
+                    </Button>
+                  </Link>
+
+                  {/* <Link
                   to={`/auth/facebook?fp=${fingerprint}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -273,108 +288,96 @@ const Login = () => {
                     Tiếp tục với Facebook
                   </Button>
                 </Link> */}
-              </div>
-            </TabsContent>
+                </div>
+              </TabsContent>
 
-            <TabsContent value='chuspa'>
-              {/* Content for Nhà tuyển dụng tab - can be different form fields or info */}
-              <div className=''>
-                <fetcher.Form method='POST' className='space-y-5'>
-                  <TextInput
-                    label='Tên đăng nhập hoặc email'
-                    name='username'
-                    value={username}
-                    onChange={(value) => setUsername(value)}
-                    placeholder='Nhập tên đăng nhập hoặc email'
-                  />
+              <TabsContent value='chuspa'>
+                {/* Content for Nhà tuyển dụng tab - can be different form fields or info */}
+                <div className=''>
+                  <fetcher.Form method='POST' className='space-y-5'>
+                    <TextInput
+                      label='Tên đăng nhập hoặc email'
+                      name='username'
+                      value={username}
+                      onChange={(value) => setUsername(value)}
+                      placeholder='Nhập tên đăng nhập hoặc email'
+                    />
 
-                  <PasswordInput
-                    id='password'
-                    label='Mật khẩu'
-                    name='password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder='Nhập mật khẩu'
-                  />
+                    <PasswordInput
+                      id='password'
+                      label='Mật khẩu'
+                      name='password'
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder='Nhập mật khẩu'
+                    />
 
-                  <input type='hidden' name='fingerprint' value={fingerprint} />
+                    <input
+                      type='hidden'
+                      name='fingerprint'
+                      value={fingerprint}
+                    />
 
-                  <Button
-                    type='submit'
-                    className='w-full bg-blue-500 hover:bg-blue-600 text-white'
-                    disabled={loading}
-                  >
-                    {loading ? 'Loading...' : 'Đăng nhập'}
-                  </Button>
-                </fetcher.Form>
+                    <Button
+                      type='submit'
+                      className='w-full bg-blue-500 hover:bg-blue-600 text-white'
+                      disabled={loading}
+                    >
+                      {loading ? 'Loading...' : 'Đăng nhập'}
+                    </Button>
+                  </fetcher.Form>
+                </div>
+              </TabsContent>
+            </Tabs>
 
-                <Link
-                  to='/owner/signup'
-                  className='block w-full text-blue-500 text-center py-3 hover:underline'
-                >
-                  Đăng ký tài khoản NTD
-                </Link>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          <p className='text-xs text-gray-500 mt-8 text-center'>
-            Bằng việc tiếp tục, bạn đồng ý với{' '}
-            <a href='#' className='text-[--main-color] hover:underline'>
-              Điều Khoản Sử Dụng
-            </a>{' '}
-            và{' '}
-            <a href='#' className='text-[--main-color] hover:underline'>
-              Chính Sách Bảo Mật
-            </a>{' '}
-            của Iconic PRO.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Right Column: Welcome Message & Benefits */}
-      <div className='col-span-12 md:col-span-6 lg:col-span-7 mt-8 md:mt-0'>
-        <div className='text-center md:text-left'>
-          <p className='text-gray-700 text-lg'>Chào mừng bạn đến với</p>
-          <h2 className='text-3xl sm:text-4xl font-bold mb-1'>
-            <span className='text-[--main-color]'>
-              <span className='text-gray-800'>Iconic</span>
-              Pro
-            </span>
-            <span className='text-gray-800'> | Việc Làm Thẩm mỹ Hàng Đầu</span>
-          </h2>
-        </div>
-
-        <div className='mt-6 flex justify-center'>
-          <img
-            src='https://placehold.co/450x280/f2e6d6/f582a8?text=Illustration+(Beauty)'
-            alt='Developer working at desk illustration'
-            className='rounded-lg shadow-md max-w-md w-full h-auto'
-          />
-        </div>
-
-        <Card className='mt-8 bg-white shadow-lg'>
-          <CardContent className='p-6'>
-            <p className='text-gray-700 mb-4 text-sm sm:text-base'>
-              Đăng nhập ngay để tận dụng tối đa các công cụ của Iconic PRO và
-              gia tăng cơ hội tiếp cận công việc Thẩm Mỹ hot nhất
+            <p className='text-xs text-gray-500 mt-8 text-center'>
+              Bằng việc tiếp tục, bạn đồng ý với{' '}
+              <a href='#' className='text-[--main-color] hover:underline'>
+                Điều Khoản Sử Dụng
+              </a>{' '}
+              và{' '}
+              <a href='#' className='text-[--main-color] hover:underline'>
+                Chính Sách Bảo Mật
+              </a>{' '}
+              của Iconic PRO.
             </p>
-            <ul className='space-y-2 text-gray-600 text-sm sm:text-base list-inside'>
-              {[
-                'Tạo CV chuẩn và chuyên nghiệp chỉ trong vài phút',
-                'Tìm kiếm việc làm Thẩm Mỹ phù hợp với kỹ năng và sở thích',
-                'Nhận thông báo việc làm mới nhất từ các nhà tuyển dụng hàng đầu',
-              ].map((benefit) => (
-                <li key={benefit} className='flex items-start'>
-                  <span className='text-[--main-color] mr-2 mt-1'>&#8226;</span>{' '}
-                  {/* Bullet point */}
-                  {benefit}
-                </li>
-              ))}
-            </ul>
           </CardContent>
         </Card>
+        {/* Right Column: Welcome Message & Benefits */}
+        <div className='w-1/2 flex justify-center items-center mt-8 md:mt-0'>
+          {activeTab === 'chuspa' ? (
+            <BookingForm />
+          ) : (
+            <img
+              src='https://placehold.co/450x280/f2e6d6/f582a8?text=Illustration+(Beauty)'
+              alt='Developer working at desk illustration'
+              className='rounded-lg shadow-md max-w-md w-full h-auto'
+            />
+          )}
+        </div>
       </div>
+
+      <Card className='col-span-12 bg-white shadow-lg'>
+        <CardContent className='p-6'>
+          <p className='text-gray-700 mb-4 text-sm sm:text-base'>
+            Đăng nhập ngay để tận dụng tối đa các công cụ của Iconic PRO và gia
+            tăng cơ hội tiếp cận công việc Thẩm Mỹ hot nhất
+          </p>
+          <ul className='space-y-2 text-gray-600 text-sm sm:text-base list-inside'>
+            {[
+              'Tạo CV chuẩn và chuyên nghiệp chỉ trong vài phút',
+              'Tìm kiếm việc làm Thẩm Mỹ phù hợp với kỹ năng và sở thích',
+              'Nhận thông báo việc làm mới nhất từ các nhà tuyển dụng hàng đầu',
+            ].map((benefit) => (
+              <li key={benefit} className='flex items-start'>
+                <span className='text-[--main-color] mr-2 mt-1'>&#8226;</span>{' '}
+                {/* Bullet point */}
+                {benefit}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { BookingModel } from '@models/booking.model';
 import { IBookingAttrs } from '../interfaces/booking.interface';
-import { NotFoundError } from '../core/errors';
+import { BadRequestError, NotFoundError } from '../core/errors';
 import {
   formatAttributeName,
   getReturnData,
@@ -10,6 +10,15 @@ import {
 import { BOOKING } from '../constants';
 
 const createBooking = async (data: IBookingAttrs) => {
+  const existingBooking = await BookingModel.findOne({
+    bok_msisdn: data.msisdn,
+  });
+  if (existingBooking) {
+    throw new BadRequestError(
+      'Bạn đã đăng ký thành công trước đó. Vui lòng chờ chúng tôi liên hệ lại với bạn.'
+    );
+  }
+
   const newBooking = await BookingModel.build({
     ...data,
     viewed: false,

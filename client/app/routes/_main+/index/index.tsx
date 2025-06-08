@@ -89,14 +89,14 @@ export default function Index() {
               title:
                 'Iconic Pro giới thiệu tài liệu "Ranking Top 100 Spa, Thẩm mỹ viện Hot Nhất Tháng 6" – thông tin đáng giá về xu hướng và chất lượng dịch vụ',
               excerpt:
-                'Trong bối cảnh các tiêu chí lựa chọn Spa, Thẩm mỹ viện ngày càng đa dạng và khắt khe, Iconic Pro tự hào giới thiệu tài liệu "Ranking Top 100 Spa, Thẩm mỹ viện Hot Nhất Tháng 6". Đây là nguồn thông tin quý giá giúp phụ huynh và người tiêu dùng có cái nhìn tổng quan về các cơ sở làm đẹp hàng đầu.',
+                'Trong bối cảnh các tiêu chí lựa chọn Spa, Thẩm mỹ viện ngày càng đa dạng và khắt khe, Iconic Pro tự hào giới thiệu tài liệu "Ranking Top 100 Spa, Thẩm mỹ viện Hot Nhất Tháng 6". Đây là nguồn thông tin quý giá giúp chủ spa và khách hàng có cái nhìn tổng quan về các cơ sở làm đẹp hàng đầu.',
               slug: 'ranking-top-100-truong-hot-nhat-thang-10',
             }}
           />
         </div>
       </section>
 
-      <section className='container' id='phu-huynh'>
+      <section className='container' id='tim-viec'>
         <h2 className='title col-span-12'>DÀNH CHO NGƯỜI TÌM VIỆC</h2>
 
         <section className='col-span-12'>
