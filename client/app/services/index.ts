@@ -64,9 +64,7 @@ const fetcher = async <T = any>(
   }
 
   if (data.errors) {
-    throw new Error(
-      `${data.errors.status || 500} - ${data.errors.message || 'Unknown error'}`,
-    );
+    throw new Error(data.errors.message || 'Unknown error');
   }
   return data.metadata;
 };

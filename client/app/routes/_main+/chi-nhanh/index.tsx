@@ -1,13 +1,20 @@
 import { IPageDetail } from '~/interfaces/page.interface';
 import { useState } from 'react';
 import BranchList from './_components/BranchList';
-import VideoDisplay from './_components/VideoDisplay';
-import { useMainLoaderData } from '~/lib/useMainLoaderData';
 import MapDisplay from './_components/MapDisplay';
 import Defer from '~/components/Defer';
+import { parseAuthCookie } from '~/services/cookie.server';
+import { getBranches } from '~/services/branch.server';
+import { useLoaderData } from '@remix-run/react';
 
-export default function ILOSystemPage({ page }: { page: IPageDetail }) {
-  const { branches } = useMainLoaderData();
+export const loader = async ({ request }: { request: Request }) => {
+  const session = await parseAuthCookie(request);
+  const branches = getBranches();
+  return { branches };
+};
+
+export default function BranchPage({ page }: { page: IPageDetail }) {
+  const { branches } = useLoaderData<typeof loader>();
 
   const [selectedBranchIndex, setSelectedBranchIndex] = useState(0);
   return (

@@ -9,7 +9,6 @@ export default function BookingList({
 }: {
   bookings: Array<IBooking>;
 }) {
-  console.log(bookings);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
@@ -30,7 +29,7 @@ export default function BookingList({
         <thead className=''>
           <tr className=''>
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
-              Tên phụ huynh
+              Tên
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
@@ -38,7 +37,7 @@ export default function BookingList({
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
-              Tuổi của bé
+              Tên Spa
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
@@ -46,7 +45,7 @@ export default function BookingList({
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
-              Tình trạng
+              Trạng thái
             </th>
           </tr>
         </thead>
@@ -63,7 +62,7 @@ export default function BookingList({
                   className='block p-3 w-full h-full'
                 >
                   <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
-                    Tên phụ huynh
+                    Tên
                   </span>
                   {bok.bok_name}
                 </Link>
@@ -78,9 +77,9 @@ export default function BookingList({
 
               <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
                 <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
-                  Tuổi của bé
+                  Tên Spa
                 </span>
-                {bok.bok_childAge}
+                {bok.bok_spaName}
               </td>
 
               <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
@@ -92,7 +91,7 @@ export default function BookingList({
 
               <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
                 <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
-                  Tình trạng
+                  Trạng thái
                 </span>
                 {bok.bok_viewed ? (
                   <p className='m-auto w-fit bg-green-500 rounded px-2 py-1 text-xs font-bold text-white'>
