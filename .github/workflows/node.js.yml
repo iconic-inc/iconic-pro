@@ -76,6 +76,7 @@ jobs:
             git pull origin master
             source ~/.nvm/nvm.sh
             nvm use 22
-            /home/phannd/.nvm/versions/node/v22.14.0/bin/npm install --production
-            /home/phannd/.nvm/versions/node/v22.14.0/bin/pm2 restart iconic-pro
+            npm install --omit=dev
+            npm run build
+            pm2 reload iconic-pro
           EOF
