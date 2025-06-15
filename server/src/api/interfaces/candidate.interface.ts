@@ -1,5 +1,6 @@
 import { HydratedDocument, Model, ObjectId } from 'mongoose';
 import { IUserResponseData } from './user.interface';
+import { IUserAttrs } from '../../../../client/app/interfaces/user.interface';
 
 export interface IRawCandidate {
   can_user: ObjectId;
@@ -20,6 +21,10 @@ export interface ICandidateAttrs {
   cvFile?: string; // URL file pdf
   status?: string; // active | hidden
 }
+
+export interface ICandidateUpdate
+  extends Omit<ICandidateAttrs, 'user'>,
+    Partial<IUserAttrs> {}
 
 export type ICandidate = HydratedDocument<IRawCandidate>;
 

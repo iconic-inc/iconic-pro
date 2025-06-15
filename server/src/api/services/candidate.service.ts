@@ -21,6 +21,7 @@ import {
   ICandidate,
   ICandidateAttrs,
   ICandidateResponse,
+  ICandidateUpdate,
 } from '../interfaces/candidate.interface';
 import { IUserAttrs } from '../interfaces/user.interface';
 import { UserModel } from '@models/user.model';
@@ -214,7 +215,7 @@ export class CandidateService {
     return getReturnData(cv);
   }
 
-  static async updateCandidate(id: string, body: ICandidateAttrs & IUserAttrs) {
+  static async updateCandidate(id: string, body: ICandidateUpdate) {
     let session;
     try {
       // Tìm candidate và lấy userId

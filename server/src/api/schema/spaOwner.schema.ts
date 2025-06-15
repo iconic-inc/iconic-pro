@@ -19,3 +19,5 @@ export const spaOwnerCreateSchema = z.object({
   ),
   status: z.enum(['active', 'suspended']).default('active'),
 });
+
+export const spaOwnerUpdateSchema = spaOwnerCreateSchema.partial();

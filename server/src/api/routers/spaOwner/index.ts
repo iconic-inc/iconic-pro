@@ -3,31 +3,24 @@ import { Router } from 'express';
 import { SpaOwnerController } from '@controllers/spaOwner.controller';
 import { authenticationV2 } from '@middlewares/authentication';
 import { hasPermission, restrictToRoles } from '@middlewares/authorization';
+import { validateObjectId, validateSchema } from '@/api/schema';
+import {
+  spaOwnerCreateSchema,
+  spaOwnerUpdateSchema,
+} from '@/api/schema/spaOwner.schema';
 
 const spaOwnerRouter = Router();
 
 /* 🔐 Require valid JWT for every route below */
-spaOwnerRouter.use(authenticationV2);
+spaOwnerRouter.use(authenticationV2, restrictToRoles('admin', 'spa-owner'));
 
 /* ──────────────────────────────────────────────────────────────
    OWNER CRUD – resource = "spaOwner"
    RBAC action naming: updateOwn, readOwn
    ────────────────────────────────────────────────────────────── */
-spaOwnerRouter.use(
-  '/me/spas',
-  restrictToRoles('admin', 'spa-owner'),
-  require('../spa/owner')
-);
-spaOwnerRouter.use(
-  '/me/job-posts',
-  restrictToRoles('admin', 'spa-owner'),
-  require('../jobPost/owner')
-);
-spaOwnerRouter.use(
-  '/me/job-applications',
-  restrictToRoles('admin', 'spa-owner'),
-  require('../jobApplication/owner')
-);
+spaOwnerRouter.use('/me/spas', require('../spa/owner'));
+spaOwnerRouter.use('/me/job-posts', require('../jobPost/owner'));
+spaOwnerRouter.use('/me/job-applications', require('../jobApplication/owner'));
 spaOwnerRouter.get(
   '/me',
   hasPermission('spaOwner', 'readOwn'),
@@ -35,6 +28,7 @@ spaOwnerRouter.get(
 );
 spaOwnerRouter.put(
   '/me',
+  validateSchema(spaOwnerUpdateSchema),
   hasPermission('spaOwner', 'updateOwn'),
   SpaOwnerController.updateMyProfile
 );
@@ -45,6 +39,7 @@ spaOwnerRouter.put(
    ────────────────────────────────────────────────────────────── */
 spaOwnerRouter.get(
   '/:ownerId',
+  validateObjectId('ownerId'),
   hasPermission('spaOwner', 'readAny'),
   SpaOwnerController.getSpaOwnerById
 );
@@ -57,12 +52,14 @@ spaOwnerRouter.get(
 
 spaOwnerRouter.post(
   '/',
+  validateSchema(spaOwnerCreateSchema),
   hasPermission('spaOwner', 'createAny'),
   SpaOwnerController.createSpaOwner // invite / onboard flow
 );
 
 spaOwnerRouter.put(
   '/:ownerId',
+  validateObjectId('ownerId'),
   hasPermission('spaOwner', 'updateAny'),
   SpaOwnerController.updateSpaOwner
 );
@@ -82,6 +79,7 @@ spaOwnerRouter.delete(
 
 spaOwnerRouter.delete(
   '/:ownerId',
+  validateObjectId('ownerId'),
   hasPermission('spaOwner', 'deleteAny'),
   SpaOwnerController.deleteSpaOwner // soft‑delete recommended
 );
@@ -93,6 +91,7 @@ spaOwnerRouter.delete(
 /* Assign / unassign spas to owner (expects body { spaIds: [] }) */
 spaOwnerRouter.patch(
   '/:ownerId/assign-spa',
+  validateObjectId('ownerId'),
   hasPermission('spaOwner', 'updateAny'),
   SpaOwnerController.assignSpasToOwner
 );
@@ -100,6 +99,7 @@ spaOwnerRouter.patch(
 /* Change subscription plan (body { plan: 'pro', expireAt: '...' }) */
 spaOwnerRouter.patch(
   '/:ownerId/plan',
+  validateObjectId('ownerId'),
   hasPermission('spaOwner', 'updateAny'),
   SpaOwnerController.changeOwnerPlan
 );
@@ -107,6 +107,7 @@ spaOwnerRouter.patch(
 /* View audit log */
 spaOwnerRouter.get(
   '/:ownerId/audit',
+  validateObjectId('ownerId'),
   hasPermission('spaOwner', 'readAny'),
   SpaOwnerController.getOwnerAuditLog
 );

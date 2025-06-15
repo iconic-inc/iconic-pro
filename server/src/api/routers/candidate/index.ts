@@ -3,17 +3,21 @@ import { Router } from 'express';
 import { authenticationV2 } from '@middlewares/authentication';
 import { hasPermission, restrictToRoles } from '@middlewares/authorization';
 import { CandidateController } from '@controllers/candidate.controller';
+import { validateObjectId, validateSchema } from '@/api/schema';
+import {
+  candidateCreateSchema,
+  candidateUpdateSchema,
+} from '@/api/schema/candiate.schema';
 
 const candidateRouter = Router();
 /* 1 ▸ CLIENT ROUTES  –  src/routes/client/candidate.route.ts
    --------------------------------------------------------- */
 /* Require JWT for client‑candidate routes */
-candidateRouter.use(authenticationV2);
+candidateRouter.use(authenticationV2, restrictToRoles('admin', 'client'));
 
 /* Each client manages only **own** candidate profile */
 candidateRouter.use(
   '/me/job-applications',
-  restrictToRoles('admin', 'client'),
   require('../jobApplication/client')
 );
 
@@ -25,6 +29,7 @@ candidateRouter.get(
 
 candidateRouter.put(
   '/me',
+  validateSchema(candidateUpdateSchema),
   hasPermission('candidate', 'updateOwn'),
   CandidateController.updateMyProfile
 );
@@ -40,18 +45,21 @@ candidateRouter.get(
 
 candidateRouter.post(
   '/',
+  validateSchema(candidateCreateSchema),
   hasPermission('candidate', 'createAny'),
   CandidateController.createCandidate
 );
 
 candidateRouter.get(
   '/:candidateId',
+  validateObjectId('candidateId'),
   hasPermission('candidate', 'readAny'),
   CandidateController.getCandidateById
 );
 
 candidateRouter.put(
   '/:candidateId',
+  validateObjectId('candidateId'),
   hasPermission('candidate', 'updateAny'),
   CandidateController.updateCandidate
 );
@@ -71,6 +79,7 @@ candidateRouter.delete(
 
 candidateRouter.delete(
   '/:candidateId',
+  validateObjectId('candidateId'),
   hasPermission('candidate', 'deleteAny'),
   CandidateController.deleteCandidate
 );
