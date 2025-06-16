@@ -93,26 +93,23 @@ export default function Home() {
               <div className='py-2.5'>
                 <p className='hook'>
                   <span>Bạn đang sở hữu một spa…</span>
-                  Nhưng mỗi ngày lại
-                  <b>trống lịch, vắng khách?</b>
+                  Nhưng mỗi ngày lại <b>trống lịch, vắng khách?</b>
                 </p>
 
                 <p className='hook'>
                   <span>Bạn đã đầu tư cơ sở, máy móc, sản phẩm…</span>
-                  Nhưng doanh thu vẫn
-                  <b>chưa như mong đợi?</b>
+                  Nhưng doanh thu vẫn <b>chưa như mong đợi?</b>
                 </p>
 
                 <p className='hook'>
                   <span>Đội ngũ thì rời rạc…</span>
-                  Telesale
+                  Telesale{' '}
                   <b>không biết chốt đơn, Tư vấn viên không giữ được khách…</b>
                 </p>
 
                 <p className='hook'>
                   <span>Bạn đã thử quảng cáo, giảm giá, livestream…</span>
-                  Nhưng mọi thứ vẫn…
-                  <b>giậm chân tại chỗ?</b>
+                  Nhưng mọi thứ vẫn… <b>giậm chân tại chỗ?</b>
                 </p>
               </div>
 
@@ -132,7 +129,7 @@ export default function Home() {
               <div className='pb-[50px]'>
                 <button className='btn' onClick={openPopup}>
                   <div className='flex items-center justify-center gap-4'>
-                    <span className=''> Đăng ký Ngay hôm nay chỉ còn </span>
+                    <span className=''> Đăng ký Ngay chỉ còn </span>
                     <div className='flex flex-col'>
                       <span className='text-yellow font-bold text-2xl text-[--yellow-light]'>
                         499.000 đ
@@ -281,7 +278,7 @@ export default function Home() {
 
             <button className='btn' onClick={openPopup}>
               <div className='flex items-center justify-center gap-4'>
-                <span className=''> Đăng ký Ngay hôm nay chỉ còn </span>
+                <span className=''> Đăng ký Ngay chỉ còn </span>
                 <div className='flex flex-col'>
                   <span className='text-yellow font-bold text-2xl text-[--yellow-light]'>
                     499.000 đ
@@ -317,22 +314,21 @@ export default function Home() {
               <div className='content py-8'>
                 <div className='content flex flex-col justify-center text-lg'>
                   <p className='my-2'>
-                    Học là
+                    Học là{' '}
                     <strong>
-                      {' '}
                       <span>áp dụng liền</span>
                     </strong>
                     – tại lớp hoặc ngay tại spa của bạn
                   </p>
 
                   <p className='my-2'>
-                    Cam kết thấy kết quả rõ rệt chỉ
+                    Cam kết thấy kết quả rõ rệt chỉ{' '}
                     <strong>sau 7 đến 14 ngày</strong> nếu học đủ – làm đúng
                   </p>
 
                   <p className='my-2'>
                     <strong>ICONIC PRO</strong> – Không chỉ là nơi đào tạo, Mà
-                    là người bạn đồng hành giúp bạn chạm
+                    là người bạn đồng hành giúp bạn chạm{' '}
                     <strong>cột mốc doanh thu mới</strong>
                   </p>
                 </div>
@@ -407,7 +403,7 @@ export default function Home() {
             <div className='my-5'>
               <button className='btn' onClick={openPopup}>
                 <div className='flex items-center justify-center gap-4'>
-                  <span className=''> Đăng ký Ngay hôm nay chỉ còn </span>
+                  <span className=''> Đăng ký Ngay chỉ còn </span>
                   <div className='flex flex-col'>
                     <span className='text-yellow font-bold text-2xl text-[--yellow-light]'>
                       499.000 đ
@@ -470,47 +466,44 @@ export default function Home() {
                         <ul>
                           <li>
                             <p>
-                              Nắm vững cách
-                              <strong>
-                                nghiên cứu chân dung khách hàng
-                              </strong>{' '}
-                              và
-                              <strong>hành vi tiêu dùng</strong> trong ngành làm
-                              đẹp.
+                              Nắm vững cách{' '}
+                              <strong>nghiên cứu chân dung khách hàng</strong>{' '}
+                              và <strong>hành vi tiêu dùng</strong> trong ngành
+                              làm đẹp.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Xây dựng
-                              <strong>kịch bản nội dung</strong> (content) theo
-                              từng giai đoạn <strong>phễu</strong>:
-                              <strong>thu hút</strong> –
-                              <strong>chuyển đổi</strong> –
+                              Xây dựng <strong>kịch bản nội dung</strong>{' '}
+                              (content) theo từng giai đoạn{' '}
+                              <strong>phễu</strong>: <strong>thu hút</strong> –{' '}
+                              <strong>chuyển đổi</strong> –{' '}
                               <strong>giữ chân</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Thực hành tạo <strong>bài viết quảng cáo</strong>,
-                              <strong>video reels</strong>,
+                              Thực hành tạo <strong>bài viết quảng cáo</strong>,{' '}
+                              <strong>video reels</strong>,{' '}
                               <strong>story viral</strong> phù hợp với nền tảng
-                              (<strong>Facebook</strong>,<strong>TikTok</strong>
+                              (<strong>Facebook</strong>,{' '}
+                              <strong>TikTok</strong>
                               ).
                             </p>
                           </li>
                           <li>
                             <p>
-                              Thiết lập
-                              <strong>chiến dịch quảng cáo chuyển đổi</strong>
-                              trên nền tảng <strong>Facebook Ads</strong> –
+                              Thiết lập{' '}
+                              <strong>chiến dịch quảng cáo chuyển đổi</strong>{' '}
+                              trên nền tảng <strong>Facebook Ads</strong> –{' '}
                               <strong>tối ưu chi phí</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Hiểu và ứng dụng
-                              <strong>chiến lược thương hiệu cá nhân</strong>
-                              trong ngành làm đẹp để
+                              Hiểu và ứng dụng{' '}
+                              <strong>chiến lược thương hiệu cá nhân</strong>{' '}
+                              trong ngành làm đẹp để{' '}
                               <strong>tăng niềm tin</strong> từ khách hàng.
                             </p>
                           </li>
@@ -539,17 +532,17 @@ export default function Home() {
                         <ul>
                           <li>
                             <p>
-                              Soạn thảo và luyện tập
+                              Soạn thảo và luyện tập{' '}
                               <strong>kịch bản gọi điện</strong> theo từng loại
-                              khách: <strong>khách mới</strong> –
-                              <strong>khách cũ</strong> –
+                              khách: <strong>khách mới</strong> –{' '}
+                              <strong>khách cũ</strong> –{' '}
                               <strong>khách không phản hồi</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Biết cách <strong>đặt câu hỏi mở</strong> –
-                              <strong>khai thác nhu cầu</strong> –
+                              Biết cách <strong>đặt câu hỏi mở</strong> –{' '}
+                              <strong>khai thác nhu cầu</strong> –{' '}
                               <strong>gợi mở mong muốn mua hàng</strong>.
                             </p>
                           </li>
@@ -563,15 +556,15 @@ export default function Home() {
                           <li>
                             <p>
                               Tư duy gọi khách <strong>không bán hàng</strong> –
-                              mà <strong>kết nối</strong> –
-                              <strong>trao giá trị</strong> –
+                              mà <strong>kết nối</strong> –{' '}
+                              <strong>trao giá trị</strong> –{' '}
                               <strong>tạo mối quan hệ lâu dài</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Biến <strong>khách cũ</strong> thành
-                              <strong>nguồn doanh thu lặp lại</strong> bằng
+                              Biến <strong>khách cũ</strong> thành{' '}
+                              <strong>nguồn doanh thu lặp lại</strong> bằng{' '}
                               <strong>kịch bản chăm sóc sau bán</strong>.
                             </p>
                           </li>
@@ -600,43 +593,43 @@ export default function Home() {
                         <ul>
                           <li>
                             <p>
-                              Đào tạo
+                              Đào tạo{' '}
                               <strong>kỹ năng giao tiếp chuyên nghiệp</strong>,
-                              biết <strong>quan sát</strong>,
-                              <strong>lắng nghe</strong> và
+                              biết <strong>quan sát</strong>,{' '}
+                              <strong>lắng nghe</strong> và{' '}
                               <strong>hiểu tâm lý khách</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Rèn luyện <strong>phong thái tư vấn</strong>:
-                              <strong>ánh mắt</strong> –
-                              <strong>giọng nói</strong> –
-                              <strong>ngôn ngữ cơ thể</strong> –
+                              Rèn luyện <strong>phong thái tư vấn</strong>:{' '}
+                              <strong>ánh mắt</strong> –{' '}
+                              <strong>giọng nói</strong> –{' '}
+                              <strong>ngôn ngữ cơ thể</strong> –{' '}
                               <strong>cách đặt vấn đề</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Biết cách kết hợp
-                              <strong>kiến thức kỹ thuật</strong> và
-                              <strong>kỹ năng bán hàng</strong> để không bị
-                              <strong>"chốt ép"</strong> mà vẫn
+                              Biết cách kết hợp{' '}
+                              <strong>kiến thức kỹ thuật</strong> và{' '}
+                              <strong>kỹ năng bán hàng</strong> để không bị{' '}
+                              <strong>"chốt ép"</strong> mà vẫn{' '}
                               <strong>đạt chỉ tiêu</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              <strong>Tư duy dịch vụ</strong>: không chỉ
-                              <strong>chăm sóc</strong> mà
-                              <strong>tạo trải nghiệm tốt</strong> giúp khách
-                              <strong>giới thiệu</strong> và
+                              <strong>Tư duy dịch vụ</strong>: không chỉ{' '}
+                              <strong>chăm sóc</strong> mà{' '}
+                              <strong>tạo trải nghiệm tốt</strong> giúp khách{' '}
+                              <strong>giới thiệu</strong> và{' '}
                               <strong>quay lại</strong>.
                             </p>
                           </li>
                           <li>
                             <p>
-                              Xây dựng <strong>kế hoạch bán hàng</strong> và
+                              Xây dựng <strong>kế hoạch bán hàng</strong> và{' '}
                               <strong>tăng tỉ lệ bán liệu trình cao</strong> dựa
                               trên <strong>phân tích hành vi & nhu cầu</strong>.
                             </p>
@@ -650,7 +643,7 @@ export default function Home() {
 
               <button className='btn' onClick={openPopup}>
                 <div className='flex items-center justify-center gap-4'>
-                  <span className=''> Đăng ký Ngay hôm nay chỉ còn </span>
+                  <span className=''> Đăng ký Ngay chỉ còn </span>
                   <div className='flex flex-col'>
                     <span className='text-yellow font-bold text-2xl text-[--yellow-light]'>
                       499.000 đ
@@ -858,10 +851,7 @@ export default function Home() {
                   <Facebook />
                 </span>
                 <span className='content'>
-                  Fanpage:{' '}
-                  <span className='text-[--yellow-light]'>
-                    Iconic PRO Academy
-                  </span>
+                  Fanpage: <span className=''>Iconic PRO Academy</span>
                 </span>
               </a>
 
@@ -873,7 +863,7 @@ export default function Home() {
                 <span className='icon'>
                   <Phone />
                 </span>
-                <span className='text-[--yellow-light]'>0908 573 102</span>
+                <span className=''>0908 573 102</span>
               </a>
 
               <a
