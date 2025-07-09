@@ -42,14 +42,14 @@
   }
 
   blockquote {
-    background: var(--sub1-color);
+    background: rbga(var(--sub1-color), 0.1);
     border-radius: 8px;
     margin-block: 1rem;
     padding: 8px;
   }
 
   a[href] {
-    color: var(--main-color);
+    color: rgb(var(--main-color));
 
     &:hover {
       text-decoration: underline;

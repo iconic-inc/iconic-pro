@@ -17,7 +17,7 @@
       width: max-content;
 
       &:hover {
-        color: var(--main-color);
+        color: rgb(var(--main-color));
         text-decoration: underline;
       }
     }

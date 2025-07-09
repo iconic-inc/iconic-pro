@@ -1,198 +1,199 @@
-import { Link } from '@remix-run/react';
+import { Image } from '@unpic/react';
 
 import style from './index.module.css';
-import { Facebook, Youtube } from 'lucide-react';
-import { useMainLoaderData } from '~/lib/useMainLoaderData';
-import Defer from '../../Defer';
-import { useAuthContext } from '~/context/auth.context';
-import { toAddressString } from '~/utils/address.util';
+import { Link } from '@remix-run/react';
+import { Facebook, Linkedin, Youtube } from 'lucide-react';
+import { Separator } from '~/components/ui/separator';
 
 export default function Footer() {
-  const { appSettings, mainBranch } = useMainLoaderData();
-  const { isLoggedIn } = useAuthContext();
-
   return (
-    <footer
-      id={style.footer}
-      className='border-t border-zinc-200 py-8 bg-white'
-    >
-      <div className='container flex flex-col gap-8'>
-        <Defer resolve={appSettings}>
-          {({ app_title, app_social: social, ...app }) => (
-            <>
-              {' '}
-              <section className='!flex md:items-center justify-between flex-col md:flex-row'>
-                <div className='flex flex-col col-span-3 md:items-center'>
-                  <img
-                    className='object-scale-down scale-150 w-fit h-fit z-0'
-                    src={app.app_logo?.img_url}
-                    alt={app_title}
-                  />
-                  <p className='md:text-center text-[--sub1-text] mt-2'>
-                    {app_title}
-                  </p>
-                </div>
+    <footer id={`${style.footer}`} className='bg-main max-lg:w-screen'>
+      <div className='container grid-cols-1 py-10 max-md:px-4'>
+        <div className='flex flex-col md:grid grid-cols-12 gap-7'>
+          <aside className='col-span-3'>
+            <Link to='/'>
+              <div className='h-40'>
+                <Image
+                  className='object-contain m-auto px-16'
+                  src='/images/logo.png'
+                  layout='fullWidth'
+                  alt='Logo'
+                ></Image>
+              </div>
+            </Link>
 
-                {isLoggedIn || (
-                  <div className='col-span-3 col-start-10 flex items-center justify-center gap-4 font-bold'>
-                    <Link
-                      to='/login?tab=chuspa'
-                      className='inline-flex items-center gap-2 rounded border border-[--sub4-color] bg-[--sub4-color] px-4 py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none text-[--sub4-text] text-[--sub4-color]'
-                    >
-                      Chủ Spa
-                    </Link>
+            <p className='text-justify my-4'>
+              Với sứ mệnh lan tỏa vẻ đẹp Việt, Linh Anh luôn không ngừng hoàn
+              thiện và cải tiến từng ngày để mang đến cho khách hàng những trải
+              nghiệm dịch vụ tuyệt vời nhất. Thẩm mỹ quốc tế Linh Anh: Lắng nghe
+              từ tâm - Trải nghiệm xứng tầm
+            </p>
 
-                    <Link
-                      to='/login'
-                      className='inline-flex items-center gap-2 rounded border border-[--sub4-color] px-4 
-            py-2 text-sm transition-all hover:shadow-lg disabled:pointer-events-none 
-            disabled:opacity-50 disabled:shadow-none hidden sm:inline-block text-[--sub4-color]'
-                    >
-                      Đăng nhập
-                    </Link>
-                  </div>
-                )}
-              </section>
-              <section className='border-b border-black pb-4'>
-                <div className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
-                  <h4>Phụ huynh</h4>
+            <a href='http://' target='_blank' rel='noopener noreferrer'>
+              <div className='h-10 w-fit'>
+                <img
+                  className='object-contain'
+                  src='/images/dmca-protected.png'
+                  alt='DMCA Protected'
+                />
+              </div>
+            </a>
+          </aside>
 
-                  <ul className={style.list}>
-                    <li className={style.item}>
-                      <Link to='/'> Xem 4 bước chọn trường mầm non</Link>
-                    </li>
-                  </ul>
-                </div>
+          <section id={style.contact} className='w-full col-span-3'>
+            <h3>THÔNG TIN LIÊN HỆ</h3>
 
-                <div className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
-                  <h4>Phụ huynh</h4>
-
-                  <ul className={style.list}>
-                    <li className={style.item}>
-                      <Link to='/'> Xem 4 bước chọn trường mầm non</Link>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
-                  <h4>Phụ huynh</h4>
-
-                  <ul className={style.list}>
-                    <li className={style.item}>
-                      <Link to='/'> Xem 4 bước chọn trường mầm non</Link>
-                    </li>
-                  </ul>
-                </div>
-              </section>
-              <section>
-                <div className='col-span-12 md:col-span-9'>
-                  <p>Copyright © 2025 {app_title}</p>
-                  <p>
-                    Iconic PRO -<br />
-                    <strong>Mã số thuế:</strong> {app.app_taxCode} <br />
-                    <b>Cấp ngày:</b> 10/06/2020 tại Sở Kế hoạch và Đầu tư thành
-                    phố Hồ Chí Minh
-                    <br />
-                    <b>Đại diện:</b> Ông
-                  </p>
-                  <Defer resolve={mainBranch}>
-                    {(mainBranch) => {
-                      if (!mainBranch) return null;
-
-                      return (
-                        <>
-                          <p>
-                            Địa chỉ: {toAddressString(mainBranch.bra_address)}
-                          </p>
-                          <p>
-                            <b>Email:</b>{' '}
-                            <a
-                              className='underline hover:text-[--main-color]'
-                              href={`mailto:${mainBranch.bra_email}`}
-                              target='_blank'
-                              rel='noreferrer'
-                            >
-                              {mainBranch.bra_email}
-                            </a>
-                          </p>
-                          <p>
-                            <b>Hotline:</b>{' '}
-                            <a
-                              className='underline hover:text-[--main-color]'
-                              href={`tel:${mainBranch.bra_msisdn}`}
-                            >
-                              {mainBranch.bra_msisdn}
-                            </a>
-                          </p>
-                        </>
-                      );
-                    }}
-                  </Defer>
-                </div>
-
-                <div className='col-span-6 md:col-span-3'>
+            <ul className='space-y-2 mt-4'>
+              <li className=''>
+                <span className='text-nowrap'>Địa chỉ:</span>
+                <b>
                   <a
-                    href='http://online.gov.vn/Home/WebDetails/124317?AspxAutoDetectCookieSupport=1'
+                    href='http://'
                     target='_blank'
                     rel='noopener noreferrer'
+                    className='text-wrap'
                   >
-                    <img
-                      data-v-101a839d=''
-                      data-v-728576c6=''
-                      alt='Logo Chứng nhận dịch vụ công trực tuyến'
-                      className='aspect-[5/2] bg-white mx-auto object-scale-down lazyLoad isLoaded'
-                      src='http://online.gov.vn/Content/EndUser/LogoCCDVSaleNoti/logoSaleNoti.png'
-                    />
+                    398 - 400A Đ. Lê Hồng Phong, P.1, Q.10, TP.HCM
                   </a>
-                </div>
-              </section>
-              <section>
-                <div className='col-span-12'>
-                  <h4 className='text-center'>KẾT NỐI VỚI CHÚNG TÔI</h4>
+                </b>
+              </li>
+              <li>
+                <span>Hotline:</span>
+                <b>
+                  <a href='tel:0906 933 888'>0906 933 888</a>
+                </b>
+              </li>
+              <li>
+                <span>Email:</span>
+                <b>
+                  <a href='mailto:thanhhistory203@gmail.com'>
+                    thanhhistory203@gmail.com
+                  </a>
+                </b>
+              </li>
+              <li>
+                <span>
+                  Thời gian làm việc: <b>8h30 - 19h30 hằng ngày</b>
+                </span>
+              </li>
+            </ul>
 
-                  <ul className='text-[--sub2-text] flex flex-wrap gap-4 items-center justify-center'>
-                    {social.facebook && (
-                      <li className='hover:text-[--main-color]'>
-                        <Link to={social.facebook}>
-                          <Facebook />
-                        </Link>
-                      </li>
-                    )}
-                    {social.youtube && (
-                      <li className='hover:text-[--main-color]'>
-                        <Link to={social.youtube}>
-                          <Youtube />
-                        </Link>
-                      </li>
-                    )}
-                    {social.tiktok && (
-                      <li className='hover:text-[--main-color]'>
-                        <Link to={social.tiktok}>
-                          <img
-                            src='/assets/tiktok.svg'
-                            alt='TikTok'
-                            className='w-6 h-6'
-                          />
-                        </Link>
-                      </li>
-                    )}
-                    {social.zalo && (
-                      <li className='hover:text-[--main-color]'>
-                        <Link to={social.zalo}>
-                          <img
-                            src='/assets/zalo.svg'
-                            alt='Zalo'
-                            className='w-6 h-6'
-                          />
-                        </Link>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </section>
-            </>
-          )}
-        </Defer>
+            <section id={style.social_media} className='mt-5'>
+              <h4 className='max-md:text-center'>Theo dõi chúng tôi tại:</h4>
+
+              <ul className='flex max-md:justify-center'>
+                <li>
+                  <a href='/' target='_blank' rel='noopener noreferrer'>
+                    <Facebook />
+                  </a>
+                </li>
+
+                {/* <li>
+                  <a href='/' target='_blank' rel='noopener noreferrer'>
+                    <tiktok />
+                  </a>
+                </li> */}
+
+                <li>
+                  <a href='/' target='_blank' rel='noopener noreferrer'>
+                    <Youtube />
+                  </a>
+                </li>
+
+                <li>
+                  <a href='/' target='_blank' rel='noopener noreferrer'>
+                    <Linkedin />
+                  </a>
+                </li>
+              </ul>
+            </section>
+          </section>
+
+          <section className='col-span-3'>
+            <h3>CHÍNH SÁCH CHUNG</h3>
+
+            <ul>
+              <li>
+                <Link to=''>Chính sách và quy định chung</Link>
+              </li>
+              <li>
+                <Link to=''>Chính sách bảo mật và thông tin</Link>
+              </li>
+              <li>
+                <Link to=''>Hệ thống chi nhánh</Link>
+              </li>
+              <li>
+                <Link to=''>Tuyển dụng</Link>
+              </li>
+              <li>
+                <Link to=''>Nhận tư vấn miễn phí</Link>
+              </li>
+              <li>
+                <Link to=''>Tiếp nhận ý kiến phản ánh</Link>
+              </li>
+            </ul>
+          </section>
+
+          <section className='col-span-3'>
+            <h3>DỊCH VỤ NỔI BẬT</h3>
+
+            <ul>
+              <li>
+                <Link to=''>Phun xăm chân mày</Link>
+              </li>
+              <li>
+                <Link to=''>Điêu khắc chân mày</Link>
+              </li>
+              <li>
+                <Link to=''>Phun và cấy môi</Link>
+              </li>
+              <li>
+                <Link to=''>JUV - Beauty</Link>
+              </li>
+              <li>
+                <Link to=''>Tắm trắng</Link>
+              </li>
+              <li>
+                <Link to=''>Triệt lông</Link>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <Separator />
+
+        <div className='text-sm text-center flex flex-col items-center font-semibold'>
+          <p className='max-md:flex flex-col'>
+            <span className='text-center'>
+              2016 - 2024 CÔNG TY TNHH THẨM MỸ LINH ANH SAIGON - LINH ANH SAIGON
+              AESTHETIC COMPANY LIMITED
+            </span>
+            <span className='text-center max-md:mt-2'>
+              Số ĐKKD: 0317 532 839 Do sở KHĐT TP.HCM cấp ngày 22/10/2022
+            </span>
+          </p>
+
+          <section id={style['contact-information']} className='mt-2'>
+            <p>
+              <span>Địa chỉ:</span>
+              <span className=''>
+                66/68 Lê Văn Duyệt, Phường 1, Quận Bình Thạnh, TP. Hồ Chí Minh
+              </span>
+            </p>
+            <p>
+              <span>Số điện thoại:</span>
+              <span>0903032560</span>
+            </p>
+            <p>
+              <span>Email:</span>
+              <span>vienthammylinhanh@gmail.com</span>
+            </p>
+            <p>
+              <span>Người quản lý nội dung:</span>
+              <span>Nguyễn Bá Quang</span>
+            </p>
+          </section>
+        </div>
       </div>
     </footer>
   );

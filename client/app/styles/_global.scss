@@ -189,16 +189,6 @@ a[href^="https://maps.google.com/maps"]
   display: none !important;
 }
 
-.gmnoprint a,
-.gmnoprint span,
-.gm-style-cc {
-  display: none;
-}
-
-.gmnoprint div {
-  background: none !important;
-}
-
 .slick-slider {
   .slick-active > .dot {
     background-color: var(--sub1-text) !important;
@@ -209,6 +199,16 @@ a[href^="https://maps.google.com/maps"]
   }
 }
 
+.truncate-2-lines {
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
+
 .truncate-3-lines {
   display: -webkit-box;
   text-overflow: ellipsis;
@@ -217,4 +217,30 @@ a[href^="https://maps.google.com/maps"]
   -webkit-box-orient: vertical;
   overflow-wrap: break-word;
   overflow: hidden;
+}
+
+.divider {
+  height: 2px;
+  width: 30px;
+  margin-inline: auto;
+  margin-block: 8px;
+  background: linear-gradient(
+    to right,
+    rgb(var(--sub1-color)) 0%,
+    rgb(var(--main-color)) 100%
+  );
+}
+
+.bg-main {
+  background-color: rgb(from rgb(var(--main-color)) r g b / 0.1);
+}
+
+.beauty-blog {
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: rgb(var(--main-color));
+    text-transform: uppercase;
+    margin-top: 28px;
+  }
 }

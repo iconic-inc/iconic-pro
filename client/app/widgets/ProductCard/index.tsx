@@ -45,7 +45,7 @@ export default function ProductCard({
           </h2>
         </Link>
 
-        <span className='mb-1 bg-[--main-color] w-fit rounded-full text-[--sub6-text] px-2 text-sm'>
+        <span className='mb-1 bg-main w-fit rounded-full text-[--sub6-text] px-2 text-sm'>
           {product.prd_category.pct_name}
         </span>
 

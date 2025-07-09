@@ -176,6 +176,15 @@ function getValueByPath<T>(obj: T, path: string) {
   return path.split('.').reduce((o, k) => (o || {})[k], obj);
 }
 
+const getLabelValue = (arr: any[]) => {
+  const labelValue = arr.map((a) =>
+    JSON.stringify({ label: a.label, value: a.value }),
+  );
+  const set = new Set(labelValue); // Remove duplicates
+  // Convert back to array of objects
+  return [...set].map((item) => JSON.parse(item));
+};
+
 export {
   toAgeString,
   toCurrencyString,
@@ -196,4 +205,5 @@ export {
   calculateAge,
   getValueByPath,
   shortenPeriod,
+  getLabelValue,
 };

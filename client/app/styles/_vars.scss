@@ -1,78 +1,24 @@
 /* theme variables and custom utility classes */
 
 :root {
-  --body: #fff;
-  // --body-dark: #00193B;
-  --widget: #ffffff;
-  // --widget-dark: #031123;
-  --header: #00193b;
-  // --header-dark: #D8E9FF;
-  --text: #515c6b;
-  // --text-dark: #E2E1E1;
-  --accent: #035ecf;
-  // --accent-dark: #4F89FC;
-  // --hig-dark: #273241;
-  --input-border: #e2e1e1;
-  // --input-border-dark: #354585;
-  --border: #f1f1f1;
-  // --border-dark: rgba(53, 69, 133, 0.4);
-  --gray: #8d8d99;
-  --label: #6e757f;
-  --red: #ff5470;
-  --green: #00ba9d;
-  --yellow: #f8d518;
-  --orange: #ff6900;
-  --shadow: 0px 3px 14px rgba(226, 225, 225, 0.75);
-  // --shadow-dark: 0px 3px 14px #00285D;
-  --shadow-glass: inset 1px 1px 2px #ffffff, inset -2px -2px 2px #003a31;
-  --radial-blue:
-    radial-gradient(
-      59.32% 59.32% at 50% 31.83%,
-      rgba(62, 128, 211, 0.77) 0%,
-      rgba(1, 40, 90, 0.77) 100%
-    ),
-    #00193b;
-  --linear-sky:
-    linear-gradient(
-      44deg,
-      rgba(190, 250, 241, 0.13) 0%,
-      rgba(3, 94, 207, 0.2) 100%
-    ),
-    #fff;
-  --linear-blue: linear-gradient(
-    50.81deg,
-    #00214d 6.78%,
-    #3e80d3 65.48%,
-    #01285a 101.42%
-  );
-  --linear-sm: linear-gradient(177deg, #00193b 0%, #035ecf 100%);
-  // --linear-sm-dark: linear-gradient(177deg, #5FA3FF 0%, #035ECF 100%);
-  --glass: linear-gradient(
-    134.73deg,
-    rgba(1, 88, 83, 0.0001) 32.33%,
-    rgba(0, 112, 117, 0.186708) 79.27%
-  );
-  --body-font: 'Archivo', sans-serif;
-  --heading-font: 'Archivo SemiExpanded', sans-serif;
-  --transition: 0.3s ease-in-out;
-  --element-height: 44px;
-  --app-height: 100%;
+  --main-color: 242, 0, 2;
+  --sub1-color: 255, 169, 0;
+  --sub2-color: 242, 230, 214;
+  --sub3-color: 160, 224, 228;
+  --sub4-color: 255, 169, 0;
 
-  --main-color: #f582a8;
-  --sub1-color: #fcc0c5;
-  --sub2-color: #f2e6d6;
-  --sub3-color: #a0e0e4;
-  --sub4-color: #2dc1db;
+  --main-bg-opacity: 247, 245, 236;
 
-  --main-bg-opacity: #f7f5ece6;
+  --sub1-text: 51, 51, 51;
+  --sub2-text: 44, 62, 80;
+  --sub3-text: 245, 130, 168;
+  --sub4-text: 248, 248, 248;
+  --sub5-text: 81, 81, 81;
+  --sub6-text: 102, 102, 102;
+  --sub7-text: 149, 149, 149;
 
-  --sub1-text: #333;
-  --sub2-text: #2c3e50;
-  --sub3-text: #f582a8;
-  --sub4-text: #f8f8f8;
-  --sub5-text: #515151;
-  --sub6-text: #666;
-  --sub7-text: #959595;
+  --bg-wave: url('/images/wave.png');
+  --bg-wave-mobile: url('/images/wave-mobile.png');
 }
 
 .bg-radial-blue {
