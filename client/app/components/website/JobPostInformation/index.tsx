@@ -16,7 +16,7 @@ export default function JobPostContent({
 
           <div>
             <p className={style.key}>Mức lương</p>
-            <p className={`${style.value} text-[--main-color]`}>
+            <p className={`${style.value} text-main`}>
               {jobpost.jpo_salaryFrom && jobpost.jpo_salaryTo
                 ? `${formatCurrency(jobpost.jpo_salaryFrom)} - ${formatCurrency(jobpost.jpo_salaryTo)}`
                 : jobpost.jpo_salaryFrom

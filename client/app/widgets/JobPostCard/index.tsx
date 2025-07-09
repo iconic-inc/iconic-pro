@@ -19,9 +19,9 @@ export default function JobPostCard({
         <Link className='block' to={`/viec-lam/d/${jobpost.id}`}>
           <div className='flex'>
             <div className='font-semibold text-lg lg:text-xl flex'>
-              <p className='text-[--main-color]'>
-                <span className='text-[--sub1-color] w-max'>#{index}</span>
-                <span className='text-[--sub1-color] mx-2'>|</span>
+              <p className='text-main'>
+                <span className='text-sub1 w-max'>#{index}</span>
+                <span className='text-sub1 mx-2'>|</span>
                 {jobpost.jpo_title}
               </p>
             </div>

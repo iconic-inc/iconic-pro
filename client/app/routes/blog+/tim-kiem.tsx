@@ -41,7 +41,7 @@ export default function SearchPage() {
       <div className='col-span-full md:col-span-9'>
         <Form className='relative' method='GET' action='/blog/tim-kiem'>
           <input
-            className={`text-xl leading-8 w-full border border-[--sub7-text] focus:outline-none focus:border-[--main-color] bg-[--main-bg-color] rounded-full py-1 md:py-2 px-5`}
+            className={`text-xl leading-8 w-full border border-[--sub7-text] focus:outline-none focus:border-main bg-[--main-bg-color] rounded-full py-1 md:py-2 px-5`}
             disabled={false}
             value={input}
             name='q'
@@ -54,7 +54,7 @@ export default function SearchPage() {
             title='Tìm kiếm'
             type='submit'
           >
-            <Search className={`text-[--main-color]`} />
+            <Search className={`text-main`} />
           </button>
         </Form>
 

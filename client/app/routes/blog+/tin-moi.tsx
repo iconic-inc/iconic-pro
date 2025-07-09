@@ -21,7 +21,7 @@ export default function LatestNews() {
   return (
     <section className='max-md:px-2 container my-8 grid grid-cols-12'>
       <div className='col-span-full'>
-        <h3 className='text-2xl text-[--sub4-text] font-bold max-md:py-1 border-l-8 md:border-l-8 border-[color:--main-color] px-3 w-fit'>
+        <h3 className='text-2xl text-[--sub4-text] font-bold max-md:py-1 border-l-8 md:border-l-8 border-main px-3 w-fit'>
           Tin mới nhất
         </h3>
       </div>

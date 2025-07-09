@@ -2,7 +2,7 @@ import { useFetcher } from '@remix-run/react';
 import './index.css';
 import { useEffect, useState } from 'react';
 import { action } from '../api+/courses+/register';
-import { Facebook, Mail, MapPin, Phone } from 'lucide-react';
+import { Facebook, LoaderCircle, Mail, MapPin, Phone } from 'lucide-react';
 
 export default function Home() {
   function openPopup() {
@@ -19,9 +19,11 @@ export default function Home() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [course, setCourse] = useState('marketing');
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!name || !phone || !course) {
       alert('Vui lòng điền đầy đủ thông tin.');
@@ -54,6 +56,7 @@ export default function Home() {
       }
 
       closePopup();
+      setIsLoading(false);
     }
   }, [fetcher.data]);
 
@@ -815,9 +818,13 @@ export default function Home() {
                 <div className='pt-2'>
                   <button
                     type='submit'
-                    className='w-full bg-[--secondary-color] text-white font-bold py-2.5 px-4 rounded-md transition duration-300 uppercase'
+                    disabled={isLoading}
+                    className='w-full bg-[--secondary-color] text-white font-bold py-2.5 px-4 rounded-md transition duration-300 uppercase disabled:opacity-50 hover:bg-[--secondary-color] hover:shadow-lg'
                   >
                     Đăng Ký Ngay
+                    {isLoading && (
+                      <LoaderCircle className='inline-block ml-2 animate-spin h-5 w-5 text-white' />
+                    )}
                   </button>
                 </div>
               </fetcher.Form>

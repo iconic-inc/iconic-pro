@@ -151,7 +151,7 @@ export default function SearchBox({
                 />
 
                 <button
-                  className='lg:hidden bg-[--main-color] text-white text-base rounded-lg px-6 py-2 h-full col-span-1 w-full'
+                  className='lg:hidden bg-main text-white text-base rounded-lg px-6 py-2 h-full col-span-1 w-full'
                   type='submit'
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
@@ -196,7 +196,7 @@ export default function SearchBox({
             </button>
 
             {/* <button
-              className='lg:hidden bg-[--main-color] text-white text-base rounded-lg px-6 py-2 h-full w-max'
+              className='lg:hidden bg-main text-white text-base rounded-lg px-6 py-2 h-full w-max'
               type='button'
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >

@@ -1,5 +1,5 @@
 body {
-  background-color: var(--main-color);
+  background-color: rgb(var(--main-color));
   color: var(--colorsub1);
   -family: 'Be Vietnam Pro', Roboto, sans-serif;
   font-size: 1rem;
@@ -69,7 +69,7 @@ strong {
 
 .tag {
   padding: 31px;
-  border: var(--main-color) 1px solid;
+  border: rgb(var(--main-color)) 1px solid;
 }
 
 .heading-title {
@@ -179,7 +179,7 @@ strong {
 }
 
 .elementor-shape-fill {
-  fill: var(--main-color);
+  fill: rgb(var(--main-color));
 }
 
 .requirement .heading-title {

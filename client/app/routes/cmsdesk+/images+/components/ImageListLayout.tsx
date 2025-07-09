@@ -37,7 +37,7 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
             key={i}
             className='bg-white lg:hover:bg-zinc-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0'
           >
-            <td className='w-full lg:w-auto text-center border border-b block lg:table-cell relative lg:static hover:underline hover:text-[--main-color]'>
+            <td className='w-full lg:w-auto text-center border border-b block lg:table-cell relative lg:static hover:underline hover:text-main'>
               <Link to={`/cmsdesk/images/${img.id}`}>
                 <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
                   Hình ảnh
