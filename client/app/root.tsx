@@ -34,11 +34,11 @@ export default function App() {
     <html lang='en'>
       <head>
         <meta charSet='utf-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name='viewport' content='width=430, shrink-to-fit=no' />
         <Meta />
         <Links />
       </head>
-      <body className='app'>
+      <body className='app w-[430px] mx-auto bg-white overflow-x-hidden'>
         <Outlet />
 
         <ToastContainer
