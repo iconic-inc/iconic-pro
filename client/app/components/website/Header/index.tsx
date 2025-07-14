@@ -36,8 +36,8 @@ export default function Header() {
       {isScrolled && <div className='h-20' />}
 
       <motion.header
-        className={`${style.header} px-4 flex justify-between items-center max-lg:w-screen ${
-          isScrolled ? 'fixed top-0 w-full z-50' : 'relative'
+        className={`${style.header} px-4 flex justify-between items-center w-[430px] ${
+          isScrolled ? 'fixed top-0 z-50' : 'relative'
         } bg-main`}
         key={isScrolled ? 'fixed' : 'relative'}
         initial={isScrolled ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}

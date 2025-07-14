@@ -38,7 +38,7 @@ export default function MasterDetail({
 
   return (
     <div className='grid grid-cols-12 gap-x-8'>
-      <nav className='col-span-12 lg:col-span-5'>
+      <nav className='col-span-12'>
         <ul className={`${style.menu}`}>
           {data.map((master, i) => (
             <li className='' key={i}>
@@ -66,7 +66,7 @@ export default function MasterDetail({
       </nav>
 
       {/* Desktop view - always visible */}
-      <div className='hidden lg:block col-span-7 overflow-hidden'>
+      <div className='hidden col-span-7 overflow-hidden'>
         {details ? (
           <Details details={details} />
         ) : (

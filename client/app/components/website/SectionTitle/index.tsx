@@ -17,15 +17,15 @@ export default function SectionTitle({
     <div
       className={`${style['title']} ${
         className || ''
-      } max-lg:flex max-lg:flex-col w-full gap-4`}
+      } flex flex-col w-full gap-4`}
     >
-      <h2 className='flex flex-col text-center max-lg:items-center leading-snug'>
+      <h2 className='flex flex-col text-center items-center leading-snug'>
         {children}
       </h2>
 
       {tabs && tabs.length > 0 && (
-        <div className='max-lg:overflow-scroll max-lg:w-full md:flex md:max-lg:justify-center'>
-          <ul className='max-lg:mt-4 flex-nowrap w-max'>
+        <div className='overflow-scroll w-full'>
+          <ul className='mt-4 flex-nowrap w-max'>
             {tabs.map((tab, i) => (
               <li key={i}>
                 <button

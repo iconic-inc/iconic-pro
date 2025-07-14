@@ -5,7 +5,7 @@ export default function DiscountParty() {
   return (
     <section
       id='promotion'
-      className='bg-cover bg-top max-lg:pt-20 max-lg:pb-8'
+      className='bg-cover bg-top pt-20 pb-8'
       style={{
         backgroundImage: 'var(--bg-wave-mobile) !important',
       }}
