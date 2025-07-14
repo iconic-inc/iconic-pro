@@ -81,7 +81,7 @@ export default function Home() {
         </span>
       </header>
 
-      <div className='grid grid-cols-1 gap-y-12 px-4'>
+      <div className='bg-[--main-color] grid grid-cols-1 gap-y-12 px-4'>
         <section className='content-container grid grid-cols-1'>
           <section className='grid grid-cols-1'>
             <div className='flex flex-col flex-wrap items-center'>
