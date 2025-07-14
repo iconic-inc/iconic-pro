@@ -15,12 +15,12 @@ export default function LecturerCards({
 }) {
   return (
     <ScrollArea>
-      <div className='lg:grid grid-cols-12 gap-x-5 lg:gap-x-8 gap-y-8 flex flex-nowrap max-lg:p-4'>
+      <div className='grid-cols-12 gap-x-5 gap-y-8 flex flex-nowrap p-4'>
         {lecturers.map((lecturer, i) =>
           lecturer.value === value ? (
             <InfoCard
               key={i}
-              className='col-span-2 lg:col-span-3 w-[280px]'
+              className='col-span-2 w-[280px]'
               image={lecturer.image}
             >
               <h3 className='mt-4 uppercase font-bold text-main'>

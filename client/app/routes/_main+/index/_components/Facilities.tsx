@@ -8,7 +8,7 @@ export default function Facilities() {
       <div className='container grid-cols-1 px-8'>
         <SectionTitle>CƠ SỞ VẬT CHẤT HIỆN ĐẠI</SectionTitle>
 
-        <div className='flex items-center xl:mt-20 max-lg:flex-wrap max-md:-mx-6 lg:-ml-8'>
+        <div className='flex items-center flex-wrap -mx-6'>
           {[
             {
               title: 'Cơ sở vật chất hiện đại',
@@ -25,12 +25,12 @@ export default function Facilities() {
           ].map((item, i) => (
             <article
               key={i}
-              className='flex max-sm:flex-row rounded-xl relative h-fit max-xl:mb-8 lg:ml-8'
+              className='flex flex-row rounded-xl relative h-fit mb-8'
               style={{
                 boxShadow: '1px 2px 15px 2px rgba(var(--main-color), 0.15)',
               }}
             >
-              <div className='flex flex-col w-1/2 xl:w-3/5 py-5 px-5 xl:px-8'>
+              <div className='flex flex-col w-1/2 py-5 px-5'>
                 <h3 className='m-0 text-main font-bold text-sm uppercase'>
                   {item.title}
                 </h3>
@@ -45,7 +45,7 @@ export default function Facilities() {
               </div>
 
               <Image
-                className='h-fit max-md:mt-8 xl:absolute w-1/2 xl:w-2/5 right-0 xl:-top-1/3'
+                className='h-fit mt-8 w-1/2 right-0'
                 src={item.image}
                 alt={item.title}
                 layout='fullWidth'

@@ -24,7 +24,7 @@ export default function BranchCards({
 
   return (
     <ScrollArea>
-      <div className='lg:grid grid-cols-10 gap-x-5 lg:gap-x-2 gap-y-8 flex flex-nowrap max-lg:py-8 max-lg:px-4'>
+      <div className='grid-cols-10 gap-x-5 gap-y-8 flex flex-nowrap py-8 px-4'>
         {selectedBranch?.addresses.map((address, i) => (
           <InfoCard
             key={i}

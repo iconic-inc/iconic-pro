@@ -10,14 +10,14 @@ export default function Ambassador() {
 
         <div className='grid grid-cols-12 gap-6 relative'>
           <div
-            className='hidden md:block bg absolute inset-0 z-[-1]'
+            className='hidden bg absolute inset-0 z-[-1]'
             style={{
               background:
                 'url("/images/overlay.png") center center / cover no-repeat',
             }}
           ></div>
 
-          <div className='grid grid-cols-1 gap-4 items-center col-span-12 md:col-span-6 lg:pr-16'>
+          <div className='grid grid-cols-1 gap-4 items-center col-span-12'>
             <Image
               className='w-2/3 mx-auto'
               src='/images/ambassadors/1.png'
@@ -38,17 +38,17 @@ export default function Ambassador() {
             </Button>
           </div>
 
-          <div className='col-span-12 md:col-span-6 max-md:flex max-md:flex-col'>
+          <div className='col-span-12 flex flex-col'>
             <Image src='/images/ambassadors/2.png' layout='fullWidth'></Image>
 
-            <iframe
+            {/* <iframe
               className='w-full rounded-xl aspect-video m-auto mt-4 max-md:mb-4'
               src='https://www.youtube.com/embed/oZXd28w41d8?si=EoFiWFJND_fgTSLD'
               title='YouTube video player'
               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
               referrerPolicy='strict-origin-when-cross-origin'
               allowFullScreen
-            ></iframe>
+            ></iframe> */}
           </div>
         </div>
       </div>
