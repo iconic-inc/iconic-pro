@@ -24,7 +24,7 @@ export default function HighlightPageBox({
   }, []);
 
   return (
-    <section className='bg-[--main-color] col-span-full'>
+    <section className='bg-main col-span-full'>
       <div className='container p-4 text-white'>
         <div className='flex justify-between w-full overflow-hidden'>
           <h2 className='font-bold text-xl'>

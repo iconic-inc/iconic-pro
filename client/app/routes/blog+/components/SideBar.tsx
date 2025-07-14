@@ -6,7 +6,7 @@ export default function SideBar({ pages }: { pages: Array<IPage> }) {
   return (
     <aside className='col-span-3 max-md:hidden'>
       <div className=' mb-4'>
-        <div className='flex justify-center items-center text-[--sub6-text] h-fit p-2 bg-[--main-color] uppercase font-medium'>
+        <div className='flex justify-center items-center text-[--sub6-text] h-fit p-2 bg-main uppercase font-medium'>
           <Star />
           <h2 className='ml-2 text-inherit'>Mới cập nhật</h2>
         </div>

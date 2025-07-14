@@ -90,7 +90,7 @@ export default function AppliedJobApplication() {
                       <Link to={`/user/don-ung-tuyen/${app.id}`}>
                         <CardHeader className=''>
                           <CardTitle>
-                            <h2 className='text-2xl text-[--main-color]'>
+                            <h2 className='text-2xl text-main'>
                               {app.jap_jobPost.jpo_title}
                             </h2>
                           </CardTitle>

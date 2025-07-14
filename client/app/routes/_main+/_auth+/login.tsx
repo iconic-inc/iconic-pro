@@ -210,7 +210,7 @@ const Login = () => {
           Chào mừng bạn đến với
         </p>
         <h2 className='text-3xl sm:text-4xl font-bold mb-1 text-center'>
-          <span className='text-[--main-color]'>
+          <span className='text-main'>
             <span className='text-gray-800'>Iconic</span>
             Pro
           </span>
@@ -236,7 +236,7 @@ const Login = () => {
               <TabsList className='grid w-full grid-cols-2 mb-6 bg-transparent p-0 border-b border-gray-200 rounded-none'>
                 <TabsTrigger
                   value='ungvien'
-                  className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-[--main-color] data-[state=active]:text-[--main-color] rounded-none'
+                  className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-main data-[state=active]:text-main rounded-none'
                   onClick={() => setActiveTab('ungvien')}
                 >
                   <User size={18} className='mr-2' /> Ứng viên
@@ -244,7 +244,7 @@ const Login = () => {
 
                 <TabsTrigger
                   value='chuspa'
-                  className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-[--main-color] rounded-none'
+                  className='pb-3 data-[state=active]:shadow-none data-[state=active]:border-red-500 data-[state=active]:text-main rounded-none'
                   onClick={() => setActiveTab('chuspa')}
                 >
                   <Briefcase size={18} className='mr-2' /> Nhà tuyển dụng
@@ -332,11 +332,11 @@ const Login = () => {
 
             <p className='text-xs text-gray-500 mt-8 text-center'>
               Bằng việc tiếp tục, bạn đồng ý với{' '}
-              <a href='#' className='text-[--main-color] hover:underline'>
+              <a href='#' className='text-main hover:underline'>
                 Điều Khoản Sử Dụng
               </a>{' '}
               và{' '}
-              <a href='#' className='text-[--main-color] hover:underline'>
+              <a href='#' className='text-main hover:underline'>
                 Chính Sách Bảo Mật
               </a>{' '}
               của Iconic PRO.
@@ -370,7 +370,7 @@ const Login = () => {
               'Nhận thông báo việc làm mới nhất từ các nhà tuyển dụng hàng đầu',
             ].map((benefit) => (
               <li key={benefit} className='flex items-start'>
-                <span className='text-[--main-color] mr-2 mt-1'>&#8226;</span>{' '}
+                <span className='text-main mr-2 mt-1'>&#8226;</span>{' '}
                 {/* Bullet point */}
                 {benefit}
               </li>

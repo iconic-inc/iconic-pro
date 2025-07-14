@@ -17,7 +17,7 @@ export default function BranchList({
           key={branch.id}
           className={`cursor-pointer ${
             selectedBranchIndex === i ? 'bg-[--main-bg-opacity] shadow-xl' : ''
-          } text-[#333] p-6 rounded hover:text-[--main-color] transition-all`}
+          } text-[#333] p-6 rounded hover:text-main transition-all`}
           onClick={() => setSelectedBranchIndex(i)}
         >
           <div className='flex flex-col gap-2'>

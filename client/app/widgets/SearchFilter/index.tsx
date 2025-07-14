@@ -230,7 +230,7 @@ const ColorfulCheckbox = ({
           py-2 px-3 text-sm text-[--sub1-text]
           ${
             selected.split(',').includes(value as string)
-              ? 'bg-[--main-color] text-[--sub4-text] border-[--main-color]'
+              ? 'bg-main text-[--sub4-text] border-main'
               : ''
           }`}
       >

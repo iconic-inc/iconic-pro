@@ -131,9 +131,9 @@ export default function MainLayout() {
         },
       }}
     >
-      <Header shadow />
+      <Header />
 
-      <main className='mt-[72px] grid gap-y-16'>
+      <main className='grid gap-y-8'>
         <Outlet />
       </main>
 
