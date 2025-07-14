@@ -7,9 +7,9 @@ import { Separator } from '~/components/ui/separator';
 
 export default function Footer() {
   return (
-    <footer id={`${style.footer}`} className='bg-main max-lg:w-screen'>
-      <div className='container grid-cols-1 py-10 max-md:px-4'>
-        <div className='flex flex-col md:grid grid-cols-12 gap-7'>
+    <footer id={`${style.footer}`} className='bg-main'>
+      <div className='container grid-cols-1 py-10 px-4'>
+        <div className='flex flex-col gap-7'>
           <aside className='col-span-3'>
             <Link to='/'>
               <div className='h-40'>
@@ -79,9 +79,9 @@ export default function Footer() {
             </ul>
 
             <section id={style.social_media} className='mt-5'>
-              <h4 className='max-md:text-center'>Theo dõi chúng tôi tại:</h4>
+              <h4 className='text-center'>Theo dõi chúng tôi tại:</h4>
 
-              <ul className='flex max-md:justify-center'>
+              <ul className='flex justify-center'>
                 <li>
                   <a href='/' target='_blank' rel='noopener noreferrer'>
                     <Facebook />
@@ -163,12 +163,12 @@ export default function Footer() {
         <Separator />
 
         <div className='text-sm text-center flex flex-col items-center font-semibold'>
-          <p className='max-md:flex flex-col'>
+          <p className='flex flex-col'>
             <span className='text-center'>
               2016 - 2024 CÔNG TY TNHH THẨM MỸ LINH ANH SAIGON - LINH ANH SAIGON
               AESTHETIC COMPANY LIMITED
             </span>
-            <span className='text-center max-md:mt-2'>
+            <span className='text-center mt-2'>
               Số ĐKKD: 0317 532 839 Do sở KHĐT TP.HCM cấp ngày 22/10/2022
             </span>
           </p>

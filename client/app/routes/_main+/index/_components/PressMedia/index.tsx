@@ -9,8 +9,8 @@ export default function PressMedia() {
         <div className='container grid-cols-1'>
           <SectionTitle>BÁO CHÍ NÓI VỀ Iconic PRO</SectionTitle>
 
-          <div className='grid grid-cols-12 max-lg:flex flex-col'>
-            <div className='col-span-5 flex items-center max-lg:mb-4 lg:pr-8 text-justify'>
+          <div className='flex flex-col'>
+            <div className='col-span-5 flex items-center mb-4 text-justify'>
               <p className='text-black text-lg'>
                 Iconic PRO là học viện kỹ năng chuyên nghiệp hàng đầu trong
                 ngành làm đẹp tại Việt Nam. Chúng tôi tự hào được báo chí và
@@ -21,7 +21,7 @@ export default function PressMedia() {
             </div>
 
             <ScrollArea>
-              <div className='lg:grid grid-cols-12 lg:gap-x-8 gap-y-8 flex flex-nowrap'>
+              <div className='grid-cols-12 gap-y-8 flex flex-nowrap'>
                 {/* <div className='col-span-7 grid grid-cols-12'> */}
                 {testimonies.map((t: any, i: number) => (
                   <div key={i} className='aspect-[17/7] h-[70px] my-4 mx-3'>
@@ -45,10 +45,10 @@ export default function PressMedia() {
         <div className='container grid-cols-1'>
           <SectionTitle>ĐỐI TÁC CỦA LINH ANH</SectionTitle>
 
-          <div className='grid grid-cols-12 gap-8 grid-rows-2 px-4 md:px-16 gap-10'>
+          <div className='grid grid-cols-12 gap-8 grid-rows-2 px-4 gap-10'>
             {partners.map((p: any, i: number) => (
               <Image
-                className='col-span-6 md:col-span-4 object-contain'
+                className='col-span-6 object-contain'
                 src={p.logo}
                 layout='fullWidth'
                 key={i}

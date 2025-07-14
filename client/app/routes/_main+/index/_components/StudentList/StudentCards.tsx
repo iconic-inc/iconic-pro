@@ -14,7 +14,7 @@ export default function StudentCards({
 }) {
   return (
     <ScrollArea>
-      <div className='lg:grid grid-cols-12 gap-x-2 lg:gap-x-8 gap-y-8 flex flex-nowrap'>
+      <div className='grid-cols-12 gap-x-2 gap-y-8 pb-2 flex flex-nowrap'>
         {students.map((student, i) =>
           student.value === value ? (
             <InfoCard
