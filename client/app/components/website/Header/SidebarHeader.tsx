@@ -1,5 +1,6 @@
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
+import Defer from '~/components/Defer';
 import {
   Accordion,
   AccordionContent,
@@ -8,8 +9,10 @@ import {
 } from '~/components/ui/accordion';
 import { Button } from '~/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet';
+import { useMainLoaderData } from '~/lib/useMainLoaderData';
 
 export default function HeaderSideBar() {
+  const { categories } = useMainLoaderData();
   const [isOpen, setIsOpen] = useState(false);
 
   const closeSheet = () => setIsOpen(false);
@@ -30,9 +33,18 @@ export default function HeaderSideBar() {
           <Accordion
             type='single'
             collapsible
-            className='flex w-full flex-col gap-4'
+            className='flex w-full flex-col gap-4 text-white'
           >
-            {data.navMain.map((item) => renderMobileMenuItem(item, closeSheet))}
+            <Defer resolve={categories}>
+              {(cats) =>
+                cats.map((cat) =>
+                  renderMobileMenuItem(
+                    { title: cat.cat_name, url: cat.cat_url },
+                    closeSheet,
+                  ),
+                )
+              }
+            </Defer>
           </Accordion>
         </div>
       </SheetContent>

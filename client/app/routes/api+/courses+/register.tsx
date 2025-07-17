@@ -30,6 +30,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           case 'consultant':
             courseName = 'Tư vấn viên';
             break;
+          case 'management':
+            courseName = 'Quản lý Spa';
+            break;
           default:
             courseName = 'Khác';
         }

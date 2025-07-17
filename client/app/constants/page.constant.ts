@@ -14,5 +14,9 @@ export const PAGE = {
       name: 'Blog',
       code: 'blog',
     },
+    LANDING_PAGE: {
+      name: 'Landing Page',
+      code: 'landing_page',
+    },
   },
 };

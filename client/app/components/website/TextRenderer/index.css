@@ -1,6 +1,6 @@
 .text-renderer {
   font-size: 1.125rem;
-  color: var(--sub5-text);
+  color: rgb(var(--sub5-text));
 
   h1,
   h2,
@@ -10,7 +10,7 @@
   h6 {
     margin-block: 1.5rem;
     font-weight: bold;
-    color: var(--sub2-text);
+    color: rgb(var(--main-color));
   }
 
   h1 {
@@ -77,9 +77,15 @@
   }
 
   img {
-    max-width: 300px;
+    max-width: 400px;
     height: auto;
     border-radius: 8px;
     margin-block: 1rem;
+  }
+
+  .ql-align-center {
+    text-align: center;
+    width: fit-content;
+    margin: 0 auto;
   }
 }

@@ -5,6 +5,10 @@
     max-width: 50%;
   }
 
+  p {
+    margin-block: 1rem;
+  }
+
   .ql-toolbar {
     position: sticky;
     top: 0;

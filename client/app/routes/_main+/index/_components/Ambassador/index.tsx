@@ -9,21 +9,15 @@ export default function Ambassador() {
         <SectionTitle>ĐẠI SỨ đồng hành cùng iconic pro</SectionTitle>
 
         <div className='grid grid-cols-12 gap-6 relative'>
-          <div
-            className='hidden bg absolute inset-0 z-[-1]'
-            style={{
-              background:
-                'url("/images/overlay.png") center center / cover no-repeat',
-            }}
-          ></div>
-
           <div className='grid grid-cols-1 gap-4 items-center col-span-12'>
-            <Image
-              className='w-2/3 mx-auto'
-              src='/images/ambassadors/1.png'
-              alt=''
-              layout='fullWidth'
-            />
+            <div className='bg-gradient-to-b from-transparent via-main/10 to-transparent'>
+              <Image
+                className='mx-auto'
+                src='/images/ambassadors/1.png'
+                alt=''
+                layout='fullWidth'
+              />
+            </div>
 
             <p className='color-main text-lg text-justify flex-grow'>
               Iconic Pro tự hào là đơn vị đào tạo chuyên nghiệp trong ngành làm
@@ -33,13 +27,15 @@ export default function Ambassador() {
               nhất.
             </p>
 
-            <Button variant='main' className='mt-4'>
+            {/* <Button variant='main' className='mt-4'>
               Đọc thêm
-            </Button>
+            </Button> */}
           </div>
 
           <div className='col-span-12 flex flex-col'>
-            <Image src='/images/ambassadors/2.png' layout='fullWidth'></Image>
+            <div className='bg-gradient-to-b from-transparent via-main/10 to-transparent'>
+              <Image src='/images/ambassadors/2.png' layout='fullWidth'></Image>
+            </div>
 
             {/* <iframe
               className='w-full rounded-xl aspect-video m-auto mt-4 max-md:mb-4'

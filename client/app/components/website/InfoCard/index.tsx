@@ -25,13 +25,15 @@ export default function InfoCard({
         isHighlight ? style.highlight : ''
       } ${className}`}
     >
-      <Image
-        className={`${style.content_image}`}
-        src={image}
-        loading='lazy'
-        layout='fullWidth'
-        // cdn='netlify'
-      />
+      <div className='bg-red-500/10 rounded-lg overflow-hidden h-full'>
+        <Image
+          className={`${style.content_image} object-cover`}
+          src={image}
+          loading='lazy'
+          layout='fullWidth'
+          // cdn='netlify'
+        />
+      </div>
       <div className='flex-grow'>
         {title && <h3 className={style.title}>{title}</h3>}
 
@@ -39,7 +41,17 @@ export default function InfoCard({
       </div>
 
       {button && (
-        <Button className='mt-5 uppercase font-bold rounded-full bg-main'>
+        <Button
+          className='mt-5 uppercase font-bold rounded-full bg-main'
+          onClick={() => {
+            if (
+              typeof window !== 'undefined' &&
+              (window as any).openRegistrationPopup
+            ) {
+              (window as any).openRegistrationPopup();
+            }
+          }}
+        >
           {button}
         </Button>
       )}

@@ -21,8 +21,7 @@ export default function PageEditor({ page }: { page?: IPageDetail }) {
     if (page) {
       setIsChanged(
         page.pst_title !== title ||
-          JSON.stringify(JSON.parse(page.pst_content || '{}')?.blocks || []) !==
-            JSON.stringify(JSON.parse(content || '{}')?.blocks || []) ||
+          page.pst_content !== content ||
           page.pst_thumbnail !== thumbnail ||
           (page.pst_category || '') !== category ||
           (page.pst_template || '') !== template,
