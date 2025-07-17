@@ -121,7 +121,7 @@ export default function CmsDesk() {
   return (
     <div className='flex min-h-screen bg-gray-100 font-sans antialiased'>
       {/* <div className='flex flex-wrap bg-gray-100 w-full h-screen overflow-hidden'> */}
-      <SideBar user={user!} unseenBookings={unseenBookings} />
+      <SideBar user={user} unseenBookings={unseenBookings} />
 
       <main className='flex-1 ml-64 p-8 lg:p-12 overflow-y-auto'>
         <Outlet />
@@ -137,7 +137,7 @@ const SideBar = ({
   user,
   unseenBookings,
 }: {
-  user: IUser;
+  user: IUser | null;
   unseenBookings: boolean;
 }) => {
   const location = useLocation();
@@ -225,7 +225,25 @@ const SideBar = ({
   );
 };
 
-const UserBrief = ({ user }: { user: IUser }) => {
+const UserBrief = ({ user }: { user: IUser | null }) => {
+  if (!user) {
+    return (
+      <div className='flex items-center mb-10 pb-4 border-b border-gray-200'>
+        <img
+          className='w-10 h-10 rounded-full mr-3 shadow-md'
+          src='/assets/user-avatar-placeholder.jpg'
+          alt='User Avatar'
+        />
+        <div>
+          <h1 className='text-xl font-bold text-gray-800'>Khách</h1>
+          <div className='flex items-center text-red-500 text-sm'>
+            <span className='w-2 h-2 bg-red-500 rounded-full mr-1'></span> Chưa
+            đăng nhập
+          </div>
+        </div>
+      </div>
+    );
+  }
   const fullName = `${user.usr_firstName} ${user.usr_lastName}`;
 
   return (
