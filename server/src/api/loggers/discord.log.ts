@@ -44,8 +44,8 @@ class LoggerService {
           title,
           description:
             '```json\n' +
-            JSON.stringify(code, null, 2) +
-            '\n```'.substring(0, 4000),
+            JSON.stringify(code, null, 2).substring(0, 3000) +
+            '\n```',
         },
       ],
     };
