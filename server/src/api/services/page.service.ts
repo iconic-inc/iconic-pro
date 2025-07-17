@@ -11,7 +11,7 @@ import { IPageAttrs } from '../interfaces/page.interface';
 import { PageModel } from '../models/page.model';
 import { NotFoundError } from '../core/errors';
 import { PAGE } from '../constants';
-import { getExcerpt } from '@utils/page.util';
+import { extractExcerpt } from '@utils/page.util';
 
 const createPage = async (page: IPageAttrs) => {
   if (!page.category) {
@@ -20,7 +20,7 @@ const createPage = async (page: IPageAttrs) => {
 
   const newPage = await PageModel.build({
     ...page,
-    excerpt: page.excerpt || getExcerpt(page.content),
+    excerpt: page.excerpt || extractExcerpt(page.content),
     slug: page.title && slugify(page.title, { lower: true }),
     views: 0,
   });
@@ -91,7 +91,10 @@ const updatePage = async (id: string, page: IPageAttrs) => {
     id,
     {
       ...formatAttributeName(
-        removeNestedNullish({ ...page, excerpt: getExcerpt(page.content) }),
+        removeNestedNullish({
+          ...page,
+          excerpt: page.excerpt || extractExcerpt(page.content),
+        }),
         PAGE.PREFIX
       ),
       pst_slug: page.title && slugify(page.title, { lower: true }),

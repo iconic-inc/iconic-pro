@@ -25,7 +25,7 @@ export default function Facilities() {
           ].map((item, i) => (
             <article
               key={i}
-              className='flex flex-row rounded-xl relative h-fit mb-8'
+              className='flex flex-row items-center rounded-xl relative h-fit mb-8'
               style={{
                 boxShadow: '1px 2px 15px 2px rgba(var(--main-color), 0.15)',
               }}
@@ -39,13 +39,13 @@ export default function Facilities() {
                   {item.description}
                 </p>
 
-                <Button className='bg-main rounded-full font-bold uppercase'>
+                {/* <Button className='bg-main rounded-full font-bold uppercase'>
                   Tìm hiểu thêm
-                </Button>
+                </Button> */}
               </div>
 
               <Image
-                className='h-fit mt-8 w-1/2 right-0'
+                className='h-fit w-1/2 right-0'
                 src={item.image}
                 alt={item.title}
                 layout='fullWidth'

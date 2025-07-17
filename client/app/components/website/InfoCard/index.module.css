@@ -23,8 +23,7 @@
   &.highlight {
     background: linear-gradient(
       180deg,
-      rgba(124, 93, 187, 1) 0%,
-      rgba(162, 134, 208, 1) 51%,
+      rgba(var(--main-color), 1) 0%,
       rgba(247, 243, 251, 1) 100%
     );
   }

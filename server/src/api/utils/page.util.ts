@@ -1,5 +1,11 @@
+import * as cheerio from 'cheerio';
 const EXCERPT_LENGTH = 150;
 
+/**
+ * Extracts an excerpt from EditorJS content
+ * @param content - content in JSON format
+ * @returns
+ */
 const getExcerpt = (content: string): string => {
   if (!content) {
     return '';
@@ -25,4 +31,21 @@ const getExcerpt = (content: string): string => {
   });
 };
 
-export { getExcerpt };
+/**
+ * Extracts a text excerpt from HTML
+ * @param {string} html - full HTML content
+ * @param {number} maxLength - max length of excerpt (in characters)
+ * @returns {string}
+ */
+function extractExcerpt(html: string, maxLength = 200) {
+  const $ = cheerio.load(html);
+
+  // Extract text content
+  const text = $.text().replace(/\s+/g, ' ').trim();
+
+  if (text.length <= maxLength) return text;
+
+  return text.slice(0, maxLength).trim() + '…';
+}
+
+export { getExcerpt, extractExcerpt };

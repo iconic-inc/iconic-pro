@@ -16,8 +16,9 @@ export default function CourseCard({
   return (
     <ScrollArea>
       <div className='grid-cols-12 gap-x-5 gap-y-8 flex flex-nowrap p-4'>
-        {services.map((s, i) =>
-          s.value === value ? (
+        {services.map(
+          (s, i) => (
+            // s.value === value ?
             <InfoCard
               key={i}
               className='col-span-2 lg:col-span-4 w-[320px]'
@@ -27,7 +28,8 @@ export default function CourseCard({
             >
               <p>{s.description}</p>
             </InfoCard>
-          ) : null,
+          ),
+          // : null,
         )}
       </div>
       <ScrollBar orientation='horizontal' />

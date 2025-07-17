@@ -5,13 +5,13 @@
     display: block;
     position: relative;
     width: 100%;
-    margin-block: 10px;
+    /* margin-block: 10px; */
     background-size: 95%;
     transition: 0.3s ease-out;
     background-repeat: no-repeat;
     background-position: center right;
 
-    &.hot::before {
+    /* &.hot::before {
       content: '';
       width: 55px;
       height: 37px;
@@ -20,11 +20,11 @@
       top: 16px;
       display: inline-block;
       background: url('/images/hot.png') no-repeat center/contain;
-    }
+    } */
 
-    &.active {
+    /* &.active {
       margin-left: 30px !important;
-    }
+    } */
 
     @media (max-width: 1024px) {
       &.active {

@@ -21,173 +21,79 @@ export default function DiscountParty() {
 
 const promotions = [
   {
-    banner: '/images/promotions/dieu-tri-da.png',
+    banner: '/images/promotions/marketing.png',
     isHot: true,
-    tab: 'tab_dieu-tri-da',
+    tab: 'tab-marketing',
     details: {
-      alt: 'Khuyến mãi Điều trị da',
-      content: [
-        {
-          title: 'CẤY COLLAGEN TƯƠI',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'NÂNG MŨI',
-          description: [
-            'Ưu đãi 65% khi đăng ký liệu trình',
-            'Tặng Voucher 1.000.000VNĐ',
-          ],
-        },
-        {
-          title: 'TRẺ HÓA DA',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-      ],
+      alt: 'Khuyến mãi khóa học Marketing',
+      content: `<div class="marketing-promo">
+        <h3>Ưu đãi đặc biệt: Khóa học Marketing thực chiến</h3>
+        <ul>
+            <li>Với khóa học <span class="highlight">Marketing thực chiến</span> tại Iconic PRO, bạn sẽ được:</li>
+            <li>✨ **Giảm giá 50% học phí**</li>
+            <li>✨ Học cách xây dựng chiến lược marketing hiệu quả, thu hút khách hàng cho Spa.</li>
+            <li>✨ Nắm vững kỹ năng truyền thông, tạo nội dung bán hàng độc đáo.</li>
+            <li>✨ Biết cách giữ chân khách hàng dài lâu thông qua các chiến dịch thực tế, cá nhân hóa.</li>
+        </ul>
+        <p class="cta">Đây là cơ hội vàng để bứt phá doanh thu cho Spa của bạn, đừng bỏ lỡ!</p>
+    </div>`,
     },
   },
   {
-    banner: '/images/promotions/phun-xam-dieu-khac.png',
+    banner: '/images/promotions/marketing.png',
     isHot: true,
-    tab: 'tab_phun-xam-dieu-khac',
+    tab: 'tab-telesales',
     details: {
-      alt: 'Khuyến mãi Điều trị da',
-      content: [
-        {
-          title: 'CẤY COLLAGEN TƯƠI',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'NÂNG MŨI',
-          description: [
-            'Ưu đãi 65% khi đăng ký liệu trình',
-            'Tặng Voucher 1.000.000VNĐ',
-          ],
-        },
-        {
-          title: 'TRẺ HÓA DA',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'CẮT MÍ',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-      ],
+      alt: 'Khuyến mãi khóa học Telesales',
+      content: `<div class="telesales-promo">
+        <h3>Ưu đãi đặc biệt: Khóa học Telesales thực chiến</h3>
+        <ul>
+            <li>Với khóa học <span class="highlight">Telesales thực chiến</span> tại Iconic PRO, bạn sẽ được:</li>
+            <li>✨ **Giảm giá 50% học phí**</li>
+            <li>✨ Nắm vững kịch bản và kỹ thuật chốt sale qua điện thoại.</li>
+            <li>✨ Học cách tạo sự kết nối và thuyết phục khách hàng hiệu quả.</li>
+            <li>✨ Biến cuộc gọi thành doanh thu, từ học viên telesale đến khi khách hàng bước chân ra khỏi Spa.</li>
+        </ul>
+        <p class="cta">Tối ưu hóa khả năng chốt đơn và gia tăng doanh số ngay hôm nay!</p>
+    </div>`,
     },
   },
   {
-    banner: '/images/promotions/tre-hoa-da.png',
+    banner: '/images/promotions/marketing.png',
     isHot: true,
-    tab: 'tab_tre-hoa-da',
+    tab: 'tab-consulting',
     details: {
-      alt: 'Khuyến mãi Điều trị da',
-      content: [
-        {
-          title: 'CẤY COLLAGEN TƯƠI',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'NÂNG MŨI',
-          description: [
-            'Ưu đãi 65% khi đăng ký liệu trình',
-            'Tặng Voucher 1.000.000VNĐ',
-          ],
-        },
-        {
-          title: 'TRẺ HÓA DA',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'CẮT MÍ',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-      ],
+      alt: 'Khuyến mãi khóa học Tư vấn viên',
+      content: `<div class="consulting-promo">
+        <h3>Ưu đãi đặc biệt: Khóa học Tư vấn viên thực chiến</h3>
+        <ul>
+            <li>Với khóa học <span class="highlight">Tư vấn viên thực chiến</span> tại Iconic PRO, bạn sẽ được:</li>
+            <li>✨ **Giảm giá 50% học phí**</li>
+            <li>✨ Nắm vững tư duy giao tiếp chuyên nghiệp, thuyết phục khách hàng.</li>
+            <li>✨ Học cách đọc vị tâm lý khách hàng và đưa ra giải pháp phù hợp nhất.</li>
+            <li>✨ Biến kỹ năng tư vấn thành lợi thế cạnh tranh, chốt đơn hiệu quả và xây dựng niềm tin bền vững.</li>
+        </ul>
+        <p class="cta">Nâng tầm kỹ năng tư vấn, chinh phục mọi khách hàng khó tính!</p>
+    </div>`,
     },
   },
   {
-    banner: '/images/promotions/cat-mi.png',
+    banner: '/images/promotions/marketing.png',
     isHot: true,
-    tab: 'tab_cat-mi',
+    tab: 'tab-manager',
     details: {
-      alt: 'Khuyến mãi Điều trị da',
-      content: [
-        {
-          title: 'CẤY COLLAGEN TƯƠI',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'NÂNG MŨI',
-          description: [
-            'Ưu đãi 65% khi đăng ký liệu trình',
-            'Tặng Voucher 1.000.000VNĐ',
-          ],
-        },
-        {
-          title: 'TRẺ HÓA DA',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'CẮT MÍ',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-      ],
-    },
-  },
-  {
-    banner: '/images/promotions/nang-mui.png',
-    isHot: true,
-    tab: 'tab_nang-mui',
-    details: {
-      alt: 'Khuyến mãi Điều trị da',
-      content: [
-        {
-          title: 'CẤY COLLAGEN TƯƠI',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'NÂNG MŨI',
-          description: [
-            'Ưu đãi 65% khi đăng ký liệu trình',
-            'Tặng Voucher 1.000.000VNĐ',
-          ],
-        },
-        {
-          title: 'TRẺ HÓA DA',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'CẮT MÍ',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-      ],
-    },
-  },
-  {
-    banner: '/images/promotions/nang-cung-chan-may.png',
-    isHot: true,
-    tab: 'tab_nang-cung-chan-may',
-    details: {
-      alt: 'Khuyến mãi Điều trị da',
-      content: [
-        {
-          title: 'CẤY COLLAGEN TƯƠI',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'NÂNG MŨI',
-          description: [
-            'Ưu đãi 65% khi đăng ký liệu trình',
-            'Tặng Voucher 1.000.000VNĐ',
-          ],
-        },
-        {
-          title: 'TRẺ HÓA DA',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-        {
-          title: 'CẮT MÍ',
-          description: ['Giảm 30% cho lần đầu tiên'],
-        },
-      ],
+      alt: 'Khuyến mãi khóa học Quản lý Spa',
+      content: ` <div class="spa-management-promo">
+        <h3>Ưu đãi đặc biệt: Khóa học Quản lý Spa thực chiến</h3>
+        <ul>
+            <li>Với khóa học <span class="highlight">Quản lý Spa thực chiến</span> tại Iconic PRO, bạn sẽ được:</li>
+            <li>✨ **Giảm giá 50% học phí**</li>
+            <li>✨ Học cách thiết lập hệ thống, phân chia công việc tối ưu trong Spa.</li>
+            <li>✨ Nắm vững kỹ năng tuyển dụng và quản lý nhân sự hiệu quả.</li>
+            <li>✨ Xây dựng một quy trình vận hành trơn tru, giúp Spa phát triển bền vững và tăng lợi nhuận.</li>
+        </ul>
+        <p class="cta">Trở thành nhà quản lý Spa chuyên nghiệp, dẫn dắt đội ngũ đến thành công!</p>
+    </div>`,
     },
   },
 ];

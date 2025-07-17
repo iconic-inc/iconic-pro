@@ -23,9 +23,9 @@ export default function BackToTop({ className }: { className?: string }) {
     <button
       id='scroll-to-top'
       onClick={scrollToTop}
-      className={`hidden ${className} rounded-full p-3 bg-sub1
+      className={`hidden ${className} rounded-full p-5 bg-sub1
         hover:text-white hover:border-transparent transition-all duration-300 z-50`}
-      style={{ position: 'fixed', bottom: 40, right: 40 }}
+      style={{ position: 'fixed', bottom: 80, right: 20 }}
     >
       <div>
         <ChevronUp className='text-white' />
