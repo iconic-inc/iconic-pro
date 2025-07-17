@@ -56,7 +56,7 @@ const members = [
     value: 'marketing',
     image: '/images/lecturers/huynh-tan-thoi.png',
     descriptions: [
-      'Hơn 5 năm kinh nghiệm trong lĩnh vực marketing',
+      'Hơn 10 năm kinh nghiệm trong lĩnh vực marketing',
       'Chuyên gia trong việc xây dựng thương hiệu và chiến lược marketing cho spa',
     ],
   },

@@ -78,7 +78,7 @@ export default function PostList({
         </div>
       )}
 
-      {hasMore && <SeemoreButton className='mt-6' loadData={loadPages} />}
+      {/* {hasMore && <SeemoreButton className='mt-6' loadData={loadPages} />} */}
     </section>
   );
 }

@@ -38,7 +38,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className='app w-[430px] mx-auto bg-white overflow-x-hidden'>
+      <body className='app mx-auto bg-white overflow-x-hidden'>
         <Outlet />
 
         <ToastContainer

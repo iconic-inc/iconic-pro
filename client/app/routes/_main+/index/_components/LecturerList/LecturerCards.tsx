@@ -10,6 +10,7 @@ export default function LecturerCards({
     label: string;
     image: string;
     value: string;
+    descriptions: string[];
   }>;
   value: string;
 }) {
@@ -31,12 +32,9 @@ export default function LecturerCards({
                 {lecturer.label}
               </h4>
 
-              <p className='rounded-xl p-2.5 mt-4 text-sm bg-main/10'>
-                Được đào tạo chuyên nghiệp trong lĩnh vực Chăm sóc da
-              </p>
-              <p className='rounded-xl p-2.5 mt-4 bg-main/10 text-sm'>
-                Hơn 4 năm kinh nghiệm Chăm sóc da thẩm mỹ tại bệnh viện Da liễu
-              </p>
+              {lecturer.descriptions.map((d) => (
+                <p className='rounded-xl p-2.5 mt-4 text-sm bg-main/10'>{d}</p>
+              ))}
             </InfoCard>
           ) : null,
         )}

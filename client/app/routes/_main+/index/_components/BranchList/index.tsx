@@ -1,29 +1,31 @@
+import { useLoaderData } from '@remix-run/react';
+import { loader } from '../..';
 import BranchCards from './BranchCards';
 import SectionTitle from '~/components/website/SectionTitle';
+import Defer from '~/components/Defer';
 
 export default function BranchList() {
+  const { branches } = useLoaderData<typeof loader>();
   return (
     <section id='branch' className=''>
       <div className='container block'>
         <SectionTitle>CHI NHÁNH</SectionTitle>
 
-        <BranchCards branches={branches} value={'ho-chi-minh'} />
+        <Defer resolve={branches}>
+          {(branches) => {
+            if (!branches || branches.length === 0) {
+              return (
+                <div className='col-span-12'>
+                  <p className='text-lg lg:text-xl text-[--sub1-text] text-center'>
+                    Hiện tại không có chi nhánh nào.
+                  </p>
+                </div>
+              );
+            }
+            return <BranchCards branches={branches} />;
+          }}
+        </Defer>
       </div>
     </section>
   );
 }
-
-const branches = [
-  {
-    value: 'ho-chi-minh',
-    province: 'Hồ Chí Minh',
-    addresses: [
-      {
-        address: '71 Bùi Tá Hán, Phường An Phú',
-        district: 'Thành phố Thủ Đức',
-        map: 'https://goo.gl/maps/1',
-        image: '/images/locations/71-bui-ta-han.png',
-      },
-    ],
-  },
-];

@@ -1,3 +1,4 @@
+import { Link } from '@remix-run/react';
 import { Image } from '@unpic/react';
 import { ScrollArea, ScrollBar } from '~/components/ui/scroll-area';
 import SectionTitle from '~/components/website/SectionTitle';
@@ -24,14 +25,21 @@ export default function PressMedia() {
               <div className='grid-cols-12 gap-y-8 flex flex-nowrap'>
                 {/* <div className='col-span-7 grid grid-cols-12'> */}
                 {testimonies.map((t: any, i: number) => (
-                  <div key={i} className='aspect-[17/7] h-[70px] my-4 mx-3'>
-                    <Image
-                      src={t.image}
-                      layout='fullWidth'
-                      key={i}
-                      className='object-contain'
-                    ></Image>
-                  </div>
+                  <a
+                    href={t.link}
+                    target='_blank'
+                    className='col-span-3'
+                    key={i}
+                  >
+                    <div className='aspect-[17/7] h-[70px] my-4 mx-3'>
+                      <Image
+                        src={t.image}
+                        layout='fullWidth'
+                        key={i}
+                        className='object-contain'
+                      ></Image>
+                    </div>
+                  </a>
                 ))}
               </div>
 
@@ -47,14 +55,22 @@ export default function PressMedia() {
 
           <div className='grid grid-cols-12 gap-8 grid-rows-2 px-4 gap-10'>
             {partners.map((p: any, i: number) => (
-              <Image
-                className='col-span-6 object-contain'
-                src={p.logo}
-                layout='fullWidth'
+              <a
+                href={p.link}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='col-span-6'
                 key={i}
-                title={p.name}
-                alt={`Đối tác ${p.name}`}
-              ></Image>
+              >
+                <Image
+                  className='col-span-6 object-contain'
+                  src={p.logo}
+                  layout='fullWidth'
+                  key={i}
+                  title={p.name}
+                  alt={`Đối tác ${p.name}`}
+                ></Image>
+              </a>
             ))}
           </div>
         </div>

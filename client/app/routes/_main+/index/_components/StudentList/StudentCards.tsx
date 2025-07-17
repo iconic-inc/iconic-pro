@@ -14,13 +14,13 @@ export default function StudentCards({
 }) {
   return (
     <ScrollArea>
-      <div className='grid-cols-12 gap-x-2 gap-y-8 pb-2 flex flex-nowrap'>
+      <div className='grid-cols-12 gap-x-5 p-4 flex flex-nowrap'>
         {students.map((student, i) =>
           student.value === value ? (
             <InfoCard
               image={student.image}
               key={i}
-              className='w-[300px] shadow-none'
+              className='w-[300px] shadow-'
             >
               <p className='text-black text-pretty mt-3 truncate-3-lines'>
                 {student.description}

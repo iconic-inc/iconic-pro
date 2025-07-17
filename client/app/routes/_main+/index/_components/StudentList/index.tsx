@@ -8,7 +8,7 @@ export default function StudentList() {
   const [activeCustomer, setActiveCustomer] = useState(students[0].value);
   return (
     <section id='customer' className=''>
-      <div className='container grid-cols-1'>
+      <div className='container grid-cols-1 gap-4'>
         <SectionTitle
           tabs={getLabelValue(students)}
           activeTab={activeCustomer}

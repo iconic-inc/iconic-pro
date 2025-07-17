@@ -21,8 +21,9 @@ import { deleteAuthCookie, parseAuthCookie } from '~/services/cookie.server';
 import { getCurrentUser } from '~/services/user.server';
 import { logout } from '~/services/auth.server';
 import { isExpired } from '~/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoadingOverlay from '~/components/LoadingOverlay';
+import CTAMenu from '~/components/website/CTAMenu';
 
 export const links: LinksFunction = () => [
   {
@@ -40,10 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
   const appSettings = getAppSettings().catch((err) => {
     console.error('Error fetching app settings:', err);
-    return {
-      success: false,
-      message: 'Có lỗi xảy ra khi lấy cài đặt ứng dụng.',
-    };
+    return null;
   });
   const categories = getCategories().catch((err) => {
     console.error('Error fetching categories:', err);
@@ -112,6 +110,14 @@ export default function MainLayout() {
 
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    document.body.classList.add('w-[430px]');
+
+    return () => {
+      document.body.classList.remove('w-[430px]');
+    };
+  }, []);
+
   return (
     <AuthProvider
       value={{
@@ -133,11 +139,13 @@ export default function MainLayout() {
     >
       <Header />
 
-      <main className='grid gap-y-8'>
+      <main className='m-auto grid gap-y-8'>
         <Outlet />
       </main>
 
       <Footer />
+
+      <CTAMenu />
 
       {(loading || navigation.state === 'loading') && <LoadingOverlay />}
     </AuthProvider>

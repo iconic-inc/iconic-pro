@@ -4,10 +4,13 @@ import { Button } from '~/components/ui/button';
 import { Search, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog';
-import { Form } from '@remix-run/react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Form, Link } from '@remix-run/react';
+import { motion } from 'framer-motion';
+import { useMainLoaderData } from '~/lib/useMainLoaderData';
+import Defer from '~/components/Defer';
 
 export default function Header() {
+  const { appSettings } = useMainLoaderData();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -59,13 +62,19 @@ export default function Header() {
       >
         <HeaderSideBar />
 
-        <div className='h-[70px]'>
-          <img
-            src='/images/logo.png'
-            alt='Iconic PRO'
-            className='object-contain object-center w-full'
-          />
-        </div>
+        <Link to='/'>
+          <div className='h-[70px]'>
+            <Defer resolve={appSettings}>
+              {(app) => (
+                <img
+                  src={app?.app_logo?.img_url || '/images/logo.png'}
+                  alt='Iconic PRO'
+                  className='object-contain object-center w-full'
+                />
+              )}
+            </Defer>
+          </div>
+        </Link>
 
         <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
           <DialogTrigger asChild>
@@ -79,7 +88,7 @@ export default function Header() {
           <DialogContent className='bg-transparent border-none text-white'>
             <div className='relative'>
               <Form
-                action='/search'
+                action='/blog/tim-kiem'
                 role='search'
                 className='mt-6'
                 onSubmit={() => setIsSearchOpen(false)}
