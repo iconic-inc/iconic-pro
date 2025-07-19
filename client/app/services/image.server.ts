@@ -8,8 +8,16 @@ const getImage = async (name: string) => {
   return image as IImageDetail;
 };
 
-const getImages = async () => {
-  const images = await fetcher('/images');
+const getImages = async (query?: Record<string, string>) => {
+  const searchParams = new URLSearchParams(query).toString();
+  const images = await fetcher(`/images?${searchParams}`, {
+    method: 'GET',
+  });
+  return images as IImage[];
+};
+
+const getImagesByType = async (type: string) => {
+  const images = await getImages({ type });
   return images as IImage[];
 };
 
@@ -39,4 +47,11 @@ const deleteImage = async (name: string, request: ISessionUser) => {
   return res;
 };
 
-export { getImage, getImages, updateImage, createImage, deleteImage };
+export {
+  getImage,
+  getImages,
+  updateImage,
+  createImage,
+  deleteImage,
+  getImagesByType,
+};

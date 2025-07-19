@@ -7,24 +7,9 @@ import {
   type CarouselApi,
 } from '~/components/ui/carousel';
 import { useEffect, useState } from 'react';
+import { IImage } from '~/interfaces/image.interface';
 
-interface SlideData {
-  image: string;
-}
-
-const slides: SlideData[] = [
-  {
-    image: '/images/prizes/1.png',
-  },
-  {
-    image: '/images/prizes/2.png',
-  },
-  {
-    image: '/images/prizes/3.png',
-  },
-];
-
-export default function Prizes() {
+export default function Prizes({ prizeImages }: { prizeImages: IImage[] }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -53,14 +38,14 @@ export default function Prizes() {
         setApi={setApi}
       >
         <CarouselContent>
-          {slides.map((slide, i) => (
+          {prizeImages.map((slide, i) => (
             <CarouselItem key={i}>
               <div className='relative w-full h-[538px] overflow-hidden'>
                 {/* Background Image */}
                 <div
                   className='absolute inset-0 bg-cover bg-center bg-no-repeat'
                   style={{
-                    backgroundImage: `url(${slide.image})`,
+                    backgroundImage: `url(${slide.img_url})`,
                   }}
                 />
               </div>

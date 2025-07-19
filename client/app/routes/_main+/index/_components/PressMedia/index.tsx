@@ -1,9 +1,17 @@
 import { Link } from '@remix-run/react';
 import { Image } from '@unpic/react';
+import Defer from '~/components/Defer';
 import { ScrollArea, ScrollBar } from '~/components/ui/scroll-area';
 import SectionTitle from '~/components/website/SectionTitle';
+import { IImage } from '~/interfaces/image.interface';
 
-export default function PressMedia() {
+export default function PressMedia({
+  partnerImages,
+  newspaperImages,
+}: {
+  partnerImages: IImage[];
+  newspaperImages: IImage[];
+}) {
   return (
     <aside>
       <section id='testimony' className='py-4'>
@@ -23,17 +31,17 @@ export default function PressMedia() {
 
             <ScrollArea>
               <div className='grid-cols-12 gap-y-8 flex flex-nowrap'>
-                {/* <div className='col-span-7 grid grid-cols-12'> */}
-                {testimonies.map((t: any, i: number) => (
+                {newspaperImages.map((t, i) => (
                   <a
-                    href={t.link}
+                    href={t.img_link || '#'}
                     target='_blank'
                     className='col-span-3'
                     key={i}
                   >
                     <div className='aspect-[17/7] h-[70px] my-4 mx-3'>
                       <Image
-                        src={t.image}
+                        src={t.img_url || '/images/logo.png'}
+                        alt={t.img_title || 'Báo chí nói về Iconic PRO'}
                         layout='fullWidth'
                         key={i}
                         className='object-contain'
@@ -54,9 +62,9 @@ export default function PressMedia() {
           <SectionTitle>ĐỐI TÁC CỦA LINH ANH</SectionTitle>
 
           <div className='grid grid-cols-12 gap-8 grid-rows-2 px-4 gap-10'>
-            {partners.map((p: any, i: number) => (
+            {partnerImages.map((p, i) => (
               <a
-                href={p.link}
+                href={p.img_link || '#'}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='col-span-6'
@@ -64,11 +72,11 @@ export default function PressMedia() {
               >
                 <Image
                   className='col-span-6 object-contain'
-                  src={p.logo}
+                  src={p.img_url || '/images/logo.png'}
                   layout='fullWidth'
                   key={i}
-                  title={p.name}
-                  alt={`Đối tác ${p.name}`}
+                  title={p.img_title || 'Đối tác Iconic PRO'}
+                  alt={p.img_title || 'Đối tác Iconic PRO'}
                 ></Image>
               </a>
             ))}
@@ -78,54 +86,3 @@ export default function PressMedia() {
     </aside>
   );
 }
-
-const testimonies = [
-  {
-    name: 'Giáo dục Thời nay',
-    image: '/images/magazine/giao-duc-thoi-nay.png',
-    link: 'https://giaoducthoinay.net/',
-  },
-  {
-    name: 'Doanh nhân & Thương hiệu',
-    image: '/images/magazine/doanh-nhan-thuong-hieu.png',
-    link: 'https://doanhnhanthuonghieu.net/',
-  },
-  {
-    name: 'Tỏa sáng Ngành',
-    image: '/images/magazine/toa-sang-nganh.png',
-    link: 'https://toasangnganh.net/',
-  },
-  {
-    name: 'Sắc đẹp & Thương hiệu',
-    image: '/images/magazine/sac-dep-va-thuong-hieu.png',
-    link: 'https://sacdepthuonghieu.vn/',
-  },
-  {
-    name: 'Chuyên gia trong ngành',
-    image: '/images/magazine/chuyen-gia-trong-nganh.png',
-    link: 'https://chuyengiatrongnganh.vn/',
-  },
-];
-
-const partners = [
-  {
-    name: 'VTV',
-    logo: '/images/doi-tac/vtv.png',
-    link: 'https://vtv.vn/',
-  },
-  {
-    name: 'PR Pro',
-    logo: '/images/doi-tac/prpro.png',
-    link: 'https://prpro.vn/',
-  },
-  {
-    name: 'Iconic Talents',
-    logo: '/images/doi-tac/iconictalents.png',
-    link: 'https://iconictalents.vn/',
-  },
-  {
-    name: 'Ree Lin Candle',
-    logo: '/images/doi-tac/reelin.png',
-    link: 'https://reelincandles.com/',
-  },
-];

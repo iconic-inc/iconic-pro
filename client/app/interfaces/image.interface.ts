@@ -8,6 +8,7 @@ export interface IImage {
   img_isPublic: boolean;
   createdAt: string;
   updatedAt: string;
+  img_description: string;
 }
 
 export interface IImageDetail extends IImage {

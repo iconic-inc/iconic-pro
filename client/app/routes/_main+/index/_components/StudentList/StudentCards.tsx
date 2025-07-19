@@ -1,33 +1,28 @@
 import { ScrollArea, ScrollBar } from '~/components/ui/scroll-area';
 import InfoCard from '~/components/website/InfoCard';
+import TextRenderer from '~/components/website/TextRenderer';
+import { IImage } from '~/interfaces/image.interface';
 
 export default function StudentCards({
   students,
-  value,
 }: {
-  students: Array<{
-    image: string;
+  students: {
+    label: string;
     value: string;
-    description: string;
-  }>;
-  value: string;
+    images: IImage[];
+  };
 }) {
   return (
     <ScrollArea>
       <div className='grid-cols-12 gap-x-5 p-4 flex flex-nowrap'>
-        {students.map((student, i) =>
-          student.value === value ? (
-            <InfoCard
-              image={student.image}
-              key={i}
-              className='w-[300px] shadow-'
-            >
-              <p className='text-black text-pretty mt-3 truncate-3-lines'>
-                {student.description}
-              </p>
-            </InfoCard>
-          ) : null,
-        )}
+        {students.images?.map((student, i) => (
+          <InfoCard image={student.img_url} key={i} className='w-[300px]'>
+            <h3 className='text-xl text-main my-4'>
+              {student.img_title || 'Học viên Iconic PRO'}
+            </h3>
+            <TextRenderer content={student.img_description} />
+          </InfoCard>
+        ))}
       </div>
       <ScrollBar orientation='horizontal' />
     </ScrollArea>
