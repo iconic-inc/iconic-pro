@@ -1,28 +1,21 @@
 import { Image } from '@unpic/react';
 import { Button } from '~/components/ui/button';
 import SectionTitle from '~/components/website/SectionTitle';
+import TextRenderer from '~/components/website/TextRenderer';
+import { IImage } from '~/interfaces/image.interface';
 
-export default function Facilities() {
+export default function Facilities({
+  facilitiesImages,
+}: {
+  facilitiesImages: IImage[];
+}) {
   return (
     <section id='facilities' className=''>
       <div className='container grid-cols-1 px-8'>
         <SectionTitle>CƠ SỞ VẬT CHẤT HIỆN ĐẠI</SectionTitle>
 
         <div className='flex items-center flex-wrap -mx-6'>
-          {[
-            {
-              title: 'Cơ sở vật chất hiện đại',
-              description:
-                'Iconic Pro được trang bị cơ sở vật chất hiện đại, đầy đủ tiện nghi và thiết bị học tập tiên tiến, tạo điều kiện tốt nhất cho học viên trong quá trình học tập và rèn luyện kỹ năng.',
-              image: '/images/facilities/1.png',
-            },
-            {
-              title: 'Phòng học chuyên nghiệp',
-              description:
-                'Phòng học tại Iconic Pro được thiết kế chuyên nghiệp, trang bị đầy đủ thiết bị giảng dạy hiện đại, giúp học viên có trải nghiệm học tập tốt nhất.',
-              image: '/images/facilities/1.png',
-            },
-          ].map((item, i) => (
+          {facilitiesImages.map((item, i) => (
             <article
               key={i}
               className='flex flex-row items-center rounded-xl relative h-fit mb-8'
@@ -32,12 +25,10 @@ export default function Facilities() {
             >
               <div className='flex flex-col w-1/2 py-5 px-5'>
                 <h3 className='m-0 text-main font-bold text-sm uppercase'>
-                  {item.title}
+                  {item.img_title}
                 </h3>
 
-                <p className='mt-2 mb-4 color-sub3 flex-grow text-pretty'>
-                  {item.description}
-                </p>
+                <TextRenderer content={item.img_description} />
 
                 {/* <Button className='bg-main rounded-full font-bold uppercase'>
                   Tìm hiểu thêm
@@ -46,8 +37,8 @@ export default function Facilities() {
 
               <Image
                 className='h-fit w-1/2 right-0'
-                src={item.image}
-                alt={item.title}
+                src={item.img_url}
+                alt={item.img_title}
                 layout='fullWidth'
               />
             </article>

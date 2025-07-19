@@ -12,7 +12,7 @@ import BeautyBlog from './_components/BeautyBlog';
 import PressMedia from './_components/PressMedia';
 import Prizes from './_components/Prizes';
 import { useFetcher, useLoaderData } from '@remix-run/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { action } from '~/routes/api+/courses+/register';
 import { LoaderCircle } from 'lucide-react';
 import {
@@ -23,10 +23,24 @@ import {
 } from '~/components/ui/dialog';
 import { getPosts } from '~/services/page.server';
 import { getBranches } from '~/services/branch.server';
+import { getImages } from '~/services/image.server';
+import { IMAGE } from '~/constants/image.constant';
 
 export const loader = async () => {
   try {
-    const appSettings = await getAppSettings();
+    const [appSettings, homeImages] = await Promise.all([
+      getAppSettings(),
+      getImages({
+        types: Object.values(IMAGE.TYPE)
+          .filter((type) => type.value !== 'other')
+          .map((type) => type.value)
+          .join(','),
+        isPublic: 'true',
+      }).catch((error) => {
+        console.error('Error fetching home images:', error);
+        return [];
+      }),
+    ]);
     const posts = getPosts().catch((error) => {
       console.error('Error fetching posts:', error);
       return [];
@@ -40,6 +54,7 @@ export const loader = async () => {
       appSettings,
       posts,
       branches,
+      homeImages,
     };
   } catch (error) {
     console.error('Error in loader:', error);
@@ -47,6 +62,7 @@ export const loader = async () => {
       appSettings: null,
       posts: [],
       branches: [],
+      homeImages: [],
     };
   }
 };
@@ -65,7 +81,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 };
 
 export default function Index() {
-  const { posts } = useLoaderData<typeof loader>();
+  const { posts, homeImages } = useLoaderData<typeof loader>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   function openPopup() {
@@ -90,6 +106,123 @@ export default function Index() {
   const [phone, setPhone] = useState('');
   const [course, setCourse] = useState('marketing');
   const [isLoading, setIsLoading] = useState(false);
+
+  const bannerImages = useMemo(
+    () => homeImages.filter((img) => img.img_type === IMAGE.TYPE.BANNER.value),
+    [homeImages],
+  );
+  const discountImages = useMemo(
+    () =>
+      homeImages.filter((img) => img.img_type === IMAGE.TYPE.DISCOUNT.value),
+    [homeImages],
+  );
+  const facilitiesImages = useMemo(
+    () =>
+      homeImages.filter((img) => img.img_type === IMAGE.TYPE.FACILITY.value),
+    [homeImages],
+  );
+  const marketingCourseImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.MARKETING_COURSE.value,
+      ),
+    [homeImages],
+  );
+  const telesalesCourseImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.TELESALES_COURSE.value,
+      ),
+    [homeImages],
+  );
+  const consultantCourseImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.CONSULTANT_COURSE.value,
+      ),
+    [homeImages],
+  );
+  const managementCourseImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.MANAGEMENT_COURSE.value,
+      ),
+    [homeImages],
+  );
+  const marketingLecturerImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.MARKETING_LECTURER.value,
+      ),
+    [homeImages],
+  );
+  const telesalesLecturerImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.TELESALES_LECTURER.value,
+      ),
+    [homeImages],
+  );
+  const consultantLecturerImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.CONSULTANT_LECTURER.value,
+      ),
+    [homeImages],
+  );
+  const managementLecturerImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.MANAGEMENT_LECTURER.value,
+      ),
+    [homeImages],
+  );
+  const ambassadorImages = useMemo(
+    () =>
+      homeImages.filter((img) => img.img_type === IMAGE.TYPE.AMBASSADOR.value),
+    [homeImages],
+  );
+  const prizeImages = useMemo(
+    () => homeImages.filter((img) => img.img_type === IMAGE.TYPE.PRIZE.value),
+    [homeImages],
+  );
+  const marketingStudentImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.MARKETING_STUDENT.value,
+      ),
+    [homeImages],
+  );
+  const telesalesStudentImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.TELESALES_STUDENT.value,
+      ),
+    [homeImages],
+  );
+  const consultantStudentImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.CONSULTANT_STUDENT.value,
+      ),
+    [homeImages],
+  );
+  const managementStudentImages = useMemo(
+    () =>
+      homeImages.filter(
+        (img) => img.img_type === IMAGE.TYPE.MANAGEMENT_STUDENT.value,
+      ),
+    [homeImages],
+  );
+  const newspaperImages = useMemo(
+    () =>
+      homeImages.filter((img) => img.img_type === IMAGE.TYPE.NEWSPAPER.value),
+    [homeImages],
+  );
+  const partnerImages = useMemo(
+    () => homeImages.filter((img) => img.img_type === IMAGE.TYPE.PARTNER.value),
+    [homeImages],
+  );
 
   async function handleSubmit(e: any) {
     e.preventDefault();
@@ -132,7 +265,7 @@ export default function Index() {
 
   return (
     <>
-      <MainSlider />
+      <MainSlider bannerImages={bannerImages} />
 
       <div className='container grid-cols-1 mx-auto mb-1.5'>
         <h1 className='text-sm text-main font-bold text-center uppercase'>
@@ -140,25 +273,43 @@ export default function Index() {
         </h1>
       </div>
 
-      <HotCourses />
+      <HotCourses
+        marketingImages={marketingCourseImages}
+        telesalesImages={telesalesCourseImages}
+        consultantImages={consultantCourseImages}
+        managementImages={managementCourseImages}
+      />
 
-      <DiscountParty />
+      <DiscountParty discountImages={discountImages} />
 
       <BranchList />
 
-      <Facilities />
+      <Facilities facilitiesImages={facilitiesImages} />
 
-      <LecturerList />
+      <LecturerList
+        marketingImages={marketingLecturerImages}
+        telesalesImages={telesalesLecturerImages}
+        consultantImages={consultantLecturerImages}
+        managementImages={managementLecturerImages}
+      />
 
-      <Ambassador />
+      <Ambassador ambassadorImages={ambassadorImages} />
 
-      <Prizes />
+      <Prizes prizeImages={prizeImages} />
 
-      <StudentList />
+      <StudentList
+        marketingImages={marketingStudentImages}
+        telesalesImages={telesalesStudentImages}
+        consultantImages={consultantStudentImages}
+        managementImages={managementStudentImages}
+      />
 
       <BeautyBlog blogs={posts} />
 
-      <PressMedia />
+      <PressMedia
+        partnerImages={partnerImages}
+        newspaperImages={newspaperImages}
+      />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className='max-w-md mx-4 md:mx-auto'>

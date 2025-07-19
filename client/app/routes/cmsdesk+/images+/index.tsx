@@ -29,7 +29,7 @@ export default function ImagesPage() {
 
   const [images, setImages] = useState<IImage[]>(fetchedImages);
   const [loading, setLoading] = useState(false);
-  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
+  const [layout, setLayout] = useState<'grid' | 'list'>('list');
 
   useEffect(() => {
     const searchParams = new URL(location.href).searchParams;
@@ -75,7 +75,7 @@ export default function ImagesPage() {
       </div>
 
       <button
-        className='fixed bottom-24 right-10 center rounded-lg bg-blue-500 p-3 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg active:bg-blue-500/80'
+        className='fixed bottom-10 right-10 center rounded-lg bg-blue-500 p-3 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg active:bg-blue-500/80'
         onClick={() => {
           const input = document.createElement('input');
           input.type = 'file';

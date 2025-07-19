@@ -8,7 +8,9 @@ export class ImageController {
   static async getImages(req: Request, res: Response) {
     return OK({
       res,
-      metadata: await ImageService.getImages(),
+      metadata: await ImageService.getImages(
+        req.query as Record<string, string>
+      ),
     });
   }
 
