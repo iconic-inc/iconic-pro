@@ -1,51 +1,42 @@
+import { Link } from '@remix-run/react';
 import { Image } from '@unpic/react';
 import { Button } from '~/components/ui/button';
 import SectionTitle from '~/components/website/SectionTitle';
+import TextRenderer from '~/components/website/TextRenderer';
+import { IMAGE } from '~/constants/image.constant';
+import { IImage } from '~/interfaces/image.interface';
 
-export default function Ambassador() {
+export default function Ambassador({
+  ambassadorImages,
+}: {
+  ambassadorImages: IImage[];
+}) {
   return (
     <section id='kol' className='pt-8'>
       <div className='container grid-cols-1'>
         <SectionTitle>ĐẠI SỨ đồng hành cùng iconic pro</SectionTitle>
 
-        <div className='grid grid-cols-12 gap-6 relative'>
-          <div className='grid grid-cols-1 gap-4 items-center col-span-12'>
-            <div className='bg-gradient-to-b from-transparent via-main/10 to-transparent'>
-              <Image
-                className='mx-auto'
-                src='/images/ambassadors/1.png'
-                alt=''
-                layout='fullWidth'
-              />
+        <div className='flex flex-col gap-6'>
+          {ambassadorImages.map((image, i) => (
+            <div className='flex flex-col gap-4 items-center col-span-12'>
+              <div className='bg-gradient-to-b from-transparent via-main/10 to-transparent'>
+                <Image
+                  className='mx-auto'
+                  src={image.img_url}
+                  alt={image.img_title}
+                  layout='fullWidth'
+                />
+              </div>
+
+              <TextRenderer content={image.img_description} />
+
+              {image.img_link && (
+                <Button variant='main' className='mt-4' asChild>
+                  <Link to={image.img_link}>Đọc thêm</Link>
+                </Button>
+              )}
             </div>
-
-            <p className='color-main text-lg text-justify flex-grow'>
-              Iconic Pro tự hào là đơn vị đào tạo chuyên nghiệp trong ngành làm
-              đẹp, với sứ mệnh mang đến những khóa học chất lượng cao và cập
-              nhật xu hướng mới nhất. Chúng tôi hợp tác với các đại sứ nổi tiếng
-              trong ngành để mang đến cho học viên những trải nghiệm học tập tốt
-              nhất.
-            </p>
-
-            {/* <Button variant='main' className='mt-4'>
-              Đọc thêm
-            </Button> */}
-          </div>
-
-          <div className='col-span-12 flex flex-col'>
-            <div className='bg-gradient-to-b from-transparent via-main/10 to-transparent'>
-              <Image src='/images/ambassadors/2.png' layout='fullWidth'></Image>
-            </div>
-
-            {/* <iframe
-              className='w-full rounded-xl aspect-video m-auto mt-4 max-md:mb-4'
-              src='https://www.youtube.com/embed/oZXd28w41d8?si=EoFiWFJND_fgTSLD'
-              title='YouTube video player'
-              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-              referrerPolicy='strict-origin-when-cross-origin'
-              allowFullScreen
-            ></iframe> */}
-          </div>
+          ))}
         </div>
       </div>
     </section>

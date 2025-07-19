@@ -2,7 +2,7 @@ import { Image } from '@unpic/react';
 
 import style from './index.module.css';
 import { Link } from '@remix-run/react';
-import { Facebook, Linkedin, Youtube } from 'lucide-react';
+import { Facebook, Youtube } from 'lucide-react';
 import { Separator } from '~/components/ui/separator';
 import { useMainLoaderData } from '~/lib/useMainLoaderData';
 import { useEffect, useState } from 'react';
@@ -111,7 +111,12 @@ export default function Footer() {
               <ul className='flex justify-center'>
                 {tiktok && (
                   <li>
-                    <a href={tiktok} target='_blank' rel='noopener noreferrer'>
+                    <a
+                      href={tiktok}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-black'
+                    >
                       <div className='w-6 h-6 m-0 flex items-center justify-center'>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
@@ -131,6 +136,7 @@ export default function Footer() {
                       href={facebook}
                       target='_blank'
                       rel='noopener noreferrer'
+                      className='text-blue-600'
                     >
                       <Facebook />
                     </a>
@@ -139,7 +145,12 @@ export default function Footer() {
 
                 {youtube && (
                   <li>
-                    <a href={youtube} target='_blank' rel='noopener noreferrer'>
+                    <a
+                      href={youtube}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-red-600'
+                    >
                       <Youtube />
                     </a>
                   </li>

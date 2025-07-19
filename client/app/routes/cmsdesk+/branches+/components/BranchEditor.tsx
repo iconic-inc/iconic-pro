@@ -14,6 +14,7 @@ import {
   getProvinceBySlug,
   provinces,
 } from '~/utils/address.util';
+import { IImage } from '~/interfaces/image.interface';
 
 export default function BranchEditor({
   branch,
@@ -26,7 +27,9 @@ export default function BranchEditor({
   const [name, setName] = useState(branch?.bra_name || '');
   const [email, setEmail] = useState(branch?.bra_email || '');
   const [msisdn, setMsisdn] = useState(branch?.bra_msisdn || '');
-  const [thumbnail, setThumbnail] = useState(branch?.bra_thumbnail || '');
+  const [thumbnail, setThumbnail] = useState(
+    branch?.bra_thumbnail || ({} as IImage),
+  );
   const [province, setProvince] = useState(
     getProvinceBySlug(branch?.bra_address.province) || provinces[0],
   );
@@ -88,7 +91,9 @@ export default function BranchEditor({
           label='Thumbnail'
           name='thumbnail'
           value={thumbnail}
-          onChange={setThumbnail}
+          onChange={(value) =>
+            Array.isArray(value) ? setThumbnail(value[0]) : setThumbnail(value)
+          }
         />
       </div>
 
@@ -135,7 +140,12 @@ export default function BranchEditor({
       </div>
 
       <div className='map col-span-6'>
-        <TextInput label='Map' name='map' value={map} onChange={setMap} />
+        <TextInput
+          label='Link nhúng Google Map'
+          name='map'
+          value={map}
+          onChange={setMap}
+        />
       </div>
 
       <div className='street col-span-6 col-start-7'>

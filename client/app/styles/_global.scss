@@ -8,11 +8,11 @@
   }
 
   &::-webkit-scrollbar-track {
-    @apply bg-transparent rounded-md border border-solid border-input-border;
+    @apply bg-transparent rounded-md border border-solid border-main;
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-input-border rounded-md;
+    @apply bg-main rounded-md;
   }
 }
 
@@ -63,7 +63,7 @@ body {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--sub2-text);
+    background: rgb(var(--main-color));
   }
 }
 

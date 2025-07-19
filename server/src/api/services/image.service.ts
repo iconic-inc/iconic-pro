@@ -12,15 +12,31 @@ import { IMAGE } from '../constants';
 import { unlink } from 'fs/promises';
 import { isValidObjectId } from 'mongoose';
 
-const getImages = async () => {
-  const images = await ImageModel.find({}, ['-__v -img_description']).lean();
+const getImages = async (query: Record<string, string>) => {
+  const filter = {} as any;
+  if (query.type) {
+    filter.img_type = query.type;
+  }
+  if (query.types) {
+    filter.img_type = {
+      $in: query.types.split(',').map((type) => type.trim()),
+    };
+  }
+  if (query.isPublic) {
+    filter.img_isPublic = query.isPublic === 'true';
+  }
+  const images = await ImageModel.find(filter, [
+    '-__v -img_description',
+  ]).lean();
 
   return getReturnList(images);
 };
 
 const getImage = async (id: string) => {
   const image = await ImageModel.findOne(
-    { $or: [{ _id: isValidObjectId(id) ? id : null }, { img_name: id }] },
+    {
+      $or: [{ _id: isValidObjectId(id) ? id : null }, { img_name: id }],
+    },
     ['-__v']
   ).lean();
 

@@ -2,9 +2,7 @@ import { ICandidateUpdate } from '@/api/interfaces/candidate.interface';
 import { z } from 'zod';
 import { isValidObjectId } from 'mongoose';
 
-export const candidateCreateSchema = z.object<
-  Record<keyof ICandidateUpdate, any>
->({
+export const candidateCreateSchema = z.object({
   msisdn: z
     .string()
     .trim()

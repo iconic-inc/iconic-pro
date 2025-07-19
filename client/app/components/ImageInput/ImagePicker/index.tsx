@@ -3,9 +3,10 @@ import ImagePreview from '../ImagePreview';
 import { IImage } from '~/interfaces/image.interface';
 import ImageUploader from './ImageUploader';
 import ImageMetadata from './ImageMetadata';
-import { useFetcher } from '@remix-run/react';
+import { Link, useFetcher } from '@remix-run/react';
 import { toast } from 'react-toastify';
 import { action } from '~/routes/cmsdesk+/images+/$id';
+import { Button } from '~/components/ui/button';
 
 interface ImagePickerProps {
   multiple?: boolean;
@@ -68,7 +69,10 @@ export default function ImagePicker({
     };
   }, []);
 
-  const fetcher = useFetcher<typeof action>();
+  const fetcher = useFetcher<{
+    imageId: string;
+    toast: { message: string; type: 'success' | 'error' };
+  }>();
   const toastIdRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -216,6 +220,19 @@ export default function ImagePicker({
               >
                 {multiple ? 'Xóa tất cả' : 'Xóa ảnh'}
               </button>
+            )}
+
+            {selectedImages.length === 1 && (
+              <Button variant={'ghost'} asChild>
+                <Link
+                  to={`/cmsdesk/images/${selectedImages[0].id}`}
+                  className='text-blue-500 hover:text-blue-600'
+                  aria-label='Xem chi tiết ảnh'
+                  title='Xem chi tiết ảnh'
+                >
+                  Xem chi tiết
+                </Link>
+              </Button>
             )}
           </div>
 

@@ -4,7 +4,6 @@ import { IImage } from '~/interfaces/image.interface';
 import ImageTypeMarkup from './ImageTypeMarkup';
 
 export default function ImageListLayout({ images }: { images: IImage[] }) {
-  console.log(images);
   return (
     <table className='table-auto col-span-12 w-full'>
       <thead className=''>
@@ -53,19 +52,26 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
               </Link>
             </td>
 
-            <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
+            <td className='max-w-md lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
               <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
                 Tiêu đề
               </span>
-              <p>{img.img_title}</p>
+              <p className='truncate'>{img.img_title}</p>
             </td>
 
-            <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
+            <td className='max-w-md lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
               <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
                 Đường dẫn
               </span>
 
-              <p>{img.img_link}</p>
+              <a
+                href={img.img_url}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-blue-500 hover:underline'
+              >
+                <p className='truncate'>{img.img_url}</p>
+              </a>
             </td>
 
             <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
@@ -81,13 +87,12 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
                 Trạng thái hiển thị
               </span>
 
-              <p>{img.img_isPublic}</p>
               {img.img_isPublic ? (
-                <p className='m-auto w-fit bg-green-500 rounded px-2 py-1 text-xs font-bold text-[--sub6-text]'>
+                <p className='m-auto w-fit bg-green-500 rounded px-2 py-1 text-xs font-bold text-white'>
                   Công khai
                 </p>
               ) : (
-                <p className='m-auto w-fit rounded bg-red-500 px-2 py-1 text-xs font-bold text-[--sub6-text]'>
+                <p className='m-auto w-fit rounded bg-red-500 px-2 py-1 text-xs font-bold text-white'>
                   Ẩn
                 </p>
               )}

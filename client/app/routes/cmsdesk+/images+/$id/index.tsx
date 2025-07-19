@@ -19,6 +19,7 @@ import ImageMetadata from '~/components/ImageInput/ImagePicker/ImageMetadata';
 import Select from '~/widgets/Select';
 import TextAreaInput from '~/components/TextAreaInput';
 import { IMAGE } from '~/constants/image.constant';
+import TextEditor from '~/components/TextEditor';
 
 export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const { id } = params;
@@ -33,6 +34,7 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
     switch (request.method) {
       case 'PUT': {
         const formData = new URLSearchParams(await request.text());
+        // const name = formData.get('name');
         const title = formData.get('title');
         const type = formData.get('type');
         const isPublic = formData.get('isPublic');
@@ -117,6 +119,8 @@ export default function ImagePopup() {
   const toastIdRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const [description, setDescription] = useState(image.img_description || '');
+
   const closePopupHandler = () => {
     if (!history.state?.idx) navigate('/cmsdesk/images');
     else navigate(-1);
@@ -188,7 +192,7 @@ export default function ImagePopup() {
       onClick={closePopupHandler}
     >
       <section
-        className='container gap-8 p-8 rounded-xl bg-white divide-x divide-zinc-200 overflow-hidden'
+        className='container h-full gap-8 p-8 rounded-xl bg-white divide-x divide-zinc-200 overflow-hidden'
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -202,8 +206,8 @@ export default function ImagePopup() {
           />
         </div>
 
-        <div className='col-span-6 flex flex-col px-4 -ml-4 justify-between overflow-y-auto'>
-          <div className='flex flex-col divide-y divide-zinc-200 gap-8'>
+        <div className='col-span-6 flex flex-col px-4 -ml-4 justify-between h-full overflow-hidden'>
+          <div className='flex flex-col divide-y divide-zinc-200 gap-8 h-full overflow-y-auto'>
             <ImageMetadata image={image} />
 
             <div className='-mt-4 py-4 overflow-y-auto shrink'>
@@ -228,8 +232,8 @@ export default function ImagePopup() {
                   className='w-full'
                 >
                   {Object.values(IMAGE.TYPE).map((type) => (
-                    <option value={type.code} key={type.code}>
-                      {type.name}
+                    <option value={type.value} key={type.value}>
+                      {type.optionLabel}
                     </option>
                   ))}
                 </Select>
@@ -254,10 +258,13 @@ export default function ImagePopup() {
                 </div>
 
                 <div className='col-span-2'>
-                  <TextAreaInput
-                    label='Mô tả'
+                  <label className='block mb-2 text-sm font-medium text-gray-700'>
+                    Mô tả
+                  </label>
+                  <TextEditor
+                    value={description}
+                    onChange={(value) => setDescription(value)}
                     name='description'
-                    defaultValue={image.img_description}
                   />
                 </div>
               </fetcher.Form>

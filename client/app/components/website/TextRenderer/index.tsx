@@ -7,6 +7,9 @@ export default function TextRenderer({
   content: string;
   truncate?: boolean;
 }) {
+  if (!content) {
+    return null;
+  }
   return (
     <section
       className='text-renderer'

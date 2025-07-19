@@ -1,37 +1,22 @@
 import { useState } from 'react';
-import { Image } from '@unpic/react';
 
 import style from './index.module.css';
-import { X } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '~/components/ui/dialog';
 import { useIsMobile } from '~/hooks/use-mobile';
 import { SheetDescription } from '~/components/ui/sheet';
 import TextRenderer from '../TextRenderer';
+import { IImage } from '~/interfaces/image.interface';
 
-export default function MasterDetail({
-  data,
-}: {
-  data: Array<{
-    banner: string;
-    isHot: boolean;
-    tab: string;
-    details: {
-      content: string;
-      alt: string;
-    };
-  }>;
-}) {
-  const [tab, setTab] = useState(data[0].tab);
+export default function MasterDetail({ data }: { data: Array<IImage> }) {
+  const [tab, setTab] = useState(data[0]?.id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const details = data.find((d) => d.tab === tab)?.details;
   const isMobile = useIsMobile();
 
   return (
@@ -41,20 +26,18 @@ export default function MasterDetail({
           {data.map((master, i) => (
             <li className='' key={i}>
               <a
-                href={`#${master.tab}`}
-                className={`${master.tab === tab ? style.active : ''} ${
-                  master.isHot ? style.hot : ''
-                } max-lg:my-0`}
-                aria-label={master.tab}
+                href={`#${master.id}`}
+                className={`${master.id === tab ? style.active : ''} max-lg:my-0`}
+                aria-label={master.id}
                 onClick={(e) => {
                   e.preventDefault();
-                  setTab(master.tab);
+                  setTab(master.id);
                   setIsDialogOpen(true);
                 }}
               >
                 <img
-                  src={master.banner}
-                  alt={master.details.alt}
+                  src={master.img_url}
+                  alt={master.img_title}
                   className='w-full h-full object-contain'
                 />
               </a>
@@ -72,20 +55,14 @@ export default function MasterDetail({
               description goes here
             </SheetDescription>
           </DialogHeader>
-          {details && <Details details={details} />}
+          <Details data={data.find((d) => d.id === tab)!} />
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-const Details = ({
-  details,
-}: {
-  details: {
-    content: string;
-  };
-}) => {
+const Details = ({ data }: { data: IImage }) => {
   return (
     <article
       className='p-8 text-main'
@@ -94,7 +71,9 @@ const Details = ({
           'rgb(from rgb(var(--main-color)) r g b / 0.05) !important',
       }}
     >
-      <TextRenderer content={details.content} />
+      {/* <TextRenderer content={details.content} /> */}
+      <h3 className='text-2xl font-bold mb-4'>{data?.img_title}</h3>
+      <TextRenderer content={data?.img_description} />
 
       <div className='flex justify-center mt-6'>
         <Button

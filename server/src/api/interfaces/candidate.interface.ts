@@ -1,6 +1,5 @@
 import { HydratedDocument, Model, ObjectId } from 'mongoose';
-import { IUserResponseData } from './user.interface';
-import { IUserAttrs } from '../../../../client/app/interfaces/user.interface';
+import { IUserAttrs, IUserResponseData } from './user.interface';
 
 export interface IRawCandidate {
   can_user: ObjectId;
@@ -23,7 +22,7 @@ export interface ICandidateAttrs {
 }
 
 export interface ICandidateUpdate
-  extends Omit<ICandidateAttrs, 'user'>,
+  extends Omit<ICandidateAttrs, 'user' | 'status'>,
     Partial<IUserAttrs> {}
 
 export type ICandidate = HydratedDocument<IRawCandidate>;
