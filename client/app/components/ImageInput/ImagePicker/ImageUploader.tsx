@@ -41,6 +41,7 @@ export default function ImageUploader({
             }
 
             try {
+              console.log('selected files', e.target.files);
               const res = await uploadImages(e.target.files);
               console.log('update image response', res);
               if (res.success !== 1) {

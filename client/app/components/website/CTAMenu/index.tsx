@@ -1,11 +1,13 @@
 import { CalendarClock, Headset, MapPin, PhoneCall } from 'lucide-react';
-import { Link } from '@remix-run/react';
+import { Link, useLocation } from '@remix-run/react';
 import { Button } from '~/components/ui/button';
 import { useMainLoaderData } from '~/lib/useMainLoaderData';
 import Defer from '~/components/Defer';
 
 export default function CTAMenu() {
   const { mainBranch } = useMainLoaderData();
+  const location = useLocation();
+  const isOnMainPage = location.pathname === '/';
 
   return (
     <div className='fixed bottom-0 w-[430px] bg-white z-50 border-t-2 border-red-500'>
@@ -72,7 +74,7 @@ export default function CTAMenu() {
           className='flex-1 text-main flex flex-col px-2 font-bold text-xs'
           asChild
         >
-          <Link to='/#promotion'>
+          <Link to={isOnMainPage ? '#promotion' : '/#promotion'}>
             <div className='w-6 h-6'>
               <img src='/images/gift.png' alt='Khuyến mãi' />
             </div>

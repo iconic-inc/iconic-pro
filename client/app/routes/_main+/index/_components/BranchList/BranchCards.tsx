@@ -20,6 +20,7 @@ export default function BranchCards({
             image={branch.bra_thumbnail.img_url}
             isHighlight={branch.bra_isMain}
             button='Đặt lịch hẹn'
+            imgRatio='aspect-square'
           >
             <p
               className='text-base mt-4 font-bold'

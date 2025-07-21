@@ -1,7 +1,8 @@
 import { Link, useNavigate, useNavigation } from '@remix-run/react';
-import { format } from 'date-fns';
+import { format, formatDate } from 'date-fns';
 import { useEffect, useState } from 'react';
 import LoadingOverlay from '~/components/LoadingOverlay';
+import { COURSE_LEVELS, COURSES } from '~/constants/courses.constant';
 import { IBooking } from '~/interfaces/booking.interface';
 
 export default function BookingList({
@@ -37,11 +38,15 @@ export default function BookingList({
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
-              Tên Spa
+              Tên Khóa Học
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
-              Chi nhánh
+              Cấp độ Khóa Học
+            </th>
+
+            <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
+              Thời gian đăng ký
             </th>
 
             <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
@@ -77,16 +82,26 @@ export default function BookingList({
 
               <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
                 <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
-                  Tên Spa
+                  Tên Khóa Học
                 </span>
-                {bok.bok_spaName}
+                {COURSES.find((course) => course.value === bok.bok_courseName)
+                  ?.label || 'Không xác định'}
               </td>
 
               <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
                 <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
-                  Chi nhánh
+                  Cấp độ Khóa Học
                 </span>
-                {bok.bok_branch.bra_name}
+                {COURSE_LEVELS.find(
+                  (level) => level.value === bok.bok_courseLevel,
+                )?.label || 'Không xác định'}
+              </td>
+
+              <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
+                <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
+                  Thời gian đăng ký
+                </span>
+                {formatDate(bok.createdAt, 'HH:mm - dd/MM/yyyy')}
               </td>
 
               <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>

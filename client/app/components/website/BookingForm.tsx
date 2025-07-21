@@ -12,25 +12,56 @@ import {
 } from '~/components/ui/card';
 import { useFetcher } from '@remix-run/react';
 import { action } from '~/routes/api+/booking+';
+import { LoaderCircle } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import { COURSE_LEVELS, COURSES } from '~/constants/courses.constant';
 
 export default function BookingForm() {
   const bookingFetcher = useFetcher<typeof action>();
-  const [formData, setFormData] = useState({
-    name: '',
-    msisdn: '',
-    spaName: '',
-    note: '',
-  });
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [course, setCourse] = useState('');
+  const [courseLevel, setCourseLevel] = useState('');
+  const [note, setNote] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<{
     type: 'success' | 'error';
     message: string;
   } | null>(null);
 
-  const handleInputChange = (
-    e: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.currentTarget;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setSubmitMessage(null);
+
+    if (!name || !phone || !course || !courseLevel) {
+      setSubmitMessage({
+        type: 'error',
+        message: 'Vui lòng điền đầy đủ thông tin bắt buộc.',
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    bookingFetcher.submit(
+      {
+        name,
+        msisdn: phone,
+        course,
+        courseLevel,
+        note,
+      },
+      {
+        method: 'POST',
+        action: '/api/courses/register',
+      },
+    );
   };
 
   useEffect(() => {
@@ -38,15 +69,15 @@ export default function BookingForm() {
       const { success, message } = bookingFetcher.data;
       if (success) {
         setSubmitMessage({ type: 'success', message });
-        setFormData({
-          name: '',
-          msisdn: '',
-          spaName: '',
-          note: '',
-        });
+        setName('');
+        setPhone('');
+        setCourse('');
+        setCourseLevel('');
+        setNote('');
       } else {
         setSubmitMessage({ type: 'error', message });
       }
+      setIsLoading(false);
       document.getElementById('booking-form')?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -55,7 +86,7 @@ export default function BookingForm() {
   }, [bookingFetcher.data]);
 
   return (
-    <Card className='w-full mx-auto'>
+    <Card className='w-full mx-auto shadow-lg'>
       <CardHeader>
         <CardTitle className='text-2xl font-bold text-center'>
           Đặt lịch tư vấn
@@ -83,73 +114,114 @@ export default function BookingForm() {
           className='space-y-6'
           method='POST'
           action='/api/booking'
+          onSubmit={handleSubmit}
         >
-          <div className='space-y-2'>
+          <div>
             <Label htmlFor='name'>
-              Họ và Tên <span className='text-red-500'>*</span>
+              Họ và tên <span className='text-red-500'>*</span>
             </Label>
             <Input
+              type='text'
               id='name'
               name='name'
-              value={formData.name}
-              onChange={handleInputChange}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
+              className='h-12'
               placeholder='Nhập họ và tên của bạn'
+              autoComplete='name'
             />
           </div>
 
-          <div className='space-y-2'>
-            <Label htmlFor='msisdn'>
-              Số Điện Thoại <span className='text-red-500'>*</span>
+          <div>
+            <Label htmlFor='phone'>
+              Số điện thoại <span className='text-red-500'>*</span>
             </Label>
             <Input
-              id='msisdn'
-              name='msisdn'
-              value={formData.msisdn}
+              type='tel'
+              id='phone'
+              name='phone'
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
+              className='h-12'
               placeholder='Nhập số điện thoại của bạn'
-              pattern='[0-9]+'
-              onChange={handleInputChange}
-              title='Vui lòng nhập số điện thoại hợp lệ (chỉ nhập số)'
+              autoComplete='tel'
             />
+            {phone === '' ||
+            /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(phone) ? null : (
+              <p className='text-red-500 text-xs mt-1'>
+                Số điện thoại không hợp lệ. Vui lòng nhập lại.
+              </p>
+            )}
           </div>
 
-          <div className='space-y-2'>
-            <Label htmlFor='spaName'>
-              Nhập tên Spa của bạn <span className='text-red-500'>*</span>
+          <div>
+            <Label>
+              Khóa học bạn quan tâm <span className='text-red-500'>*</span>
             </Label>
-            <Input
-              id='spaName'
-              name='spaName'
-              value={formData.spaName}
-              onChange={handleInputChange}
-              required
-              placeholder='Nhập tên spa hoặc cơ sở của bạn'
-            />
+            <Select value={course} onValueChange={setCourse} name='course'>
+              <SelectTrigger className='h-12'>
+                <SelectValue placeholder='Chọn khóa học...' />
+              </SelectTrigger>
+              <SelectContent>
+                {COURSES.map((courseOption) => (
+                  <SelectItem
+                    key={courseOption.value}
+                    value={courseOption.value}
+                  >
+                    {courseOption.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className='space-y-2'>
-            <Label htmlFor='note'>Ghi Chú Thêm</Label>
+          <div>
+            <Label>
+              Cấp độ khóa học <span className='text-red-500'>*</span>
+            </Label>
+            <Select
+              value={courseLevel}
+              onValueChange={setCourseLevel}
+              name='courseLevel'
+            >
+              <SelectTrigger className='h-12'>
+                <SelectValue placeholder='Chọn cấp độ...' />
+              </SelectTrigger>
+              <SelectContent>
+                {COURSE_LEVELS.map((levelOption) => (
+                  <SelectItem key={levelOption.value} value={levelOption.value}>
+                    {levelOption.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor='note'>Ghi chú</Label>
             <Textarea
               id='note'
               name='note'
-              value={formData.note}
-              onChange={handleInputChange}
-              placeholder='Yêu cầu đặc biệt hoặc thông tin bổ sung'
-              rows={4}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className='min-h-[100px]'
+              placeholder='Nhập ghi chú thêm (tùy chọn)'
             />
           </div>
 
           <div className='pt-2'>
             <Button
               type='submit'
-              disabled={bookingFetcher.state === 'submitting'}
-              className='w-full'
-              variant='default'
+              disabled={isLoading}
+              variant={'main'}
+              className='w-full h-12'
             >
-              {bookingFetcher.state === 'submitting'
-                ? 'Đang gửi...'
-                : 'Đăng ký ngay'}
+              Đặt Lịch Tư Vấn
+              {isLoading && (
+                <LoaderCircle className='inline-block ml-2 animate-spin h-5 w-5 text-white' />
+              )}
             </Button>
           </div>
         </bookingFetcher.Form>
