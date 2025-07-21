@@ -20,17 +20,20 @@ export default function LecturerCards({
             key={i}
             className='col-span-2 w-[280px]'
             image={lecturer.img_url}
+            imgRatio='aspect-[3/4]'
           >
-            <h3 className='mt-4 uppercase font-bold text-main'>
-              {lecturer.img_title}
-            </h3>
+            <div className='h-full flex flex-col justify-between'>
+              <h3 className='mt-4 uppercase font-bold text-main'>
+                {lecturer.img_title}
+              </h3>
 
-            <h4 className='text-sm font-medium color-main my-2 text-main'>
-              {lecturers.label}
-            </h4>
+              <h4 className='text-sm font-medium color-main my-2 text-main'>
+                {lecturers.label}
+              </h4>
 
-            <div className='rounded-xl p-2.5 mt-4 text-sm bg-main/10'>
-              <TextRenderer content={lecturer.img_description} />
+              <div className='text-sm flex-grow [&_p]:bg-main/10 [&_p]:p-2.5 [&_p]:rounded-lg'>
+                <TextRenderer content={lecturer.img_description} />
+              </div>
             </div>
           </InfoCard>
         ))}

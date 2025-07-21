@@ -71,7 +71,7 @@ export default function TextEditorClient({
                   ],
                 },
               ],
-              ['link', 'image'],
+              ['link', 'image', 'video'],
               [{ list: 'ordered' }, { list: 'bullet' }],
               ['clean'], // remove formatting
             ],

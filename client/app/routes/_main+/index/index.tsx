@@ -21,10 +21,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from '~/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui/select';
 import { getPosts } from '~/services/page.server';
 import { getBranches } from '~/services/branch.server';
 import { getImages } from '~/services/image.server';
 import { IMAGE } from '~/constants/image.constant';
+import { COURSES, COURSE_LEVELS } from '~/constants/courses.constant';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 
 export const loader = async () => {
   try {
@@ -104,7 +115,8 @@ export default function Index() {
   const fetcher = useFetcher<typeof action>();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [course, setCourse] = useState('marketing');
+  const [course, setCourse] = useState('');
+  const [courseLevel, setCourseLevel] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const bannerImages = useMemo(
@@ -228,8 +240,9 @@ export default function Index() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!name || !phone || !course) {
+    if (!name || !phone || !course || !courseLevel) {
       alert('Vui lòng điền đầy đủ thông tin.');
+      setIsLoading(false);
       return;
     }
 
@@ -238,6 +251,7 @@ export default function Index() {
         name,
         phone,
         course,
+        courseLevel,
       },
       {
         method: 'POST',
@@ -254,6 +268,7 @@ export default function Index() {
         setName('');
         setPhone('');
         setCourse('');
+        setCourseLevel('');
       } else if (message) {
         alert(message);
       }
@@ -284,7 +299,7 @@ export default function Index() {
 
       <BranchList />
 
-      <Facilities facilitiesImages={facilitiesImages} />
+      {/* <Facilities facilitiesImages={facilitiesImages} /> */}
 
       <LecturerList
         marketingImages={marketingLecturerImages}
@@ -312,7 +327,7 @@ export default function Index() {
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className='max-w-md mx-4 md:mx-auto'>
+        <DialogContent className='container grid-cols-1'>
           <DialogHeader>
             <DialogTitle className='text-2xl text-[--yellow] font-bold uppercase text-center'>
               Đăng Ký Khóa Học
@@ -331,40 +346,36 @@ export default function Index() {
             onSubmit={handleSubmit}
           >
             <div>
-              <label
-                htmlFor='name'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
+              <Label htmlFor='name'>
                 Họ và tên <span className='text-red-500'>*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 type='text'
                 id='name'
                 name='name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500'
+                className='h-12'
                 placeholder='Nhập họ và tên của bạn'
+                autoComplete='name'
               />
             </div>
 
             <div>
-              <label
-                htmlFor='phone'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
+              <Label htmlFor='phone'>
                 Số điện thoại <span className='text-red-500'>*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 type='tel'
                 id='phone'
                 name='phone'
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500'
+                className='h-12'
                 placeholder='Nhập số điện thoại của bạn'
+                autoComplete='tel'
               />
               {phone === '' ||
               /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(phone) ? null : (
@@ -375,99 +386,63 @@ export default function Index() {
             </div>
 
             <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
+              <Label>
                 Khóa học bạn quan tâm <span className='text-red-500'>*</span>
-              </label>
-              <div className='space-y-2'>
-                <div className='flex items-center'>
-                  <input
-                    type='radio'
-                    id='course-marketing'
-                    name='course'
-                    value='marketing'
-                    checked={course === 'marketing'}
-                    onChange={(e) => setCourse(e.target.value)}
-                    required
-                    className='h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300'
-                  />
-                  <label
-                    htmlFor='course-marketing'
-                    className='ml-2 block text-sm text-gray-700'
-                  >
-                    Khóa Học Thực Chiến Marketing
-                  </label>
-                </div>
+              </Label>
+              <Select value={course} onValueChange={setCourse} name='course'>
+                <SelectTrigger className='h-12'>
+                  <SelectValue placeholder='Chọn khóa học...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {COURSES.map((courseOption) => (
+                    <SelectItem
+                      key={courseOption.value}
+                      value={courseOption.value}
+                    >
+                      {courseOption.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                <div className='flex items-center'>
-                  <input
-                    type='radio'
-                    id='course-telesales'
-                    name='course'
-                    value='telesales'
-                    checked={course === 'telesales'}
-                    onChange={(e) => setCourse(e.target.value)}
-                    required
-                    className='h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300'
-                  />
-                  <label
-                    htmlFor='course-telesales'
-                    className='ml-2 block text-sm text-gray-700'
-                  >
-                    Khóa Học Thực Chiến Telesales
-                  </label>
-                </div>
-
-                <div className='flex items-center'>
-                  <input
-                    type='radio'
-                    id='course-consultant'
-                    name='course'
-                    value='consultant'
-                    checked={course === 'consultant'}
-                    onChange={(e) => setCourse(e.target.value)}
-                    required
-                    className='h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300'
-                  />
-                  <label
-                    htmlFor='course-consultant'
-                    className='ml-2 block text-sm text-gray-700'
-                  >
-                    Khóa Học Thực Chiến Tư Vấn Viên
-                  </label>
-                </div>
-
-                <div className='flex items-center'>
-                  <input
-                    type='radio'
-                    id='course-management'
-                    name='course'
-                    value='management'
-                    checked={course === 'management'}
-                    onChange={(e) => setCourse(e.target.value)}
-                    required
-                    className='h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300'
-                  />
-                  <label
-                    htmlFor='course-management'
-                    className='ml-2 block text-sm text-gray-700'
-                  >
-                    Khóa Học Thực Chiến Quản Lý Spa
-                  </label>
-                </div>
-              </div>
+            <div>
+              <Label>
+                Cấp độ khóa học <span className='text-red-500'>*</span>
+              </Label>
+              <Select
+                value={courseLevel}
+                onValueChange={setCourseLevel}
+                name='courseLevel'
+              >
+                <SelectTrigger className='h-12'>
+                  <SelectValue placeholder='Chọn cấp độ...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {COURSE_LEVELS.map((levelOption) => (
+                    <SelectItem
+                      key={levelOption.value}
+                      value={levelOption.value}
+                    >
+                      {levelOption.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className='pt-2'>
-              <button
+              <Button
                 type='submit'
                 disabled={isLoading}
-                className='w-full bg-[--secondary-color] text-white font-bold py-2.5 px-4 rounded-md transition duration-300 uppercase disabled:opacity-50 hover:bg-[--secondary-color] hover:shadow-lg'
+                variant={'main'}
+                className='w-full h-12'
               >
                 Đăng Ký Ngay
                 {isLoading && (
                   <LoaderCircle className='inline-block ml-2 animate-spin h-5 w-5 text-white' />
                 )}
-              </button>
+              </Button>
             </div>
           </fetcher.Form>
 

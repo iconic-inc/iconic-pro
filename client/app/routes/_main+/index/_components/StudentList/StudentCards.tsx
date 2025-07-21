@@ -16,7 +16,12 @@ export default function StudentCards({
     <ScrollArea>
       <div className='grid-cols-12 gap-x-5 p-4 flex flex-nowrap'>
         {students.images?.map((student, i) => (
-          <InfoCard image={student.img_url} key={i} className='w-[300px]'>
+          <InfoCard
+            image={student.img_url}
+            key={i}
+            className='w-[300px]'
+            imgRatio='aspect-square'
+          >
             <h3 className='text-xl text-main my-4'>
               {student.img_title || 'Học viên Iconic PRO'}
             </h3>

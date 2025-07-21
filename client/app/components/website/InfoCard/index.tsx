@@ -11,6 +11,7 @@ export default function InfoCard({
   className,
   children,
   isHighlight,
+  imgRatio,
 }: {
   image: string;
   button?: string;
@@ -18,6 +19,7 @@ export default function InfoCard({
   className?: string;
   children: React.ReactNode;
   isHighlight?: boolean;
+  imgRatio?: string;
 }) {
   return (
     <article
@@ -25,7 +27,9 @@ export default function InfoCard({
         isHighlight ? style.highlight : ''
       } ${className}`}
     >
-      <div className='bg-red-500/10 rounded-lg overflow-hidden h-full'>
+      <div
+        className={`bg-red-500/10 rounded-lg overflow-hidden ${imgRatio || ''}`}
+      >
         <Image
           className={`${style.content_image} object-cover`}
           src={image}
@@ -37,7 +41,7 @@ export default function InfoCard({
       <div className='flex-grow'>
         {title && <h3 className={style.title}>{title}</h3>}
 
-        {children && <div className={`${style.content}`}>{children}</div>}
+        {children}
       </div>
 
       {button && (

@@ -18,7 +18,10 @@ export default function Ambassador({
 
         <div className='flex flex-col gap-6'>
           {ambassadorImages.map((image, i) => (
-            <div className='flex flex-col gap-4 items-center col-span-12'>
+            <div
+              key={i}
+              className='flex flex-col gap-4 items-center col-span-12'
+            >
               <div className='bg-gradient-to-b from-transparent via-main/10 to-transparent'>
                 <Image
                   className='mx-auto'

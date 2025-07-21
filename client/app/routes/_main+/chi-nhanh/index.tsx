@@ -6,6 +6,7 @@ import Defer from '~/components/Defer';
 import { parseAuthCookie } from '~/services/cookie.server';
 import { getBranches } from '~/services/branch.server';
 import { useLoaderData } from '@remix-run/react';
+import BookingForm from '~/components/website/BookingForm';
 
 export const loader = async ({ request }: { request: Request }) => {
   const session = await parseAuthCookie(request);
@@ -51,6 +52,10 @@ export default function BranchPage({ page }: { page: IPageDetail }) {
           );
         }}
       </Defer>
+
+      <div className='mt-8'>
+        <BookingForm />
+      </div>
     </div>
   );
 }

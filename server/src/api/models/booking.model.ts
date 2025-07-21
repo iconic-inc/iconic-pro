@@ -8,10 +8,9 @@ const bookingSchema = new Schema<IBooking, IBookingModel>(
   {
     bok_name: { type: String, required: true },
     bok_msisdn: { type: String, required: true, unique: true },
-    bok_spaName: { type: String, required: true },
-    bok_branch: {
-      type: Types.ObjectId,
-      ref: BRANCH.DOCUMENT_NAME,
+    bok_courseName: { type: String, required: true },
+    bok_courseLevel: {
+      type: String,
       required: true,
     },
     bok_note: { type: String, default: '' },

@@ -59,7 +59,7 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
               <p className='truncate'>{img.img_title}</p>
             </td>
 
-            <td className='max-w-md lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
+            <td className='max-w-[200px] lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
               <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
                 Đường dẫn
               </span>
