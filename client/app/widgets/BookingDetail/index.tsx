@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { COURSE_LEVELS, COURSES } from '~/constants/courses.constant';
 import { IBooking } from '~/interfaces/booking.interface';
 
 export default function BookingDetail({
@@ -28,13 +29,16 @@ export default function BookingDetail({
         </p>
 
         <p>
-          <b>Tên Spa: </b>
-          {booking.bok_spaName}
+          <b>Tên Khóa học:</b>
+          {COURSES.find((c) => c.value === booking.bok_courseName)?.label ||
+            'Không xác định'}
         </p>
 
         <p>
-          <b>Chi nhánh: </b>
-          {booking.bok_branch.bra_name}
+          <b>Cấp độ Khóa học:</b>
+          {COURSE_LEVELS.find(
+            (level) => level.value === booking.bok_courseLevel,
+          )?.label || 'Không xác định'}
         </p>
 
         <div>

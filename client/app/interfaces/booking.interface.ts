@@ -2,11 +2,8 @@ export interface IBooking {
   id: string;
   bok_name: string;
   bok_msisdn: string;
-  bok_spaName: string;
-  bok_branch: {
-    id: string;
-    bra_name: string;
-  };
+  bok_courseName: string;
+  bok_courseLevel: string;
   bok_viewed: boolean;
   updatedAt: string;
   createdAt: string;
@@ -19,7 +16,7 @@ export interface IBookingDetail extends IBooking {
 export interface IBookingAttrs {
   name: string;
   msisdn: string;
-  spaName: string;
-  branch: string;
+  courseName: string;
+  courseLevel: string;
   note?: string;
 }

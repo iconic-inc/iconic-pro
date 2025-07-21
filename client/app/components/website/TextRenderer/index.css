@@ -1,6 +1,7 @@
 .text-renderer {
   font-size: 1.125rem;
   color: rgb(var(--sub5-text));
+  width: 100%;
 
   h1,
   h2,
@@ -39,6 +40,11 @@
 
   p {
     margin-block: 1rem !important;
+
+    &:empty,
+    &:has(> br:only-child) {
+      height: 0;
+    }
   }
 
   blockquote {
@@ -87,5 +93,12 @@
     text-align: center;
     width: fit-content;
     margin: 0 auto;
+  }
+
+  iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 1rem;
+    margin-block: 1rem;
   }
 }

@@ -30,15 +30,25 @@ export default function AboutUs() {
 
   return (
     <div className=''>
-      <div>
-        <img src='/assets/gioi-thieu/banner.png' alt='Giới thiệu Iconic Pro' />
-      </div>
+      <Defer resolve={page}>
+        {(page) => (
+          <>
+            <div>
+              <img
+                src={
+                  page?.pst_thumbnail?.img_url ||
+                  '/assets/gioi-thieu/banner.webp'
+                }
+                alt='Giới thiệu Iconic Pro'
+              />
+            </div>
 
-      <div className='container grid-cols-1 py-8'>
-        <Defer resolve={page}>
-          {(page) => <TextRenderer content={page?.pst_content || ''} />}
-        </Defer>
-      </div>
+            <div className='container grid-cols-1 py-8'>
+              <TextRenderer content={page?.pst_content || ''} />
+            </div>
+          </>
+        )}
+      </Defer>
     </div>
   );
 }

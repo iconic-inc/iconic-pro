@@ -11,6 +11,7 @@ import { IImageAttrs } from '../interfaces/image.interface';
 import { IMAGE } from '../constants';
 import { unlink } from 'fs/promises';
 import { isValidObjectId } from 'mongoose';
+import slugify from 'slugify';
 
 const getImages = async (query: Record<string, string>) => {
   const filter = {} as any;
@@ -25,9 +26,9 @@ const getImages = async (query: Record<string, string>) => {
   if (query.isPublic) {
     filter.img_isPublic = query.isPublic === 'true';
   }
-  const images = await ImageModel.find(filter, [
-    '-__v -img_description',
-  ]).lean();
+  const images = await ImageModel.find(filter, ['-__v -img_description'])
+    .sort({ img_type: 1 })
+    .lean();
 
   return getReturnList(images);
 };
@@ -52,7 +53,7 @@ const createImage = async (files?: Express.Multer.File[]) => {
   for (const file of files) {
     const image = await ImageModel.build({
       name: file.filename,
-      url: getImageUrl(file.filename),
+      url: getImageUrl(slugify(file.filename)),
       title: file.filename.split('.')[0],
     });
     newImage.push(image);

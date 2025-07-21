@@ -139,7 +139,7 @@ export default function MainLayout() {
     >
       <Header />
 
-      <main className='m-auto grid gap-y-8'>
+      <main className='grid gap-y-8'>
         <Outlet />
       </main>
 

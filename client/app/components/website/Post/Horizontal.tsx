@@ -55,7 +55,7 @@ export default function HorizontalPost({
         <h2
           className={`${
             important ? 'text-base md:text-xl' : 'text-sm'
-          } hover:text-[--sub2-text] font-bold`}
+          } hover:text-main font-bold text-main`}
           title={post.pst_title}
           style={{
             display: '-webkit-box',

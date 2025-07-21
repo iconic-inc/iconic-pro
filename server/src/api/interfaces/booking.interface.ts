@@ -4,8 +4,8 @@ export interface IRawBooking {
   id: string;
   bok_name: string;
   bok_msisdn: string;
-  bok_spaName: string;
-  bok_branch: ObjectId;
+  bok_courseName: string;
+  bok_courseLevel: string;
   bok_viewed: boolean;
   bok_note?: string;
   createdAt: Date;
@@ -15,8 +15,8 @@ export interface IRawBooking {
 export interface IBookingAttrs {
   name: string;
   msisdn: string;
-  spaName: string;
-  branch: ObjectId;
+  courseName: string;
+  courseLevel: string;
   note?: string;
   viewed: boolean;
 }

@@ -1,4 +1,5 @@
 import { Link } from '@remix-run/react';
+import { Image } from '@unpic/react';
 import { format } from 'date-fns';
 import { IBranch } from '~/interfaces/branch.interface';
 
@@ -11,7 +12,7 @@ export default function BranchCard({
 }) {
   const colClasses = `col-span-4 sm:col-span-${cols?.sm || 6} md:col-span-${
     cols?.md || 4
-  } lg:col-span-${cols?.lg || 3} xl:col-span-${cols?.xl || 3}`;
+  } lg:col-span-${cols?.lg || 4} xl:col-span-${cols?.xl || 4}`;
 
   return (
     <div
@@ -21,8 +22,19 @@ export default function BranchCard({
         to={`/cmsdesk/branches/${branch.id}/edit`}
         className='w-full h-full rounded-xl overflow-hidden'
       >
-        <div className='flex items-center justify-between w-full p-2'>
-          <div className='flex flex-col w-full'>
+        <div className='flex items-center flex-wrap justify-between w-full p-2'>
+          <div className='aspect-square flex-shrink'>
+            <Image
+              src={
+                branch.bra_thumbnail?.img_url || '/images/default-branch.jpg'
+              }
+              alt={branch.bra_name}
+              className='w-full object-contain rounded-lg mb-2'
+              layout='fullWidth'
+            />
+          </div>
+
+          <div className='flex flex-col flex-grow'>
             <h2 className='font-semibold capitalize  text-base sm:text-lg'>
               <span
                 className='bg-gradient-to-r from-accent/50 to-accent/50  dark:from-accentDark/50
@@ -42,16 +54,15 @@ export default function BranchCard({
               </span>
             </h2>
 
-            <div className='text-[--sub6-text] text-sm w-2/3 overflow-hidden'>
-              <p className='truncate'>{branch.bra_email}</p>
+            <div className='text-[--sub6-text] text-sm w-full overflow-hidden'>
+              <p className='truncate'>{branch.bra_email}adfadfsdfasdas</p>
               <p>{branch.bra_msisdn}</p>
             </div>
           </div>
-
           <div className='flex justify-between items-center mt-2'>
             {branch.bra_isMain && (
               <div
-                className={`center relative inline-block select-none whitespace-nowrap rounded-full bg-green
+                className={`center relative inline-block select-none whitespace-nowrap rounded-full bg-green-500
                 py-1 px-2 align-baseline font-sans text-xs font-medium capitalize leading-none 
                 tracking-wide text-white hover:cursor-pointer`}
               >

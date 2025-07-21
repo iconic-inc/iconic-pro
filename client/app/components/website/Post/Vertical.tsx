@@ -16,8 +16,8 @@ export default function VerticalPost({
   className?: string;
 }) {
   return (
-    <article className={`flex-col text-[--sub1-text] ${className}`}>
-      <figure className='text-[--sub7-text] hover:text-[--sub2-text]'>
+    <article className={`flex-col text-main ${className}`}>
+      <figure className='text-main hover:text-main/50'>
         <div className='w-full aspect-video'>
           <Link to={`/blog/${post.pst_slug}`} className='thumb-wrapper'>
             <img
