@@ -299,7 +299,7 @@ export default function Index() {
 
       <BranchList />
 
-      {/* <Facilities facilitiesImages={facilitiesImages} /> */}
+      <Facilities facilitiesImages={facilitiesImages} />
 
       <LecturerList
         marketingImages={marketingLecturerImages}

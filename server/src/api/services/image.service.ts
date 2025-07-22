@@ -27,7 +27,7 @@ const getImages = async (query: Record<string, string>) => {
     filter.img_isPublic = query.isPublic === 'true';
   }
   const images = await ImageModel.find(filter, ['-__v -img_description'])
-    .sort({ img_type: 1 })
+    .sort({ img_type: -1, img_order: 1 })
     .lean();
 
   return getReturnList(images);

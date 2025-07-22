@@ -25,6 +25,10 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
           </th>
 
           <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
+            Thứ tự hiển thị
+          </th>
+
+          <th className='p-3 font-bold uppercase bg-zinc-200 border hidden lg:table-cell'>
             Trạng thái hiển thị
           </th>
         </tr>
@@ -80,6 +84,14 @@ export default function ImageListLayout({ images }: { images: IImage[] }) {
               </span>
 
               <ImageTypeMarkup type={img.img_type} />
+            </td>
+
+            <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
+              <span className='lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase'>
+                Thứ tự hiển thị
+              </span>
+
+              <p className='truncate'>{img.img_order}</p>
             </td>
 
             <td className='w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static'>
