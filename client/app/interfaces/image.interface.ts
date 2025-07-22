@@ -9,6 +9,7 @@ export interface IImage {
   createdAt: string;
   updatedAt: string;
   img_description: string;
+  img_order: number;
 }
 
 export interface IImageDetail extends IImage {

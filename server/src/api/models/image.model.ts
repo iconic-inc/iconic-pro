@@ -12,6 +12,7 @@ const sliderSchema = new Schema<IImage, IImageModel>(
     img_link: { type: String },
     img_url: { type: String, required: true },
     img_isPublic: { type: Boolean, required: true, default: true },
+    img_order: { type: Number, default: 0 },
     // img_uploadedBy: {
     //   type: Types.ObjectId,
     //   ref: USER.DOCUMENT_NAME,

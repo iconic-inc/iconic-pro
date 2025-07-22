@@ -8,6 +8,7 @@ export interface IRawImage {
   img_link: string;
   img_url: string;
   img_isPublic: boolean;
+  img_order: number;
   // img_uploadedBy: string; // User ID
   createdAt: Date;
   updatedAt: Date;
@@ -22,6 +23,7 @@ export interface IImageAttrs {
   url: string;
   // uploadedBy: string; // User ID
   isPublic?: boolean;
+  order?: number;
 }
 
 export type IImage = HydratedDocument<IRawImage>;

@@ -40,10 +40,11 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
         const isPublic = formData.get('isPublic');
         const link = formData.get('link');
         const description = formData.get('description');
+        const order = formData.get('order');
 
         await updateImage(
           id,
-          { title, type, isPublic, link, description },
+          { title, type, isPublic, link, description, order },
           session,
         );
 
@@ -222,6 +223,24 @@ export default function ImagePopup() {
                     name='title'
                     oneline
                     defaultValue={image.img_title}
+                  />
+                </div>
+
+                <div className='col-span-2'>
+                  <TextInput
+                    label={
+                      <div className='flex flex-col gap-1'>
+                        <span className=''>Thứ tự hiển thị</span>
+                        <span className='text-xs text-yellow-500'>
+                          Thứ tự hiển thị từ nhỏ đến lớn. Ví dụ: 0, 1, 2...
+                        </span>
+                      </div>
+                    }
+                    name='order'
+                    type='number'
+                    oneline
+                    defaultValue={image.img_order?.toString() || '0'}
+                    placeholder='0'
                   />
                 </div>
 
