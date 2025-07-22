@@ -30,6 +30,7 @@ export default function CourseCard({
             title={image.img_title}
             button='Tìm hiểu thêm'
             image={image.img_url}
+            imgRatio='aspeect-[3/2]'
           >
             <TextRenderer content={image.img_description} />
           </InfoCard>
