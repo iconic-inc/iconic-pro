@@ -146,46 +146,37 @@ export default function ImagePopup() {
   }, []);
 
   useEffect(() => {
-    switch (fetcher.state) {
-      case 'submitting':
-        toastIdRef.current = toast.loading('Loading...', {
-          autoClose: false,
-        });
-        setLoading(true);
-        break;
+    if (fetcher.data) {
+      if (fetcher.data && toastIdRef.current) {
+        const responseData = fetcher.data as any;
+        let message = 'Operation completed';
+        let toastType: 'success' | 'error' | 'info' = 'success';
 
-      case 'loading':
-        if (fetcher.data && toastIdRef.current) {
-          const responseData = fetcher.data as any;
-          let message = 'Operation completed';
-          let toastType: 'success' | 'error' | 'info' = 'success';
-
-          if (responseData.toast) {
-            message = responseData.toast.message;
-            toastType =
-              (responseData.toast.type as 'success' | 'error') || 'success';
-          } else if (responseData.message) {
-            message = responseData.message;
-            toastType = 'error';
-          }
-
-          toast.update(toastIdRef.current, {
-            render: message,
-            type: toastType,
-            autoClose: 3000,
-            isLoading: false,
-          });
-
-          toastIdRef.current = null;
-          setLoading(false);
-
-          if (fetcher.formMethod === 'DELETE' && responseData.imageId) {
-            navigate('/cmsdesk/images');
-          }
+        if (responseData.toast) {
+          message = responseData.toast.message;
+          toastType =
+            (responseData.toast.type as 'success' | 'error') || 'success';
+        } else if (responseData.message) {
+          message = responseData.message;
+          toastType = 'error';
         }
-        break;
+
+        toast.update(toastIdRef.current, {
+          render: message,
+          type: toastType,
+          autoClose: 3000,
+          isLoading: false,
+        });
+
+        toastIdRef.current = null;
+        setLoading(false);
+
+        if (fetcher.formMethod === 'DELETE' && responseData.imageId) {
+          navigate('/cmsdesk/images');
+        }
+      }
     }
-  }, [fetcher.state, fetcher.formMethod, navigate]);
+  }, [fetcher.data]);
 
   return (
     <div
@@ -296,6 +287,9 @@ export default function ImagePopup() {
               type='button'
               onClick={() => {
                 if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+                  toastIdRef.current = toast.loading('Loading...', {
+                    autoClose: false,
+                  });
                   fetcher.submit(null, { method: 'DELETE' });
                 }
               }}
@@ -315,6 +309,12 @@ export default function ImagePopup() {
               className='btn bg-blue-500 text-white hover:opacity-90 active:bg-blue-600 h-fit px-3 py-2'
               form='update-image'
               type='submit'
+              disabled={loading}
+              onClick={() => {
+                toastIdRef.current = toast.loading('Đang lưu thay đổi...', {
+                  autoClose: false,
+                });
+              }}
             >
               Lưu thay đổi
             </button>
