@@ -27,8 +27,26 @@ const createBooking = async (data: IBookingAttrs) => {
   return getReturnData(newBooking);
 };
 
-const getBookings = async () => {
-  const bookings = await BookingModel.find({}, '-__v')
+const getBookings = async (query: Record<string, any> = {}) => {
+  const filter: Record<string, any> = {};
+
+  // Filter by viewed status
+  if (query.viewed !== undefined) {
+    filter.bok_viewed = query.viewed === 'true';
+  }
+
+  // Filter by date range
+  if (query.startDate || query.endDate) {
+    filter.createdAt = {};
+    if (query.startDate) {
+      filter.createdAt.$gte = new Date(query.startDate);
+    }
+    if (query.endDate) {
+      filter.createdAt.$lte = new Date(query.endDate);
+    }
+  }
+
+  const bookings = await BookingModel.find(filter, '-__v')
     .sort({ createdAt: -1 })
     .lean();
 
@@ -63,10 +81,19 @@ const updateBooking = async (id: string, data: IBookingAttrs) => {
   return getReturnData(booking);
 };
 
+const deleteBooking = async (id: string) => {
+  const booking = await BookingModel.findByIdAndDelete(id);
+  if (!booking) {
+    throw new NotFoundError('Booking not found');
+  }
+  return getReturnData(booking);
+};
+
 export {
   createBooking,
   getBookings,
   getBookingDetails,
   updateBooking,
   countUnseenBookings,
+  deleteBooking,
 };

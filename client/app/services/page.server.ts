@@ -2,8 +2,9 @@ import { ISessionUser } from '~/interfaces/auth.interface';
 import { fetcher } from '.';
 import { IPage, IPageDetail } from '~/interfaces/page.interface';
 
-const getPosts = async (q?: string) => {
-  const pages = await fetcher('/pages?type=blog');
+const getPosts = async (query?: any) => {
+  const searchParams = new URLSearchParams(query);
+  const pages = await fetcher(`/pages?type=blog&${searchParams.toString()}`);
   return pages as IPage[];
 };
 

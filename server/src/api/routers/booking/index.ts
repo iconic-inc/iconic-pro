@@ -39,4 +39,11 @@ bookingRouter.put(
   BookingController.updateBooking
 );
 
+bookingRouter.delete(
+  '/:bookingId',
+  validateObjectId('bookingId'),
+  hasPermission('booking', 'deleteAny'),
+  BookingController.deleteBooking
+);
+
 module.exports = bookingRouter;

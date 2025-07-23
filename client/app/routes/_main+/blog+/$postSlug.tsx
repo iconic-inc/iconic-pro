@@ -20,7 +20,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   try {
     const page = await getPage(postSlug!);
-    const relatedPages = await getPosts();
+    const relatedPages = await getPosts({ exclude: postSlug, limit: 3 });
 
     return {
       page,

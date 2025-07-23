@@ -5,7 +5,11 @@ import {
   MetaFunction,
 } from '@remix-run/node';
 import { authenticator, isAuthenticated } from '~/services/auth.server';
-import { getBookingDetail, setViewedBooking } from '~/services/booking.server';
+import {
+  deleteBooking,
+  getBookingDetail,
+  setViewedBooking,
+} from '~/services/booking.server';
 import BookingDetail from '~/widgets/BookingDetail';
 import {
   data,
@@ -27,15 +31,29 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (!bookingId) {
     return data({ message: 'Yêu cầu không hợp lệ' }, { status: 400, headers });
   }
-  const { viewed } = (await request.json()) as any;
 
   try {
-    const res = await setViewedBooking(bookingId, viewed, user);
-    return res;
+    switch (request.method) {
+      case 'PUT':
+        const formData = await request.formData();
+        const viewed = formData.get('viewed') === 'true';
+        const res = await setViewedBooking(bookingId, viewed, user);
+        return res;
+
+      case 'DELETE':
+        const deleteRes = await deleteBooking(bookingId, user);
+        return deleteRes;
+
+      default:
+        return data(
+          { message: 'Phương thức không được hỗ trợ' },
+          { status: 405, headers },
+        );
+    }
   } catch (error: any) {
     console.error('Error setting viewed booking:', error);
     return data(
-      { message: error.message || 'Lỗi khi cập nhật trạng thái đặt chỗ' },
+      { message: error.message || 'Lỗi khi xử lý yêu cầu' },
       { status: 500, headers },
     );
   }

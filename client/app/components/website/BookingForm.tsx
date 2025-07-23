@@ -52,7 +52,7 @@ export default function BookingForm() {
     bookingFetcher.submit(
       {
         name,
-        msisdn: phone,
+        phone,
         course,
         courseLevel,
         note,
