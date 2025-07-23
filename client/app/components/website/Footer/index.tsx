@@ -7,35 +7,28 @@ import { Separator } from '~/components/ui/separator';
 import { useMainLoaderData } from '~/lib/useMainLoaderData';
 import { useEffect, useState } from 'react';
 import { toAddressString } from '~/utils/address.util';
+import { IAppSettings } from '~/interfaces/app.interface';
 
 export default function Footer() {
   const { appSettings, mainBranch } = useMainLoaderData();
   const [msisdn, setMsisdn] = useState('');
   const [address, setAddress] = useState('');
-  const [logo, setLogo] = useState('');
   const [email, setEmail] = useState('');
-  const [facebook, setFacebook] = useState('');
-  const [tiktok, setTiktok] = useState('');
-  const [youtube, setYoutube] = useState('');
-  const [zalo, setZalo] = useState('');
+  const [settings, setSettings] = useState<IAppSettings | null>();
 
   useEffect(() => {
     const loadData = async () => {
       const [settings, branch] = await Promise.all([appSettings, mainBranch]);
       setMsisdn(branch?.bra_msisdn || '');
       setAddress(toAddressString(branch?.bra_address || ({} as any)));
-      setLogo(settings?.app_logo?.img_url || '');
       setEmail(branch?.bra_email || '');
-      setFacebook(settings?.app_social?.facebook || '');
-      setTiktok(settings?.app_social?.tiktok || '');
-      setYoutube(settings?.app_social?.youtube || '');
-      setZalo(settings?.app_social?.zalo || '');
+      setSettings(settings);
     };
     loadData();
   }, [appSettings, mainBranch]);
 
   return (
-    <footer id={`${style.footer}`} className='bg-main'>
+    <footer id={`${style.footer}`} className='bg-main pb-20'>
       <div className='container grid-cols-1 py-10 px-4'>
         <div className='flex flex-col gap-7'>
           <aside className='col-span-3'>
@@ -43,7 +36,7 @@ export default function Footer() {
               <div className='h-40'>
                 <Image
                   className='object-contain m-auto px-16'
-                  src={logo || '/images/logo.png'}
+                  src={settings?.app_logo?.img_url || '/images/logo.png'}
                   layout='fullWidth'
                   alt='Logo'
                 ></Image>
@@ -109,10 +102,10 @@ export default function Footer() {
               <h4 className='text-center'>Theo dõi chúng tôi tại:</h4>
 
               <ul className='flex justify-center'>
-                {tiktok && (
+                {settings?.app_social?.tiktok && (
                   <li>
                     <a
-                      href={tiktok}
+                      href={settings.app_social.tiktok}
                       target='_blank'
                       rel='noopener noreferrer'
                       className='text-black'
@@ -130,10 +123,10 @@ export default function Footer() {
                   </li>
                 )}
 
-                {facebook && (
+                {settings?.app_social?.facebook && (
                   <li>
                     <a
-                      href={facebook}
+                      href={settings.app_social.facebook}
                       target='_blank'
                       rel='noopener noreferrer'
                       className='text-blue-600'
@@ -143,10 +136,10 @@ export default function Footer() {
                   </li>
                 )}
 
-                {youtube && (
+                {settings?.app_social?.youtube && (
                   <li>
                     <a
-                      href={youtube}
+                      href={settings.app_social.youtube}
                       target='_blank'
                       rel='noopener noreferrer'
                       className='text-red-600'
@@ -156,9 +149,13 @@ export default function Footer() {
                   </li>
                 )}
 
-                {zalo && (
+                {settings?.app_social?.zalo && (
                   <li>
-                    <a href={zalo} target='_blank' rel='noopener noreferrer'>
+                    <a
+                      href={settings.app_social.zalo}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
                       <img
                         src='/assets/zalo.png'
                         alt='Zalo'
@@ -176,10 +173,12 @@ export default function Footer() {
 
             <ul>
               <li>
-                <Link to='#'>Quy định và điều khoản</Link>
+                <Link to='/quy-dinh-va-dieu-khoan'>Quy định và điều khoản</Link>
               </li>
               <li>
-                <Link to='#'>Chính sách bảo mật thông tin</Link>
+                <Link to='/chinh-sach-bao-mat'>
+                  Chính sách bảo mật thông tin
+                </Link>
               </li>
               <li>
                 <Link to='/chi-nhanh'>Hệ thống cơ sở đào tạo</Link>
@@ -201,7 +200,7 @@ export default function Footer() {
                 <Link to='/#hot-courses'>Khóa học Tư vấn viên</Link>
               </li>
               <li>
-                <Link to='/#hot-courses'>Quản lý spa & thẩm mỹ viện</Link>
+                <Link to='/#hot-courses'>Quản lý spa</Link>
               </li>
             </ul>
           </section>
@@ -212,8 +211,15 @@ export default function Footer() {
         <div className='text-sm text-center flex flex-col items-center font-semibold'>
           <p className='flex flex-col'>
             <span className='text-center'>
-              2020 - 2025 CÔNG TY TNHH GIÁO DỤC VÀ ĐÀO TẠO ICONIC PRO - ICONIC
-              PRO EDUCATION AND TRAINING COMPANY LIMITED
+              © {new Date().getFullYear()} Iconic Pro. Bản quyền thuộc về{' '}
+              <a
+                href='https://iconicpro.edu.vn'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='underline'
+              >
+                Iconic Pro
+              </a>
             </span>
             {/* <span className='text-center mt-2'>
               Số ĐKKD: 0315 789 123 Do sở KHĐT TP.HCM cấp ngày 15/08/2020
@@ -223,21 +229,23 @@ export default function Footer() {
           <section id={style['contact-information']} className='mt-2'>
             <p>
               <span>Địa chỉ:</span>
-              <span className=''>
-                123 Nguyễn Văn Cừ, Phường 4, Quận 5, TP. Hồ Chí Minh
-              </span>
+              <span className=''>{address}</span>
             </p>
             <p>
               <span>Số điện thoại:</span>
-              <span>0901234567</span>
+              <span>
+                <a href={`tel:${msisdn}`}>{msisdn}</a>
+              </span>
             </p>
             <p>
               <span>Email:</span>
-              <span>info@iconicpro.edu.vn</span>
+              <span>
+                <a href={`mailto:${email}`}>{email}</a>
+              </span>
             </p>
             <p>
               <span>Người quản lý nội dung:</span>
-              <span>Nguyễn Văn An</span>
+              <span>Huỳnh Tấn Thời</span>
             </p>
           </section>
         </div>

@@ -1,4 +1,6 @@
+import { useFetcher } from '@remix-run/react';
 import { format } from 'date-fns';
+import { Button } from '~/components/ui/button';
 import { COURSE_LEVELS, COURSES } from '~/constants/courses.constant';
 import { IBooking } from '~/interfaces/booking.interface';
 
@@ -9,6 +11,8 @@ export default function BookingDetail({
   booking: IBooking;
   popupHidder: () => void;
 }) {
+  const fetcher = useFetcher();
+
   return (
     <div
       className='fixed inset-0 z-50 bg-black/65 flex items-center'
@@ -65,39 +69,62 @@ export default function BookingDetail({
           })()}
         </p>
 
-        {booking.bok_viewed ? (
-          <button
-            className='center rounded-lg bg-red-500 py-2 px-3 font-sans font-bold uppercase text-white 
-          shadow-md shadow-red/20 transition-all hover:shadow-lg enable:active:bg-red/80 
-          disabled:opacity-60'
+        <div className='flex gap-2'>
+          {booking.bok_viewed ? (
+            <Button
+              className='bg-yellow-500 w-full'
+              type='button'
+              onClick={() => {
+                fetcher.submit(
+                  { viewed: 'false' },
+                  {
+                    method: 'PUT',
+                    action: `/cmsdesk/bookings/${booking.id}`,
+                  },
+                );
+                popupHidder();
+              }}
+            >
+              Đánh dấu chưa đọc
+            </Button>
+          ) : (
+            <Button
+              type='button'
+              className='bg-green-500 w-full'
+              onClick={() => {
+                fetcher.submit(
+                  { viewed: 'true' },
+                  {
+                    method: 'PUT',
+                    action: `/cmsdesk/bookings/${booking.id}`,
+                  },
+                );
+                popupHidder();
+              }}
+            >
+              Đánh dấu đã đọc
+            </Button>
+          )}
+
+          <Button
+            variant={'destructive'}
             type='button'
             onClick={() => {
-              fetch(`/cmsdesk/bookings/${booking.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({ viewed: false }),
-              });
-              popupHidder();
+              if (confirm('Bạn có chắc chắn muốn xóa đơn đặt lịch này?')) {
+                fetcher.submit(
+                  {},
+                  {
+                    method: 'DELETE',
+                    action: `/cmsdesk/bookings/${booking.id}`,
+                  },
+                );
+                popupHidder();
+              }
             }}
           >
-            Đánh dấu chưa đọc
-          </button>
-        ) : (
-          <button
-            className='center rounded-lg bg-green-500 py-2 px-3 font-sans font-bold uppercase text-white 
-        shadow-md shadow-green/20 transition-all hover:shadow-lg enable:active:bg-green/80 
-        disabled:opacity-60'
-            type='button'
-            onClick={() => {
-              fetch(`/cmsdesk/bookings/${booking.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({ viewed: true }),
-              });
-              popupHidder();
-            }}
-          >
-            Đánh dấu đã đọc
-          </button>
-        )}
+            Xóa
+          </Button>
+        </div>
       </div>
     </div>
   );

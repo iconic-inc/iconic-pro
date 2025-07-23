@@ -44,7 +44,7 @@ class LoggerService {
       embeds: [
         {
           color: Colors.Red,
-          title,
+          title: title.substring(0, 250),
           description:
             '```json\n' +
             JSON.stringify(code, null, 2).substring(0, 3000) +

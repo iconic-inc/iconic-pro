@@ -52,7 +52,7 @@ export default function CTAMenu() {
             }
           }}
         >
-          <div className='bg-main rounded-full p-5'>
+          <div className='bg-main rounded-full p-5 border-2 border-white'>
             <Headset />
           </div>
           <span className='bg-main rounded-full px-2 py-1 text-xs'>

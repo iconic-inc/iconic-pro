@@ -6,8 +6,12 @@ import {
   IBookingDetail,
 } from '~/interfaces/booking.interface';
 
-const getBookings = async (request: ISessionUser) => {
-  const res = await fetcher(`/bookings`, { request });
+const getBookings = async (
+  request: ISessionUser,
+  query?: Record<string, string>,
+) => {
+  const queryString = query ? '?' + new URLSearchParams(query).toString() : '';
+  const res = await fetcher(`/bookings${queryString}`, { request });
   return res as Array<IBooking>;
 };
 

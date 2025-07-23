@@ -29,7 +29,7 @@ export const bookingCreateSchema = z.object<Record<keyof IBookingAttrs, any>>({
   note: z
     .string()
     .trim()
-    .min(1, { message: 'Ghi chú không được để trống.' })
-    .max(500, { message: 'Vui lòng viết ghi chú ngắn hơn.' }),
+    .max(500, { message: 'Vui lòng viết ghi chú ngắn hơn.' })
+    .optional(),
   viewed: z.boolean().default(false).optional(),
 });

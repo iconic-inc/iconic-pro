@@ -16,7 +16,7 @@ export class BookingController {
   static async getBookings(req: Request, res: Response) {
     return OK({
       res,
-      metadata: await BookingService.getBookings(),
+      metadata: await BookingService.getBookings(req.query),
     });
   }
 
@@ -42,6 +42,14 @@ export class BookingController {
         req.params.bookingId,
         req.body
       ),
+    });
+  }
+
+  static async deleteBooking(req: Request, res: Response) {
+    return OK({
+      res,
+      message: 'Booking deleted successfully',
+      metadata: await BookingService.deleteBooking(req.params.bookingId),
     });
   }
 }

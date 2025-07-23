@@ -37,11 +37,13 @@ export default function Index() {
   return (
     <div className='container gap-y-20 py-4 mb-6'>
       <div className='col-span-full grid grid-cols-12 gap-y-8 md:gap-y-20'>
-        <Defer resolve={posts}>{(p) => <Overview posts={p} />}</Defer>
+        <Defer resolve={posts}>
+          {(p) => <Overview posts={p.slice(0, 4)} />}
+        </Defer>
 
         <div className='col-span-full'>
           <Defer resolve={posts}>
-            {(p) => <PostList posts={p} postsGetter={() => posts} />}
+            {(p) => <PostList posts={p.slice(4)} postsGetter={() => posts} />}
           </Defer>
         </div>
       </div>
@@ -50,6 +52,17 @@ export default function Index() {
 }
 
 const Overview = ({ posts }: { posts: IPage[] }) => {
+  if (!posts || !posts.length) {
+    return (
+      <div className='col-span-full text-center'>
+        <p className='text-gray-500'>Không có bài viết nào được đăng tải.</p>
+        <Link to='/blog' className='text-blue-500 hover:underline'>
+          Xem tất cả bài viết
+        </Link>
+      </div>
+    );
+  }
+
   return (
     !!posts.length && (
       <div className='col-span-full grid grid-cols-12 gap-y-4 md:gap-6 mt-5'>
@@ -64,7 +77,7 @@ const Overview = ({ posts }: { posts: IPage[] }) => {
 
         <div className='col-span-full border-b md:hidden'></div>
 
-        {posts.slice(3, 7).map((a, i) => (
+        {posts.slice(1).map((a, i) => (
           <VerticalPost
             post={a}
             key={i}

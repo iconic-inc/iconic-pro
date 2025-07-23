@@ -12,21 +12,21 @@ import HandsomeError from '~/components/HandsomeError';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
-  const query = url.searchParams.get('q') || '';
+  const q = url.searchParams.get('q') || '';
 
   // const searchRes = await searchArticles({ query, page: 1 });
-  const pages = await getPosts();
+  const pages = await getPosts({ q });
   return {
     searchRes: {
-      count: 1234,
+      count: pages.length,
       pages,
     },
-    latestArticles: getPosts(),
+    // latestArticles: getPosts(),
   };
 };
 
 export default function SearchPage() {
-  const { searchRes, latestArticles } = useLoaderData<typeof loader>();
+  const { searchRes } = useLoaderData<typeof loader>();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get('q') || '';
@@ -50,7 +50,7 @@ export default function SearchPage() {
           />
 
           <button
-            className='absolute right-4 top-3'
+            className='absolute right-4 top-2'
             title='Tìm kiếm'
             type='submit'
           >
@@ -60,7 +60,7 @@ export default function SearchPage() {
 
         <p className='text-xl text-[--sub6-text] my-5'>
           <span className='font-medium text-[--sub2-text]'>
-            {searchRes.pages.length || 1234}
+            {searchRes.pages.length || 0}
           </span>{' '}
           kết quả phù hợp
         </p>

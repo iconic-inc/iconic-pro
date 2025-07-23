@@ -46,7 +46,11 @@ export default function PostList({
   }, [posts]);
 
   if (!loadedPages.length) {
-    return <div>No posts</div>;
+    return (
+      <div>
+        <p className='text-gray-500'>Không có bài viết.</p>
+      </div>
+    );
   }
 
   return (

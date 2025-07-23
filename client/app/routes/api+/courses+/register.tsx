@@ -12,6 +12,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const courseLevel = formData.get('courseLevel');
         const name = formData.get('name');
         const phone = formData.get('phone');
+        const note = formData.get('note') || '';
 
         if (!course || !name || !phone || !courseLevel) {
           return Response.json(
@@ -19,14 +20,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             { status: 400 },
           );
         }
-
-        // Format data for Google Sheets
-        // Each row is an array of values corresponding to columns
-        const courseName =
-          COURSES.find((crs) => crs.value === course)?.label || 'Khác';
-        const courseLevelName =
-          COURSE_LEVELS.find((level) => level.value === courseLevel)?.label ||
-          'Khác';
 
         // const values = [
         //   [
@@ -49,8 +42,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         await createBooking({
           name: name.toString(),
           msisdn: phone.toString(),
-          courseName,
-          courseLevel: courseLevelName,
+          courseName: course.toString(),
+          courseLevel: courseLevel.toString(),
+          note: note.toString(),
         });
 
         return Response.json({
