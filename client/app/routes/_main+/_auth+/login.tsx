@@ -332,11 +332,17 @@ const Login = () => {
 
             <p className='text-xs text-gray-500 mt-8 text-center'>
               Bằng việc tiếp tục, bạn đồng ý với{' '}
-              <a href='#' className='text-main hover:underline'>
+              <a
+                href='/quy-dinh-va-dieu-khoan'
+                className='text-main hover:underline'
+              >
                 Điều Khoản Sử Dụng
               </a>{' '}
               và{' '}
-              <a href='#' className='text-main hover:underline'>
+              <a
+                href='/chinh-sach-bao-mat'
+                className='text-main hover:underline'
+              >
                 Chính Sách Bảo Mật
               </a>{' '}
               của Iconic PRO.
