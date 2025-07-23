@@ -55,7 +55,7 @@ export default function LecturerList({
         />
 
         <Button variant={'main'} className='w-fit mx-auto'>
-          <Link to='#'>Tìm hiểu thêm</Link>
+          <Link to={`/${activeLecturer}`}>Tìm hiểu thêm</Link>
         </Button>
       </div>
     </section>
