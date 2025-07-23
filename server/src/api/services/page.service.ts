@@ -79,7 +79,11 @@ const generateUniqueSlug = async (
     throw new BadRequestError('Title is required for slug generation');
   }
 
-  const baseSlug = slugify(title.trim(), { lower: true, strict: true });
+  const baseSlug = slugify(title.trim(), {
+    lower: true,
+    strict: true,
+    locale: 'vi',
+  });
   let uniqueSlug = baseSlug;
   let counter = 1;
 
