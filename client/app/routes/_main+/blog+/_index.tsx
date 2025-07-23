@@ -78,11 +78,7 @@ const Overview = ({ posts }: { posts: IPage[] }) => {
         <div className='col-span-full border-b md:hidden'></div>
 
         {posts.slice(1).map((a, i) => (
-          <VerticalPost
-            post={a}
-            key={i}
-            className='col-span-3 max-md:col-span-6 max-md:px-2'
-          />
+          <VerticalPost post={a} key={i} className='col-span-6 max-md:px-2' />
         ))}
       </div>
     )

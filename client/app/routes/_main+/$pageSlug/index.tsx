@@ -25,7 +25,11 @@ export default function PageNotFound() {
   const { page } = useLoaderData<typeof loader>();
 
   return (
-    <Defer resolve={page}>{(pageData) => <PostDetail page={pageData} />}</Defer>
+    <div className='container grid-cols-1'>
+      <Defer resolve={page}>
+        {(pageData) => <PostDetail page={pageData} />}
+      </Defer>
+    </div>
   );
 }
 
