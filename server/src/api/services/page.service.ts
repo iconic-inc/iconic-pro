@@ -282,7 +282,6 @@ const getAllPages = async (query: any) => {
     let queryBuilder = PageModel.find(formattedQuery, ['-pst_content'])
       .populate('pst_thumbnail', '-__v')
       .sort({ createdAt: -1 });
-    console.log('Query Builder:', queryBuilder);
 
     // Apply skip if specified
     if (querySkip !== undefined) {
