@@ -34,7 +34,7 @@ export default function Blogs({ blogs }: { blogs: Array<IPage> }) {
 
       {blogs.slice(1, 3).map((b, i) => (
         <article key={i} className='beauty-blog col-span-12 mt-4'>
-          <Link className='h-fit flex flex-col' to='/'>
+          <Link className='h-fit flex flex-col' to={`/blog/${b.pst_slug}`}>
             <Image
               className='rounded-xl col-span-1'
               src={
