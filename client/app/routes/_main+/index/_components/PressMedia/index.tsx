@@ -59,7 +59,7 @@ export default function PressMedia({
 
       <section id='partner' className='py-8'>
         <div className='container grid-cols-1'>
-          <SectionTitle>ĐỐI TÁC CỦA LINH ANH</SectionTitle>
+          <SectionTitle>ĐỐI TÁC CỦA ICONIC PRO</SectionTitle>
 
           <div className='grid grid-cols-12 gap-8 grid-rows-2 px-4 gap-10'>
             {partnerImages.map((p, i) => (
