@@ -8,7 +8,7 @@ import { strictLimiter } from '../middlewares/rateLimiter.middleware';
 
 const router = express.Router();
 
-router.use(pushLog2Discord);
+// router.use(pushLog2Discord);
 //check api key
 
 router.get('/check-status', CheckController.checkStatus);
